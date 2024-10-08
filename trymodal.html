@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PMC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="png/pmcjpeg.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="libs/Leaflet.MousePosition-master/src/L.Control.MousePosition.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-measure@3.1.0/dist/leaflet-measure.css" /> -->
+
+
+    <style>
+        /* #popup-table {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .coordimg1 {
+            text-decoration: none;
+        }
+        .leaflet-control-measure-toggle,
+        .js-toggle {
+            display: none;
+        }
+        .leaflet-retina .leaflet-control-measure .leaflet-control-measure-toggle,
+        .leaflet-retina .leaflet-control-measure .leaflet-control-measure-toggle:hover {
+            display: none;
+        }
+
+        /* Custom CSS for the modal print preview */
+        @media print {
+            .modal {
+                display: block;
+                position: static;
+                width: 100%;
+            }
+
+            .modal-dialog {
+                width: auto;
+                margin: 0;
+            }
+
+            .modal-content {
+                border: none;
+                box-shadow: none;
+            }
+
+            .modal-header,
+            .modal-footer {
+                display: none;
+            }
+
+            .modal-body {
+                padding: 0;
+            }
+        }
+
+
+        .modal-body {
+            max-height: 400px;
+            /* Adjust this height as needed */
+            overflow-y: auto;
+        } */
+    </style>
+</head>
+
+<body>
+
+    <!-- Modal -->
+<div class="modal fade" id="dataPageModal" tabindex="-1" aria-labelledby="dataPageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+              
+                <h5 class="modal-title fw-bold text-center" id="dataPageModalLabel">PARTICULARS</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="newMap" style="height: 250px; width: 100%; margin-top: 20px;"></div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="popup-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">Attribute</th>
+                                <th scope="col" class="text-center">Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Example Attribute</td>
+                                <td>Example Result</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+              
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Edit</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="submitForm()">Submit</button>
+                <button type="button" class="btn btn-success" onclick="printModal()">
+                    <i class="fas fa-print"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- --------------------------------------------------------------------------------------- -->
+    <header class="header justify-content-between bg-transparent" id="header">
+        <img src="png/pmcjpeg.png" alt="" class="logopng">
+
+        <div>
+            <select id="search_type" class="" aria-label="Select a village">
+                <option value="">Select Village</option>
+            </select>
+
+            <div class="dropdown-container">
+                <div class="dropdown-button noselect">
+                    <div class="dropdown-label ">Survey No</div>
+                    <div class="dropdown-quantity pe-3">(<span class="quantity">Any</span>)</div>
+                    <i class="fa-solid fa-angle-down ps"></i>
+                </div>
+                <div class="dropdown-list" style="display: none;">
+                    <input type="search" placeholder="SurveyNo/CTC/Plot" class="dropdown-search ps-2"
+                        id="surveySearch" />
+                    <ul id="stateList"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="custom-button1">
+            <input  id="fileInput" accept=".kml" style="display:none;" title="Upload KML/KMZ/CSV File">
+            <label for="fileInput" class="upload-btn">
+                <img src="png/upload.svg" alt="" class="upload-icon"> Upload PDF file here
+            </label>
+            <div id="uploadModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h4>upload your file here</h4>
+                    <div id="uploadBox" class="upload-box">
+                        <p>Drag and drop a file here or</p>
+                        <button type="file" id="uploadLink">Choose a file</button>
+                        <!-- <input type="file" id="fileUpload" style="display:none;"> hello -->
+                    </div>
+                    <div id="fileDetails" style="display:none;">
+                        <p id="fileName"></p>
+                        <a id="viewFileLink" href="#" target="_blank">View File</a>
+                        <button id="removeFileBtn">Remove File</button>
+                    </div>
+                    <button id="continueBtn" disabled>Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <a href="AUTODCR GIS USER GUIDE (1).pdf" class="coordimg1" id="getinfo" target="_blank">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <i class="fas fa-question mt-2"></i>
+            </div>
+        </a>
+
+
+        <div class="custom-buttoncsv">
+            <button id="toggleFormBtn" class="addbtn">
+                <img src="png/Gps.svg" alt="Add Icon" class="add-icon"> Add Coordinates
+            </button>
+            
+            <div id="formContainer" class="form-modal" style="display:none;">
+                <button id="closeFormBtn" class="close-btn"><i class="fa-solid fa-xmark xicon" style="font-size: 18px; color: #141414d3; top: 3%;
+                            position: absolute;
+                            left: -30%"></i></button>
+                                <h5 style="text-align: center; margin-bottom: px;">Add your co-ordinates here</h5>
+
+                <form id="coordinateForm" style="text-align: center;">
+                    <table id="coordinateTable">
+                        <tr style=" padding: 5px; font-size: 13px;">
+                            <th class="p-1 px-5">Longitude</th>
+                            <th class="p-1 px-5">Latitude</th>
+                            <th class="p-1 px-5">Action</th>
+                        </tr>
+                    </table>
+                    <button class="addbtn custom-btn " type="button" id="addRowBtn">
+                        Add More Coordinates
+                        <img src="png/Add.svg" alt="Add" style="width: 16px; height: 16px; margin-left: 8px;">
+                    </button>
+                    
+                    <button class="subbtn" type="submit">Submit
+                        <img src="png/formkit_submit.png" alt="Add" style="width: 16px;height: 16px;     margin-top: -4px; margin-left: 8px;">
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        </div>
+    </header>
+
+
+
+    <div id="content">
+        <div id="map"></div>
+        <p class="geopulseaname">@GeoPulse Analytics</p>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="libs/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="libs/Leaflet.MousePosition-master/src/L.Control.MousePosition.js"></script>
+    <!-- <script src="libs/polyline-measure/line-measure.js"></script>
+    <script src="libs/leaflet-measure-master/leaflet-measure.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.3.0/turf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <script src="libs/esri-leaflet.js"></script>
+    <script src="libs/leaflet.draw.js"></script>
+    <script src="libs/turf.min.js"></script>
+    <script src='libs/leaflet-omnivore.min.js'></script>
+    <script src='libs/jszip.min.js'></script>
+    <script src='libs/papaparse.min.js'></script>
+    <script src="https://unpkg.com/leaflet-editable"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.editable/1.0.0-rc.1/Leaflet.Editable.min.js"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script> -->
+
+    <script src="select2.js"></script>
+
+    <script src="auto.js"></script>
+    <script src="js/trymodal.js"></script>
+    <script src="js/legend.js"></script>
+    <script src="handshaking_codes.js"></script>
+
+
+
+
+    <!-- code for the close coordinate -->
+
+    <script>
+        document.querySelector(".subbtn").addEventListener("click", function () {
+
+            document.getElementById("formContainer").style.display = "none";
+        });
+    </script>
+
+
+    <!-- code for close survey number-->
+
+
+
+    <script>
+
+
+
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+
+
+        function performTaskBasedOnVillage(villageName) {
+
+            console.log("Village Name:", villageName);
+
+            if (villageName === "ADCR020") {
+                window.location.href = "http://localhost/autodcr/index.html";
+            }
+
+        }
+
+        // -----------------
+
+        function closeDropdown() {
+            var dropdownList = document.querySelector(".dropdown-list");
+            dropdownList.style.display = "none";
+        }
+
+        document.addEventListener("click", function (event) {
+            var dropdownContainer = document.querySelector(".dropdown-container");
+            var dropdownList = document.querySelector(".dropdown-list");
+
+            if (!dropdownContainer.contains(event.target) && event.target !== dropdownList) {
+                closeDropdown();
+            }
+        });
+
+
+        let typingTimer; // Timer identifier
+        const doneTypingInterval = 500; // Time in milliseconds to wait after typing
+        const surveySearchInput = document.getElementById("surveySearch");
+
+        function validateSurveyNumber() {
+            var inputValue = surveySearchInput.value.trim(); // Get the trimmed input value
+            var stateList = document.getElementById("stateList");
+            var items = stateList.getElementsByTagName("li");
+
+            var found = false;
+            console.log("Input value:", inputValue); // Log the input value for debugging
+
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item) {  // Check if the item exists
+                    var itemValue = item.textContent.trim(); // Get the text content of the item
+                    console.log("Checking against:", itemValue); // Log each item value for debugging
+
+                    // Compare the item text with the input value
+                    if (itemValue === inputValue) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            // Show validation alert if the survey number is not found
+            if (inputValue && !found) {
+                alert("Survey number not found. Please check the survey number. If you have coordinates, please insert them.");
+                // Clear the input box
+                surveySearchInput.value = "";
+            }
+        }
+
+        // On keyup, start the countdown to check the survey number
+        surveySearchInput.addEventListener("keyup", function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(validateSurveyNumber, doneTypingInterval);
+        });
+
+        // On keydown, clear the countdown 
+        surveySearchInput.addEventListener("keydown", function () {
+            clearTimeout(typingTimer);
+        });
+
+        // -------------------------------------
+
+
+        var villageName = getUrlParameter('village_name');
+
+
+        if (villageName) {
+            performTaskBasedOnVillage(villageName);
+        }
+    </script>
+
+    <script>
+
+
+    </script>
+
+
+    <script>
+        document.getElementById("getinfo").addEventListener("mouseenter", function () {
+            var tooltip = this.querySelector(".tooltip");
+            tooltip.style.display = "block";
+        });
+
+        document.getElementById("getinfo").addEventListener("mouseleave", function () {
+            var tooltip = this.querySelector(".tooltip");
+            tooltip.style.display = "none";
+        });
+
+    </script>
+
+
+<script>
+  
+</script>
+
+
+    <script>
+
+
+
+
+function printModal() {
+            // Get the modal content
+            var modalContent = document.getElementById('dataPageModal').innerHTML;
+
+            // Open a new window for printing
+            var printWindow = window.open('', '', 'height=600,width=800');
+
+            // Write HTML content to the print window
+            printWindow.document.write('<html><head><title>Print Modal</title>');
+
+            // Include Bootstrap CSS for styling
+            printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">');
+
+            // Include custom styles for printing
+            printWindow.document.write(`
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .modal-content {
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                padding: 20px;
+                background-color: #ffffff;
+                box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+            }
+            .table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .table, .table th, .table td {
+                border: 1px solid #dee2e6;
+            }
+            .table th, .table td {
+                padding: 0.75rem;
+                vertical-align: top;
+            }
+            .table thead th {
+                vertical-align: bottom;
+                background-color: #f8f9fa;
+            }
+        </style>
+    `);
+
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<div class="modal-content">'); // Add a wrapper for modal content
+            printWindow.document.write(modalContent);
+            printWindow.document.write('</div>');
+            printWindow.document.write('</body></html>');
+
+            printWindow.document.close();
+            printWindow.focus();
+
+            // Print the content
+            printWindow.print();
+        }
+// uplod 
+document.addEventListener('DOMContentLoaded', function () {
+        const uploadBtn = document.querySelector('.upload-btn');
+        const fileUpload = document.getElementById('fileUpload');
+        const modal = document.getElementById('uploadModal');
+        const closeBtn = document.querySelector('.close');
+        const uploadLink = document.getElementById('uploadLink');
+        const uploadBox = document.getElementById('uploadBox');
+        const fileDetails = document.getElementById('fileDetails');
+        const fileName = document.getElementById('fileName');
+        const viewFileLink = document.getElementById('viewFileLink');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const continueBtn = document.getElementById('continueBtn');
+
+        uploadBtn.addEventListener('click', function () {
+            modal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', function () {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        uploadLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            fileUpload.click();
+        });
+
+        fileUpload.addEventListener('change', function() {
+            const file = fileUpload.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                viewFileLink.href = URL.createObjectURL(file);
+                fileDetails.style.display = 'block';
+                uploadBox.style.display = 'none';
+                continueBtn.disabled = false;
+            }
+        });
+
+        removeFileBtn.addEventListener('click', function () {
+            fileUpload.value = '';
+            fileDetails.style.display = 'none';
+            uploadBox.style.display = 'block';
+            continueBtn.disabled = true;
+        });
+
+        continueBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert("Proceeding with the file: " + fileName.textContent);
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

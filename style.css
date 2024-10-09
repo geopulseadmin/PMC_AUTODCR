@@ -581,7 +581,7 @@ background: var(--Blue-500, #0077DA);
   background-color:transparent ;
   position: relative;
   top:11px;
-  left: 30px;
+  right: 66px;
   z-index: 99999;
   font-size: 14px;
   color:#f44336;
@@ -591,7 +591,7 @@ background: var(--Blue-500, #0077DA);
   border-right: none;
   padding: 5px 10px;
   margin-top:10%;
-  margin-left: -280%;
+  /* margin-left: -390%; */
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -1674,7 +1674,7 @@ input[type="checkbox"] {
 
 #formContainer {
   width:auto;
-  max-width: 26%;
+  max-width: 32%;
   max-height: 300px; /* Adjust the max height as needed */
   overflow-y: auto; /* Allows vertical scrolling */
   overflow-x: hidden; /* Hides horizontal scrolling if not needed */

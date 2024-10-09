@@ -106,8 +106,8 @@ form {
 }
 
 .pagination button.active {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     padding: 0;
     background-color: #007bff;
     color: white;
@@ -152,3 +152,22 @@ form {
         font-size: 10pt;
     }
 }
+/* edit buton */
+
+.edit-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 5px;
+    margin-left: 88%;
+
+    font-family: sans-serif !important;
+    transition: background-color 0.3s ease;
+  }

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,113 +32,12 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
-
-  <style>
-    .pagination {
-      margin-top: 3px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    .pagination button {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      padding: 0;
-      margin: 0 5px;
-      background-color: transparent;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .pagination button:hover {
-      background-color: #007bff;
-      /* border: 1px solid black; */
-    }
-
-    .pagination button.active {
-      width: 35px;
-      height: 35px;
-      padding: 0;
-      background-color: #007bff;
-      color: white;
-      border: 2px solid #007bff;
-      border-radius: 50%;
-    }
-
-    .pagination .arrow {
-      background-color: transparent;
-      border: none;
-    }
-
-    .pagination .arrow:hover {
-      background-color: transparent !important;
-      color: inherit;
-    }
-
-    .pagination .arrow:focus {
-      outline: none;
-    }
-
-    @media print {
-      body {
-        size: tabloid landscape;
-        margin: 10mm 10mm 10mm 10mm;
-      }
-
-      .pagination,
-      .geopulseaname,
-      #generatePdfBtn {
-        display: none;
-      }
-
-      table {
-        width: 100%;
-        font-size: 10pt;
-      }
-    }
-
-    .edit-button {
-      display: inline-block;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      font-size: 10px;
-      font-weight: bold;
-      padding: 5px;
-      margin-left: 88%;
-
-      font-family: sans-serif !important;
-      transition: background-color 0.3s ease;
-    }
-
-
-    .edit-button:hover {
-      background-color: #0056b3;
-    }
-
-    .edit i {
-      margin-right: 10px;
-    }
-
-    .leaflet-interactive {
-      transform: scale(1.2);
-    }
-  </style>
-
+  
 
 </head>
 
 <body class="bg-light">
-  <img src="png/pmcjpeg.png" alt="" class="logopng1" />
+  <img src="png/pmcjpeg.jpg" alt="" class="logopng1" />
   <div id="content" style="width: 100%" class="container">
     <div id="button-container" class=""></div>
 
@@ -170,6 +70,7 @@
           <div id="pagination-controls" class="pagination">
 
           </div>
+          
       </form>
     </section>
   </div>
@@ -298,114 +199,131 @@
         });
       }
   
-      function paginateResults(data) {
-        const itemsPerPage = 1;
-        let currentPage = 1;
-  
-        function displayPage(page) {
-          console.log("Displaying page:", page);
-          const tableBody = document.getElementById('workTableData');
-          tableBody.innerHTML = '';
-  
-          if (data.length === 0) {
+     function paginateResults(data) {
+    const itemsPerPage = 1;
+    let currentPage = 1;
+
+    function displayPage(page) {
+        console.log("Displaying page:", page);
+        const tableBody = document.getElementById('workTableData');
+        tableBody.innerHTML = '';
+
+        if (data.length === 0) {
             const emptyMessage = document.createElement('tr');
             emptyMessage.className = 'empty-message';
             emptyMessage.innerHTML = '<td colspan="2">No data available.</td>';
             tableBody.appendChild(emptyMessage);
             return;
-          }
-  
-          const start = (page - 1) * itemsPerPage;
-          const end = Math.min(start + itemsPerPage, data.length);
-          for (let i = start; i < end; i++) {
+        }
+
+        const start = (page - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, data.length);
+        for (let i = start; i < end; i++) {
             const item = data[i];
             for (const [key, value] of Object.entries(item)) {
-              if (key !== "geometry") {
-                const row = document.createElement('tr');
-                const displayValue = key === 'length_1' ? parseFloat(value).toFixed(2) : value;
-                row.innerHTML = `<td>${key}</td><td>${displayValue}</td>`;
-                tableBody.appendChild(row);
-              }
+                if (key !== "geometry") {
+                    const row = document.createElement('tr');
+                    const displayValue = key === 'length_1' ? parseFloat(value).toFixed(2) : value;
+                    row.innerHTML = `<td>${key}</td><td>${displayValue}</td>`;
+                    tableBody.appendChild(row);
+                }
             }
-          }
-  
-          const paginationControls = document.getElementById('pagination-controls');
-          paginationControls.innerHTML = '';
-          highlightFeature(data[start].geometry);
-          updatePagination(page);
         }
-  
-        function updatePagination(page) {
-          const paginationControls = document.getElementById('pagination-controls');
-          paginationControls.innerHTML = '';
-  
-          const totalPages = Math.ceil(data.length / itemsPerPage);
-          console.log("Total Pages:", totalPages);
-  
-          // Previous Button
-          const prevButton = document.createElement('button');
-          prevButton.innerHTML = '<';
-          prevButton.classList.add('arrow');
-          prevButton.disabled = page === 1;
-          prevButton.addEventListener('click', () => {
+
+        // Add Edit Button at the bottom of the table
+        const editRow = document.createElement('tr');
+        const editCell = document.createElement('td');
+        editCell.colSpan = 2; // Span across two columns
+        editCell.style.textAlign = "center"; // Center align the button
+        const editButton = document.createElement('button');
+        editButton.innerHTML = '<i class="fas fa-pen"></i> Edit'; //
+        editButton.classList.add('edit-button'); // Add CSS class for styling
+        editButton.addEventListener('click', function () {
+            console.log("Edit button clicked");
+            // Add your edit functionality here
+        });
+        editCell.appendChild(editButton);
+        editRow.appendChild(editCell);
+        tableBody.appendChild(editRow);
+
+        const paginationControls = document.getElementById('pagination-controls');
+        paginationControls.innerHTML = '';
+        highlightFeature(data[start].geometry);
+        updatePagination(page);
+    }
+
+    function updatePagination(page) {
+        const paginationControls = document.getElementById('pagination-controls');
+        paginationControls.innerHTML = '';
+
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        console.log("Total Pages:", totalPages);
+
+        // Previous Button
+        const prevButton = document.createElement('button');
+        prevButton.innerHTML = '<';
+        prevButton.classList.add('arrow');
+        prevButton.disabled = page === 1;
+        prevButton.addEventListener('click', () => {
             if (page > 1) {
-              displayPage(page - 1);
+                displayPage(page - 1);
             }
-          });
-          paginationControls.appendChild(prevButton);
-  
-          // Page Numbers
-          const maxVisiblePages = 5;
-          let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
-          let endPage = startPage + maxVisiblePages - 1;
-          if (endPage > totalPages) {
+        });
+        paginationControls.appendChild(prevButton);
+
+        // Page Numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+        let endPage = startPage + maxVisiblePages - 1;
+        if (endPage > totalPages) {
             endPage = totalPages;
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
-          }
-  
-          for (let i = startPage; i <= endPage; i++) {
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
             const button = document.createElement('button');
             button.textContent = i;
             button.classList.add('page-num');
             if (i === page) {
-              button.classList.add('active');
+                button.classList.add('active');
             }
             button.addEventListener('click', () => {
-              displayPage(i);
+                displayPage(i);
             });
             paginationControls.appendChild(button);
-          }
-  
-          // Next Button
-          const nextButton = document.createElement('button');
-          nextButton.innerHTML = '>';
-          nextButton.classList.add('arrow');
-          nextButton.disabled = page === totalPages;
-          nextButton.addEventListener('click', () => {
+        }
+
+        // Next Button
+        const nextButton = document.createElement('button');
+        nextButton.innerHTML = '>';
+        nextButton.classList.add('arrow');
+        nextButton.disabled = page === totalPages;
+        nextButton.addEventListener('click', () => {
             if (page < totalPages) {
-              displayPage(page + 1);
+                displayPage(page + 1);
             }
-          });
-          paginationControls.appendChild(nextButton);
-        }
-  
-        function highlightFeature(geometry) {
-          if (highlightLayer) {
+        });
+        paginationControls.appendChild(nextButton);
+    }
+
+    function highlightFeature(geometry) {
+        if (highlightLayer) {
             map.removeLayer(highlightLayer);
-          }
-          highlightLayer = L.geoJSON(geometry, {
-            style: {
-              color: '#0000FF',
-              weight: 5,
-              opacity: 0.65
-            }
-          }).addTo(map);
-          map.fitBounds(highlightLayer.getBounds());
         }
-  
-        // Display initial page
-        displayPage(currentPage);
-      }
+        highlightLayer = L.geoJSON(geometry, {
+            style: {
+                color: '#0000FF',
+                weight: 5,
+                opacity: 0.65
+            }
+        }).addTo(map);
+        map.fitBounds(highlightLayer.getBounds());
+    }
+
+    // Display initial page
+    displayPage(currentPage);
+}
+
   
       // Define printPage function
       function printPage() {

@@ -1,6 +1,6 @@
 
 var map, geojson;
-const API_URL = "https://iwmsgis.pmc.gov.in/geopulse/autodcr/";
+const API_URL = "https://iwmsgis.pmc.gov.in/geopulse/autodcr_test/";
 // const API_URL = "http://localhost/autodcr/";
 // const API_URL = "http://localhost/geotap/autodcr/"
 
@@ -434,7 +434,7 @@ function updateButtonState() {
 
 const handshakingCode = getQueryParam('village_name');
 const token = getQueryParam('TOKEN');
-// //console.log(token, "token");
+//console.log(token, "token");
 
 
 $(document).ready(function () {
@@ -443,14 +443,14 @@ $(document).ready(function () {
     const village_name = villageEntry ? villageEntry.name : null;
     const TpsName = villageEntry ? villageEntry.tps_name : null;
 
-
-
+    console.log(token, "token");
+    // var filters ='';
     // Fetch data from the API first
     // Extract the data from the API response
     $.ajax({
         type: "GET",
-        url: "https://autodcr.pmc.gov.in/AutoDCR.PMC.Support/GISAPI/GISAPI.asmx/GetPreApprovalData",
-        data: { TokenNo: token }, // Pass the token as a parameter
+        url: "APIS/proxyGetPreApprovalData.php?TokenNo=" + encodeURIComponent(token),
+        // data: { TokenNo: token }, // Pass the token as a parameter
         success: function (data) {
             // let data = JSON.parse(apiResponse);
             console.log(data, "llllllllllll")
@@ -616,9 +616,9 @@ $(document).ready(function () {
                     // var selectedValueVillage = village_name
                     var Village_name = 'village_name'
                     // filters = `${Village_name} = '${selectedValueVillage}'`;
-                    filters = `village_name ='${selectedValue}' OR TPS_Name ='${selectedValue}'`;
+                    let filters = `village_name ='${selectedValue}' OR TPS_Name ='${selectedValue}'`;
 
-
+                    // console.log(filters,"filters")
                     FitbouCustomiseRevenue(filters)
                     Revenue_Layer.setParams({
                         CQL_FILTER: filters,
@@ -859,7 +859,7 @@ $(document).on('change', '#stateList input[type="checkbox"]', function () {
     // //console.log("hehehe")
     getFiltersval()
     var cqlFilter = getSelectedValues();
-    // //console.log(cqlFilter, "Selected filters");
+    console.log(cqlFilter, "Selected filters");
     if (cqlFilter) {
         // Update the map with the new filter
         FitbouCustomiseRevenue(cqlFilter);
@@ -892,6 +892,21 @@ function getFiltersval() {
 function getSelectedValues() {
     var selectedValues = [];
 
+
+
+
+    var selectedValuev = document.getElementById("search_type").value;
+    // //console.log("gheheheehehehheeh", selectedValue)
+
+    // var selectedValueVillage = village_name
+    var Village_name = 'village_name'
+    // filters = `${Village_name} = '${selectedValueVillage}'`;
+    let filters = `village_name ='${selectedValuev}' OR TPS_Name ='${selectedValuev}'`;
+
+
+
+
+
     // //console.log("pass")
     $('input[type="checkbox"]:checked').each(function () {
         var name = $(this).attr('name');
@@ -909,7 +924,7 @@ function getSelectedValues() {
     // //console.log(cqlFilterGut, "cqlFilterGut")
 
     var cqlFilter = "";
-    if (cqlFilterGut && filters) {
+    if (cqlFilterGut) {
         cqlFilter = "(" + cqlFilterGut + ") AND (" + filters + ")";
     } else {
         cqlFilter = cqlFilterGut;
@@ -946,93 +961,113 @@ function FitbouCustomiseRevenue(filter) {
         $.getJSON(urlm, function (data) {
             geojson = L.geoJson(data, {});
 
+            // Latitude and Longitude Input Fields
             var latitudeDegreesInput = document.querySelector('input[name="latitudeDegrees[]"]');
             var latitudeMinutesInput = document.querySelector('input[name="latitudeMinutes[]"]');
+            var latitudeSecondsInput = document.querySelector('input[name="latitudeSeconds[]"]'); // Added for seconds
             var longitudeDegreesInput = document.querySelector('input[name="longitudeDegrees[]"]');
             var longitudeMinutesInput = document.querySelector('input[name="longitudeMinutes[]"]');
+            var longitudeSecondsInput = document.querySelector('input[name="longitudeSeconds[]"]'); // Added for seconds
 
+            // Get the bounding box coordinates
+            latsouth = parseInt(Math.floor(geojson.getBounds()._southWest.lat));
+            latnorth = parseInt(Math.floor(geojson.getBounds()._northEast.lat));
+            latsouthM = parseInt(Math.floor((geojson.getBounds()._southWest.lat % 1) * 60));
+            latnorthM = parseInt(Math.floor((geojson.getBounds()._northEast.lat % 1) * 60));
 
-            // Update latitude input field
-            latsouth = parseInt(Math.floor(geojson.getBounds()._southWest.lat))
-            latnorth = parseInt(Math.floor(geojson.getBounds()._northEast.lat))
-            latsouthM = parseInt(Math.floor((geojson.getBounds()._southWest.lat % 1) * 60))
-            latnorthM = parseInt(Math.floor((geojson.getBounds()._northEast.lat % 1) * 60))
+            // Calculate south latitude seconds as a floating-point number
+            latSecondsSouth = ((geojson.getBounds()._southWest.lat % 1) * 3600) % 60; // Convert to seconds and get the fractional part
+            // Calculate north latitude seconds as a floating-point number
+            latSecondsNorth = ((geojson.getBounds()._northEast.lat % 1) * 3600) % 60; // Convert to seconds and get the fractional part
+            console.log(latSecondsSouth, "latSecondsSouth", latSecondsNorth, "latSecondsNorth")
 
+            lngsouth = parseInt(Math.floor(geojson.getBounds()._southWest.lng));
+            lngnorth = parseInt(Math.floor(geojson.getBounds()._northEast.lng));
+            lngsouthM = parseInt(Math.floor((geojson.getBounds()._southWest.lng % 1) * 60));
+            lngnorthM = parseInt(Math.floor((geojson.getBounds()._northEast.lng % 1) * 60));
 
-            // for degree upadates lattitude
+            // Calculate south longitude seconds as a floating-point number
+            lonSecondsSouth = ((geojson.getBounds()._southWest.lng % 1) * 3600) % 60; // Convert to seconds and get the fractional part
+            // Calculate north longitude seconds as a floating-point number
+            lonSecondsNorth = ((geojson.getBounds()._northEast.lng % 1) * 3600) % 60; // Convert to seconds and get the fractional part
+            console.log(lonSecondsSouth, "lonSecondsSouth", lonSecondsNorth, "lonSecondsNorth")
+            // Update latitude degrees
             if (latsouth === latnorth) {
-                // //console.log("heeee");
-                // //console.log(latsouth, latnorth);
                 latitudeDegreesInput.removeAttribute('readonly');
                 latitudeDegreesInput.value = latsouth;
                 latitudeDegreesInput.setAttribute('readonly', 'readonly');
             } else {
                 latitudeDegreesInput.removeAttribute('readonly');
-                latitudeDegreesInput.removeAttribute('value');
-                latitudeDegreesInput.setAttribute('min', latsouth);
-                latitudeDegreesInput.setAttribute('max', latnorth);
+                // latitudeDegreesInput.setAttribute('min', latsouth);
+                // latitudeDegreesInput.setAttribute('max', latnorth);
+                latitudeDegreesInput.setAttribute('step', '1'); // Step for degrees
             }
 
-            // for minutes update only latitude
-
+            // Update latitude minutes
             if (latsouthM === latnorthM) {
-                // //console.log("heeee");
-                // //console.log(latsouthM, latnorthM);
                 latitudeMinutesInput.removeAttribute('readonly');
-                latitudeMinutesInput.removeAttribute('value');
                 latitudeMinutesInput.value = latsouthM;
                 latitudeMinutesInput.setAttribute('readonly', 'readonly');
             } else {
                 latitudeMinutesInput.removeAttribute('readonly');
-                latitudeMinutesInput.removeAttribute('value');
-                latitudeMinutesInput.setAttribute('min', latsouthM);
-                latitudeMinutesInput.setAttribute('max', latnorthM);
+                // latitudeMinutesInput.setAttribute('min', latsouthM);
+                // latitudeMinutesInput.setAttribute('max', latnorthM);
+                latitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
             }
 
-            lngsouth = parseInt(Math.floor(geojson.getBounds()._southWest.lng))
-            lngnorth = parseInt(Math.floor(geojson.getBounds()._northEast.lng))
-            lngsouthM = parseInt(Math.floor((geojson.getBounds()._southWest.lng % 1) * 60))
-            lngnorthM = parseInt(Math.floor((geojson.getBounds()._northEast.lng % 1) * 60))
-            //console.log(lngsouth, lngnorth)
+            // Update latitude seconds
+            if (latSecondsSouth === latSecondsNorth) {
+                latitudeSecondsInput.removeAttribute('readonly');
+                latitudeSecondsInput.value = latSecondsSouth.toFixed(2); // Use toFixed for two decimal places
+                latitudeSecondsInput.setAttribute('readonly', 'readonly');
+            } else {
+                latitudeSecondsInput.removeAttribute('readonly');
+                // latitudeSecondsInput.setAttribute('min', latSecondsSouth.toFixed(2)); // Set min to two decimal places
+                // latitudeSecondsInput.setAttribute('max', latSecondsNorth.toFixed(2)); // Set max to two decimal places
+                latitudeSecondsInput.setAttribute('step', '0.01'); // Step for seconds
+            }
 
-            // for longitude degree update
+            // Update longitude degrees
             if (lngsouth === lngnorth) {
-                // //console.log("heeee")
-                // //console.log(lngsouth,lngnorth)
-                longitudeDegreesInput.removeAttribute('value');
+                longitudeDegreesInput.removeAttribute('readonly');
                 longitudeDegreesInput.value = lngnorth;
                 longitudeDegreesInput.setAttribute('readonly', 'readonly');
             } else {
-
-                // Update longitude input field
-                // //console.log("nooooooooooooooooo")
                 longitudeDegreesInput.removeAttribute('readonly');
-                longitudeDegreesInput.removeAttribute('value');
-                longitudeDegreesInput.setAttribute('min', lngsouth);
-                longitudeDegreesInput.setAttribute('max', lngnorth);
+                // longitudeDegreesInput.setAttribute('min', lngsouth);
+                // longitudeDegreesInput.setAttribute('max', lngnorth);
+                longitudeDegreesInput.setAttribute('step', '1'); // Step for degrees
             }
 
-            // for munites onlys longitude
-
+            // Update longitude minutes
             if (lngsouthM === lngnorthM) {
-                // //console.log("heeee")
-                // //console.log(lngsouth,lngnorth)
-                longitudeMinutesInput.removeAttribute('readonly')
-                longitudeMinutesInput.removeAttribute('value');
+                longitudeMinutesInput.removeAttribute('readonly');
                 longitudeMinutesInput.value = lngnorthM;
                 longitudeMinutesInput.setAttribute('readonly', 'readonly');
             } else {
-
-                // Update longitude input field
-                // //console.log("nooooooooooooooooo")
                 longitudeMinutesInput.removeAttribute('readonly');
-                longitudeMinutesInput.removeAttribute('value');
-                longitudeMinutesInput.setAttribute('min', lngsouthM);
-                longitudeMinutesInput.setAttribute('max', lngnorthM);
+                // longitudeMinutesInput.setAttribute('min', lngsouthM);
+                // longitudeMinutesInput.setAttribute('max', lngnorthM);
+                longitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
             }
 
+            // Update longitude seconds
+            if (lonSecondsSouth === lonSecondsNorth) {
+                longitudeSecondsInput.removeAttribute('readonly');
+                longitudeSecondsInput.value = lonSecondsSouth.toFixed(3); // Use toFixed for two decimal places
+                longitudeSecondsInput.setAttribute('readonly', 'readonly');
+            } else {
+                longitudeSecondsInput.removeAttribute('readonly');
+                // longitudeSecondsInput.setAttribute('min', lonSecondsSouth.toFixed(2)); // Set min to two decimal places
+                // longitudeSecondsInput.setAttribute('max', lonSecondsNorth.toFixed(2)); // Set max to two decimal places
+                longitudeSecondsInput.setAttribute('step', '0.01'); // Step for seconds
+            }
+
+            // Fit the map bounds to the geojson object
             map.fitBounds(geojson.getBounds());
         });
+
+
     });
 }
 
@@ -1085,7 +1120,6 @@ function processKML(kmlString) {
         keysList.forEach(key => {
             var polygonLayer = layer._layers[key];
 
-            // //console.log('polygonLayer', polygonLayer);
 
             drawnItems.addLayer(polygonLayer);
 
@@ -1096,16 +1130,7 @@ function processKML(kmlString) {
             // Attach the polygonId to the layer for future reference
             polygonLayer.polygonId = polygonId;
         });
-        // layer.addTo(map);
-        // var polygonId = 'polygon_kml'
-        // drawnPolygons[polygonId] = layer.toGeoJSON().features[0].geometry.coordinates;
-        // drawnPolygons[polygonId].enableEdit();
-        // polygonLayer.polygonId = polygonId;
-        //         map.fitBounds(layer.getBounds());
-        //     } else {
-        //         alert('Invalid KML/KMZ file.');
-        //     }
-        // }
+
         map.fitBounds(layer.getBounds());
     } else {
         alert('Invalid KML/KMZ file.');
@@ -1165,6 +1190,25 @@ document.getElementById('closeFormBtn').addEventListener('click', function () {
 });
 $('#formContainer').draggable();
 
+
+
+
+let coordinates = []; // This will hold your latitude and longitude pairs
+
+// Function to get bounds of all coordinates
+function getMapBounds(coordinates) {
+    // Create a new LatLngBounds object
+    var bounds = L.latLngBounds();
+
+    // Loop through your coordinates and extend bounds
+    coordinates.forEach(coord => {
+        bounds.extend(L.latLng(coord[0], coord[1])); // coord[0] is latitude, coord[1] is longitude
+    });
+
+    // Fit map to the bounds
+    map.fitBounds(bounds);
+}
+
 // Show one row initially
 var table = document.getElementById('coordinateTable');
 addCoordinateRow(table);
@@ -1172,48 +1216,111 @@ addCoordinateRow(table);
 // Event listener for adding more rows
 document.getElementById('addRowBtn').addEventListener('click', function () {
     addCoordinateRow(table);
+
+    // Use the correct table reference to extract last row values
+    var lastRowValues = extractLastRowValues(table); // Pass the table reference
+
+    // Parse DMS strings into decimal degrees
+    var parsedLongitude = parseDMS(lastRowValues.longitudeDegrees, lastRowValues.longitudeMinutes, lastRowValues.longitudeSeconds);
+    var parsedLatitude = parseDMS(lastRowValues.latitudeDegrees, lastRowValues.latitudeMinutes, lastRowValues.latitudeSeconds);
+
+    // Create an array to store the last coordinate
+    coordinates.push([parsedLatitude, parsedLongitude]);
+    console.log(coordinates, "Last row values extracted");
+
+    // Add marker to the map
+    var marker = L.marker([parsedLatitude, parsedLongitude]).addTo(map);
+    markers.push(marker); // Store the marker reference
+    // map.setView([parsedLatitude, parsedLongitude], 17); // Optional: Center map on new marker
+    getMapBounds(coordinates)
 });
-
-
-
 
 function updateFirstRowValues(table) {
     var firstRow = table.rows[1]; // Index 0 is the header row
+
     var longitudeDegreesInput = firstRow.cells[0].querySelector('input[name="longitudeDegrees[]"]');
     var longitudeMinutesInput = firstRow.cells[1].querySelector('input[name="longitudeMinutes[]"]');
+    var longitudeSecondsInput = firstRow.cells[2].querySelector('input[name="longitudeSeconds[]"]');
     var latitudeDegreesInput = firstRow.cells[3].querySelector('input[name="latitudeDegrees[]"]');
     var latitudeMinutesInput = firstRow.cells[4].querySelector('input[name="latitudeMinutes[]"]');
+    var latitudeSecondsInput = firstRow.cells[5].querySelector('input[name="latitudeSeconds[]"]');
 
     // Update the values and properties in the new row
     var newLongitudeDegreesInput = table.rows[table.rows.length - 1].cells[0].querySelector('input[name="longitudeDegrees[]"]');
     var newLongitudeMinutesInput = table.rows[table.rows.length - 1].cells[1].querySelector('input[name="longitudeMinutes[]"]');
+    var newLongitudeSecondsInput = table.rows[table.rows.length - 1].cells[2].querySelector('input[name="longitudeSeconds[]"]');
     var newLatitudeDegreesInput = table.rows[table.rows.length - 1].cells[3].querySelector('input[name="latitudeDegrees[]"]');
     var newLatitudeMinutesInput = table.rows[table.rows.length - 1].cells[4].querySelector('input[name="latitudeMinutes[]"]');
+    var newLatitudeSecondsInput = table.rows[table.rows.length - 1].cells[5].querySelector('input[name="latitudeSeconds[]"]');
 
+    // Longitude Degrees
     newLongitudeDegreesInput.value = longitudeDegreesInput.value;
-    newLongitudeDegreesInput.setAttribute('min', longitudeDegreesInput.getAttribute('min'));
-    newLongitudeDegreesInput.setAttribute('max', longitudeDegreesInput.getAttribute('max'));
+    // newLongitudeDegreesInput.setAttribute('min', longitudeDegreesInput.getAttribute('min'));
+    // newLongitudeDegreesInput.setAttribute('max', longitudeDegreesInput.getAttribute('max'));
 
+    // Longitude Minutes
     newLongitudeMinutesInput.value = longitudeMinutesInput.value;
-    newLongitudeMinutesInput.setAttribute('min', longitudeMinutesInput.getAttribute('min'));
-    newLongitudeMinutesInput.setAttribute('max', longitudeMinutesInput.getAttribute('max'));
+    // newLongitudeMinutesInput.setAttribute('min', longitudeMinutesInput.getAttribute('min'));
+    // newLongitudeMinutesInput.setAttribute('max', longitudeMinutesInput.getAttribute('max'));
 
+    // Longitude Seconds
+    newLongitudeSecondsInput.value = longitudeSecondsInput.value; // Copy value for seconds
+    // newLongitudeSecondsInput.setAttribute('min', longitudeSecondsInput.getAttribute('min')); // Set min
+    // newLongitudeSecondsInput.setAttribute('max', longitudeSecondsInput.getAttribute('max')); // Set max
+    newLongitudeSecondsInput.setAttribute('step', '0.01'); // Set step for seconds to allow decimals
+
+    // Latitude Degrees
     newLatitudeDegreesInput.value = latitudeDegreesInput.value;
-    newLatitudeDegreesInput.setAttribute('min', latitudeDegreesInput.getAttribute('min'));
-    newLatitudeDegreesInput.setAttribute('max', latitudeDegreesInput.getAttribute('max'));
+    // newLatitudeDegreesInput.setAttribute('min', latitudeDegreesInput.getAttribute('min'));
+    // newLatitudeDegreesInput.setAttribute('max', latitudeDegreesInput.getAttribute('max'));
 
+    // Latitude Minutes
     newLatitudeMinutesInput.value = latitudeMinutesInput.value;
-    newLatitudeMinutesInput.setAttribute('min', latitudeMinutesInput.getAttribute('min'));
-    newLatitudeMinutesInput.setAttribute('max', latitudeMinutesInput.getAttribute('max'));
+    // newLatitudeMinutesInput.setAttribute('min', latitudeMinutesInput.getAttribute('min'));
+    // newLatitudeMinutesInput.setAttribute('max', latitudeMinutesInput.getAttribute('max'));
+
+    // Latitude Seconds
+    newLatitudeSecondsInput.value = latitudeSecondsInput.value; // Copy value for seconds
+    // newLatitudeSecondsInput.setAttribute('min', latitudeSecondsInput.getAttribute('min')); // Set min
+    // newLatitudeSecondsInput.setAttribute('max', latitudeSecondsInput.getAttribute('max')); // Set max
+    newLatitudeSecondsInput.setAttribute('step', '0.01'); // Set step for seconds to allow decimals
+}
+
+
+
+
+function extractLastRowValues(table) { // Add the table parameter
+    var lastRow = table.rows[table.rows.length - 2]; // Get the last row
+
+    // console.log(table.rows.length ,"table.rows.length ",table.rows,"lastRow",lastRow)
+
+    // Extract the input values from the last row
+    var longitudeDegrees = lastRow.cells[0].querySelector('input[name="longitudeDegrees[]"]').value;
+    var longitudeMinutes = lastRow.cells[1].querySelector('input[name="longitudeMinutes[]"]').value;
+    var longitudeSeconds = lastRow.cells[2].querySelector('input[name="longitudeSeconds[]"]').value;
+    var latitudeDegrees = lastRow.cells[3].querySelector('input[name="latitudeDegrees[]"]').value;
+    var latitudeMinutes = lastRow.cells[4].querySelector('input[name="latitudeMinutes[]"]').value;
+    var latitudeSeconds = lastRow.cells[5].querySelector('input[name="latitudeSeconds[]"]').value;
+    // console.log(longitudeSeconds,"longitudeSeconds",latitudeSeconds)
+
+    return {
+        longitudeDegrees: longitudeDegrees,
+        longitudeMinutes: longitudeMinutes,
+        longitudeSeconds: longitudeSeconds,
+        latitudeDegrees: latitudeDegrees,
+        latitudeMinutes: latitudeMinutes,
+        latitudeSeconds: latitudeSeconds
+    };
 }
 
 
 
 
 
+
+let markers = [];
+
 function addCoordinateRow(table) {
-    // var selectedVillage = document.getElementById("search_type").value;
-    // //console.log(selectedVillage,"selectedVillage")
     var row = table.insertRow();
     var longitudeDegreesCell = row.insertCell();
     var longitudeMinutesCell = row.insertCell();
@@ -1222,19 +1329,17 @@ function addCoordinateRow(table) {
     var latitudeMinutesCell = row.insertCell();
     var latitudeSecondsCell = row.insertCell();
     var heightfloatCell = row.insertCell();
-    var heightnumberCell = row.insertCell();
     var actionCell = row.insertCell();
-    // degreee-----------------------------------
+
+    // Longitude Degrees
     var longitudeDegreesInput = document.createElement('input');
     longitudeDegreesInput.setAttribute('type', 'number');
     longitudeDegreesInput.setAttribute('placeholder', '73°');
     longitudeDegreesInput.setAttribute('name', 'longitudeDegrees[]');
-    // longitudeDegreesInput.setAttribute('readonly', 'readonly'); 
     longitudeDegreesInput.value = '73';
     longitudeDegreesInput.style.width = '40px';
     longitudeDegreesInput.style.position = 'absolute';
     longitudeDegreesInput.style.left = '6%';
-    // longitudeDegreesInput.style.marginRight = '5px';
     longitudeDegreesInput.style.borderBottomLeftRadius = '5px';
     longitudeDegreesInput.style.borderTopLeftRadius = '5px';
     longitudeDegreesInput.style.borderTop = '2px solid #3c3cb8';
@@ -1242,9 +1347,7 @@ function addCoordinateRow(table) {
     longitudeDegreesInput.style.borderBottom = '2px solid #3c3cb8';
     longitudeDegreesInput.style.borderRight = '2px solid  #bbb';
 
-
-
-    // minutes--------------------------------------------------
+    // Longitude Minutes
     var longitudeMinutesInput = document.createElement('input');
     longitudeMinutesInput.setAttribute('type', 'number');
     longitudeMinutesInput.setAttribute('placeholder', '51′');
@@ -1252,23 +1355,19 @@ function addCoordinateRow(table) {
     longitudeMinutesInput.style.width = '40px';
     longitudeMinutesInput.style.position = 'absolute';
     longitudeMinutesInput.style.left = '14%';
-    // longitudeMinutesInput.style.marginRight = '5px';
     longitudeMinutesInput.style.borderTop = '2px solid  #3c3cb8';
     longitudeMinutesInput.style.borderBottom = '2px solid  #3c3cb8';
     longitudeMinutesInput.style.borderLeft = '2px solid  #bbb';
-    //  longitudeMinutesInput.style.borderRight = '2px solid  #bbb';
 
-
-    // second--------------------------------------------------------------
+    // Longitude Seconds
     var longitudeSecondsInput = document.createElement('input');
     longitudeSecondsInput.setAttribute('type', 'number');
     longitudeSecondsInput.setAttribute('placeholder', '24.43″');
     longitudeSecondsInput.setAttribute('name', 'longitudeSeconds[]');
-    longitudeSecondsInput.setAttribute('step', 'any');
+    longitudeSecondsInput.setAttribute('step', '0.01'); // Allow decimal increments for seconds
     longitudeSecondsInput.style.width = '59px';
     longitudeSecondsInput.style.position = 'absolute';
     longitudeSecondsInput.style.left = '22%';
-    // longitudeSecondsInput.style.marginRight = '5px'; 
     longitudeSecondsInput.style.borderTop = '2px solid  #3c3cb8';
     longitudeSecondsInput.style.borderBottom = '2px solid #3c3cb8';
     longitudeSecondsInput.style.borderRight = '2px solid #3c3cb8';
@@ -1276,10 +1375,7 @@ function addCoordinateRow(table) {
     longitudeSecondsInput.style.borderTopRightRadius = '5px';
     longitudeSecondsInput.style.borderBottomRightRadius = '5px';
 
-
-
-    // latdegree----------------------
-
+    // Latitude Degrees
     var latitudeDegreesInput = document.createElement('input');
     latitudeDegreesInput.setAttribute('type', 'number');
     latitudeDegreesInput.setAttribute('placeholder', '18°');
@@ -1288,9 +1384,7 @@ function addCoordinateRow(table) {
     latitudeDegreesInput.value = '18';
     latitudeDegreesInput.style.width = '50px';
     latitudeDegreesInput.style.position = 'absolute';
-    latitudeDegreesInput.style.left = '38%';
-
-    // latitudeDegreesInput.style.marginRight = '15px'; 
+    latitudeDegreesInput.style.left = '39%';
     latitudeDegreesInput.style.borderBottomLeftRadius = '5px';
     latitudeDegreesInput.style.borderTopLeftRadius = '5px';
     latitudeDegreesInput.style.borderTop = '2px solid #3c3cb8';
@@ -1298,8 +1392,7 @@ function addCoordinateRow(table) {
     latitudeDegreesInput.style.borderBottom = '2px solid #3c3cb8';
     latitudeDegreesInput.style.borderRight = '2px solid  #3c3cb8';
 
-    // latMinute----------------------------
-
+    // Latitude Minutes
     var latitudeMinutesInput = document.createElement('input');
     latitudeMinutesInput.setAttribute('type', 'number');
     latitudeMinutesInput.setAttribute('placeholder', '51′');
@@ -1310,19 +1403,15 @@ function addCoordinateRow(table) {
     latitudeMinutesInput.style.borderTop = '2px solid  #3c3cb8';
     latitudeMinutesInput.style.borderBottom = '2px solid  #3c3cb8';
     latitudeMinutesInput.style.borderLeft = '2px solid  #bbb';
-    latitudeMinutesInput.style.borderRight = '2px solid  #3c3cb8';
 
-
-    // latsecond-----------------------------------------
-
+    // Latitude Seconds
     var latitudeSecondsInput = document.createElement('input');
     latitudeSecondsInput.setAttribute('type', 'number');
-    latitudeSecondsInput.setAttribute('placeholder', '24.43″');
     latitudeSecondsInput.setAttribute('name', 'latitudeSeconds[]');
-    latitudeSecondsInput.setAttribute('step', 'any');
+    latitudeSecondsInput.setAttribute('step', '0.01'); // Allow decimal increments for seconds
     latitudeSecondsInput.style.width = '60px';
     latitudeSecondsInput.style.position = 'absolute';
-    latitudeSecondsInput.style.left = '53%';
+    latitudeSecondsInput.style.left = '54%';
     latitudeSecondsInput.style.borderTop = '2px solid  #3c3cb8';
     latitudeSecondsInput.style.borderBottom = '2px solid #3c3cb8';
     latitudeSecondsInput.style.borderRight = '2px solid #3c3cb8';
@@ -1330,52 +1419,55 @@ function addCoordinateRow(table) {
     latitudeSecondsInput.style.borderTopRightRadius = '5px';
     latitudeSecondsInput.style.borderBottomRightRadius = '5px';
 
-
-    // number-----------------------------------
+    // Height Input
     var heightfloatCellInput = document.createElement('input');
     heightfloatCellInput.setAttribute('type', 'number');
     heightfloatCellInput.setAttribute('placeholder', '247.66');
     heightfloatCellInput.setAttribute('name', 'heightfloatCell[]');
-
     heightfloatCellInput.style.width = '70px';
     heightfloatCellInput.style.position = 'absolute';
-    heightfloatCellInput.style.left = '68.900%';
+    heightfloatCellInput.style.left = '69%';
     heightfloatCellInput.style.borderBottomLeftRadius = '5px';
     heightfloatCellInput.style.borderTopLeftRadius = '5px';
     heightfloatCellInput.style.borderTop = '2px solid #3c3cb8';
     heightfloatCellInput.style.borderLeft = '2px solid #3c3cb8';
     heightfloatCellInput.style.borderBottom = '2px solid #3c3cb8';
     heightfloatCellInput.style.borderRight = '2px solid  #3c3cb8';
-    heightfloatCellInput.style.borderTopRightRadius = '5px';
-    heightfloatCellInput.style.borderBottomRightRadius = '5px';
 
-
-
-    // latitudeSecondsInput.style.marginRight = '5px'; 
+    // Append inputs to their respective cells
     longitudeDegreesCell.appendChild(longitudeDegreesInput);
     longitudeMinutesCell.appendChild(longitudeMinutesInput);
-    longitudeSecondsCell.appendChild(longitudeSecondsInput);
+    longitudeSecondsCell.appendChild(longitudeSecondsInput); // Append seconds
     latitudeDegreesCell.appendChild(latitudeDegreesInput);
     latitudeMinutesCell.appendChild(latitudeMinutesInput);
-    latitudeSecondsCell.appendChild(latitudeSecondsInput);
+    latitudeSecondsCell.appendChild(latitudeSecondsInput); // Append seconds
     heightfloatCell.appendChild(heightfloatCellInput);
 
+    updateFirstRowValues(table); // Update first row values
 
 
-    updateFirstRowValues(table);
+
+
+
 
     actionCell.innerHTML = '<button type="button" class="deleteRowBtn"><img src="png/delete.svg" alt="Delete" style=""></button>';
 
-    // Add event istener to delete button
+    // Add event listener to delete button
     var deleteBtn = actionCell.querySelector('.deleteRowBtn');
 
     deleteBtn.addEventListener('click', function () {
         row.remove();
+        if (markers.length) {
+            map.removeLayer(markers.pop());
+        }
         updateFirstRowValues(table);
     });
 }
 
+
+
 document.getElementById('coordinateForm').addEventListener('submit', function (event) {
+    // alert("heheh")
     event.preventDefault();
     var formData = new FormData(this);
     var coordinates = [];
@@ -1392,6 +1484,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         var parsedLongitude = parseDMS(longitudeDegrees, longitudeMinutes, longitudeSeconds);
         var parsedLatitude = parseDMS(latitudeDegrees, latitudeMinutes, latitudeSeconds);
         coordinates.push([parsedLatitude, parsedLongitude]);
+        // console.log(coordinates)
     });
 
 
@@ -1402,19 +1495,9 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         alert('Please enter at least four coordinates.');
         return;
     } else {
-        // //console.log(coordinates, "coordinates")
+        console.log(coordinates, "coordinates")
         var polygon = L.polygon(coordinates).addTo(map);// Function to open the legend div when clicked
-        function openLegend() {
-            var legendDiv = document.querySelector('.info.legend');
-            legendDiv.style.display = 'block';
-        }
-        document.querySelector('.info.legend').addEventListener('click', openLegend);
-        document.addEventListener('click', function (event) {
-            var legendDiv = document.querySelector('.info.legend');
-            if (!legendDiv.contains(event.target)) {
-                legendDiv.style.display = 'none';
-            }
-        });
+
 
         map.fitBounds(polygon.getBounds());
 
@@ -1498,8 +1581,8 @@ async function savevalues() {
             var cqlFilterget = getSelectedValues();
             const selected_dropdown = JSON.stringify(cqlFilterget);
             const villageName = JSON.stringify(values);
-            var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
-
+            // var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
+            var DrawnPolygonDetails = 'Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m'
             const selected_guts = JSON.stringify(getSelectedValues1());
             const selected_village = JSON.stringify(getFilters());
 
@@ -1738,8 +1821,9 @@ async function savevalues() {
             //     showPopup(popupMessage);
 
             // } else {
-
+            // alert("hello")
             showTableModal(exampleData);
+
             // }
 
             // showTableModal(exampleData);
@@ -1764,149 +1848,6 @@ function convertToDMS(decimal) {
     return `${degrees}° ${minutes}' ${seconds}"`;
 }
 
-
-// for conveting degree decimals to degree minutes and seconds
-
-///////////////////////////////////////////////
-
-
-// async function submitForm() {
-//     // alert("Data Saved")
-//     // //console.log(drawnPolygons, "drawnPolygonslllllllllll")
-
-//     for (const polygonId in drawnPolygons) {
-//         // var polygonId= "";
-//         var coordinates = drawnPolygons[polygonId];
-//         // //console.log('coordinatessubmit', coordinates);
-//         // //console.log(layer,"layerlayer")
-//         var pp = turf.polygon(coordinates);
-
-//         localStorage.setItem('coordinates', coordinates);
-
-//         var bbox = turf.bbox(pp); // bbox is [minX, minY, maxX, maxY]
-//         // //console.log(bbox, "bboc")
-//         var bounds = L.latLngBounds([
-//             [bbox[1], bbox[0]], // Southwest coordinate (minY, minX)
-//             [bbox[3], bbox[2]]  // Northeast coordinate (maxY, maxX)
-//         ]);
-//         localStorage.setItem('bounds', bbox);
-//         // //console.log(coordinates, "updateed")
-//         var pp = turf.polygon(coordinates);
-//         // L.geoJSON(pp).addTo(map)
-//         var bounds = L.geoJSON(pp).getBounds();
-//         // map.fitBounds(bounds);
-//         var layers = ["AutoDCR:Revenue_1"];
-
-//         var url = "https://iwmsgis.pmc.gov.in//geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=";
-//         var propertyName = "village_name,TPS_Name,Gut_No,geom";
-//         var outputFormat = "application/json";
-//         var values = await IntersectAreaWithPolygon(pp, layers, url, propertyName, bounds.toBBoxString(), outputFormat)
-//         var cqlFilterget = getSelectedValues()
-//         const selected_dropdown = JSON.stringify(cqlFilterget)
-//         const villageName = JSON.stringify(values);
-//         const selected_guts = JSON.stringify(getSelectedValues1());
-//         const selected_village = JSON.stringify(getFilters());
-//         const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
-
-//         // const dmsCoordinates = coordinates1.map(coord => [convertToDMS(coord[0]), convertToDMS(coord[1])]);
-//         // //console.log(cqlFilterget, "cqlFilterget", selected_dropdown, "selected_dropdown", villageName, "villageName", selected_guts, "selected_guts", selected_village, "selected_village", "coordinate111111", coordinates1)
-//         // alert("Data saved")
-
-
-
-
-//         $.ajax({
-//             type: "POST",
-//             url: "APIS/savevalues.php",
-//             contentType: "application/json",
-//             data: JSON.stringify({
-//                 coordinates: coordinates1,
-//                 village_name: villageName,
-//                 gut_num: selected_dropdown,
-//                 selectedvillage: selected_village,
-//                 selectedguts: selected_guts,
-//                 token: token
-
-//             }),
-//             success: function (response) {
-
-//                 // //console.log("Coordinates saved successfully", response);
-//                 localStorage.setItem('lastInsertedPlotBoundaryId', response.data.id);
-//                 // localStorage.setItem('coordinates',coordinates1);
-//                 // //console.log("localstorage")
-
-//                 // window.location.href = 'dashboard.html';
-
-//                 // if(response.data.id != undefined){
-
-
-
-//                 // }
-
-
-//             },
-//             error: function (xhr, status, error) {
-//                 // console.error("Failed to save coordinates:", error);
-//             }
-//         });
-
-//         $.ajax({
-//             // url: 'https://autodcr.pmc.gov.in/AutoDCR.GISIntegration/GisExim.svc/getPlotGISDetails',
-
-//             url: 'http://115.124.100.250/AutoDCR.Integration/GisExim.svc/getPlotGISDetails',
-
-//             type: 'POST',
-//             contentType: 'application/json',
-//             data: JSON.stringify({
-//                 Token: token,
-//                 Parcel: {
-//                     Location: [
-//                         {
-//                             LocationCode: handshakingCode,
-//                             SurveyNo: selected_guts,
-//                             PlotNo: '',
-//                             CTS: '',
-//                             Peth: '',
-//                         },
-//                     ],
-//                     //blank
-//                     LandUseZone: '',
-//                     PlotGeoJSON: {
-//                         type: 'Feature',
-//                         properties: {
-//                             PolygonKey: '8650',
-//                             PolygonArea: '493.74',
-//                             Centroid: [73.941016, 18.508117],
-//                         },
-//                         geometry: {
-//                             type: 'Polygon',
-//                             coordinates: [coordinates1],
-//                         },
-//                     },
-//                     Buildings: [],
-//                     NOCDocuments: [],
-//                 },
-//             }),
-//             success: function (response) {
-//                 //console.log('API response received:', response);
-//                 if (response.Status) {
-//                     // window.location.href = 'data.html';
-//                     setTimeout(function () {
-//                         window.close();
-//                     }, 5000); // 5000 milliseconds = 5 seconds
-//                 }
-//             },
-//             error: function (xhr, status, error) {
-//                 console.error('Error calling API:', xhr.responseText);
-//             },
-//         });
-//         // window.location.href = 'dashboard.html';
-//         setTimeout(function () {
-//             window.close();
-//         }, 5000); // 5000 milliseconds = 5 seconds
-
-//     };
-// }
 
 
 
@@ -1960,7 +1901,7 @@ async function submitForm() {
         const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
 
         // const dmsCoordinates = coordinates1.map(coord => [convertToDMS(coord[0]), convertToDMS(coord[1])]);
-        console.log("coordinate111111", coordinates1)
+        // console.log("coordinate111111", coordinates1, token)
         // alert("Data saved")
 
 
@@ -1969,12 +1910,12 @@ async function submitForm() {
 
         $.ajax({
             type: "GET",
-            url: "https://autodcr.pmc.gov.in/AutoDCR.PMC.Support/GISAPI/GISAPI.asmx/GetPreApprovalData",
-            data: { TokenNo: token }, // Pass the token as a parameter
+            url: "APIS/proxyGetPreApprovalData.php?TokenNo=" + encodeURIComponent(token),
             success: function (data) {
+                // console.log(data, "llllllllllll");
                 // let data = JSON.parse(apiResponse);
-                console.log(data, "llllllllllll")
-
+                // console.log(data, "llllllllllll")
+                // alert("dcvfvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'")
 
                 // Creating the payload from the provided JSON data
                 let payload = {
@@ -2050,8 +1991,8 @@ async function submitForm() {
 
 
 
-                console.log(payload, JSON.stringify(data))
-                console.log("grossplotarea: ", data.CaseInformation.GrossPlotArea)
+                // console.log(payload, JSON.stringify(data))
+                // console.log("grossplotarea: ", data.CaseInformation.GrossPlotArea)
 
                 $.ajax({
                     type: "POST",
@@ -2092,42 +2033,42 @@ async function submitForm() {
 
 
 
-        // $.ajax({
-        //     type: "POST",
-        //     url: "APIS/savevalues.php",
-        //     contentType: "application/json",
-        //     data: JSON.stringify({
-        //         coordinates: coordinates1,
-        //         village_name: villageName,
-        //         gut_num: selected_dropdown,
-        //         selectedvillage: selected_village,
-        //         selectedguts: selected_guts,
-        //         token: token
+        $.ajax({
+            type: "POST",
+            url: "APIS/savevalues.php",
+            contentType: "application/json",
+            data: JSON.stringify({
+                coordinates: coordinates1,
+                village_name: villageName,
+                gut_num: selected_dropdown,
+                selectedvillage: selected_village,
+                selectedguts: selected_guts,
+                token: token
 
-        //     }),
-        //     success: function (response) {
+            }),
+            success: function (response) {
 
-        //         // console.log("Coordinates saved successfully", response);
-        //         localStorage.setItem('lastInsertedPlotBoundaryId', response.data.id);
-        //         // localStorage.setItem('coordinates',coordinates1);
-        //         // console.log("localstorage")
+                // console.log("Coordinates saved successfully", response);
+                localStorage.setItem('lastInsertedPlotBoundaryId', response.data.id);
+                // localStorage.setItem('coordinates',coordinates1);
+                // console.log("localstorage")
 
-        //         window.location.href = 'dashboard.html';
+                window.location.href = 'dashboard.html';
 
-        //         // if(response.data.id != undefined){
-
-
-        //         // }
+                // if(response.data.id != undefined){
 
 
-        //     },
-        //     error: function (xhr, status, error) {
-        //         console.error("Failed to save coordinates:", error);
-        //     }
-        // });
+                // }
+
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to save coordinates:", error);
+            }
+        });
 
         $.ajax({
-            // url: 'https://autodcr.pmc.gov.in/AutoDCR.GISIntegration/GisExim.svc/getPlotGISDetails',
+            url: 'https://autodcr.pmc.gov.in/AutoDCR.GISIntegration/GisExim.svc/getPlotGISDetails',
 
             // url: 'http://115.124.100.250/AutoDCR.Integration/GisExim.svc/getPlotGISDetails',
 
@@ -2167,6 +2108,9 @@ async function submitForm() {
                 console.log('API response received:', response);
                 if (response.Status) {
                     // window.location.href = 'data.html';
+                    //     setTimeout(function () {
+                    //                                 window.close();
+                    //                             }, 10000); // 5000 milliseconds = 5 seconds
                 }
             },
             error: function (xhr, status, error) {
@@ -2174,6 +2118,10 @@ async function submitForm() {
             },
         });
         // window.location.href = 'dashboard.html';
+        // setTimeout(function () {
+        //                             window.close();
+        //                         }, 10000); // 5000 milliseconds = 5 seconds
+
 
     };
 }

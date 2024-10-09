@@ -2,7 +2,7 @@
 
 // Database configuration
 $host = 'iwmsgis.pmc.gov.in';
-$dbname = 'AutoDCR';
+$dbname = 'Test';
 $port = 5432;
 $username = 'postgres';
 $password = 'pmc992101';
@@ -177,9 +177,9 @@ if ($data && isset($data['payload'])) {
         additionsinnetplotarea_amenitytdrarea,
         geom,
         village_name,
-        
+       
         gut_no,
-        area,
+         area,
         entry_timestamp
       
     ) VALUES (

@@ -323,6 +323,7 @@ L.control.zoom({
 
 
 // draw-----------------------------------------------------
+
 var drawnItems = new L.FeatureGroup().addTo(map);
 
 var drawControl = new L.Control.Draw({
@@ -1145,7 +1146,7 @@ function processCSV(kmlContent) {
 }
 
 
-// for adding coordinates manulay
+// for adding coordinates manulay------------------------------------------------------------------------------------------
 
 
 document.getElementById('toggleFormBtn').addEventListener('click', function () {
@@ -1432,6 +1433,12 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
 function parseDMS(degrees, minutes, seconds) {
     return parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / 3600;
 }
+
+
+
+// for adding coordinates manulay------------------------------------------------------------------------------------------
+
+
 
 function getSelectedValues1() {
     var selectedValues = [];

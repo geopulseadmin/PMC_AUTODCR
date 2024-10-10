@@ -1010,8 +1010,8 @@ function FitbouCustomiseRevenue(filter) {
                 latitudeMinutesInput.setAttribute('readonly', 'readonly');
             } else {
                 latitudeMinutesInput.removeAttribute('readonly');
-                // latitudeMinutesInput.setAttribute('min', latsouthM);
-                // latitudeMinutesInput.setAttribute('max', latnorthM);
+                latitudeMinutesInput.setAttribute('min', latsouthM);
+                latitudeMinutesInput.setAttribute('max', latnorthM);
                 latitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
             }
 
@@ -1022,8 +1022,8 @@ function FitbouCustomiseRevenue(filter) {
                 latitudeSecondsInput.setAttribute('readonly', 'readonly');
             } else {
                 latitudeSecondsInput.removeAttribute('readonly');
-                // latitudeSecondsInput.setAttribute('min', latSecondsSouth.toFixed(2)); // Set min to two decimal places
-                // latitudeSecondsInput.setAttribute('max', latSecondsNorth.toFixed(2)); // Set max to two decimal places
+                latitudeSecondsInput.setAttribute('min', latSecondsSouth.toFixed(2)); // Set min to two decimal places
+                latitudeSecondsInput.setAttribute('max', latSecondsNorth.toFixed(2)); // Set max to two decimal places
                 latitudeSecondsInput.setAttribute('step', '0.01'); // Step for seconds
             }
 
@@ -1046,8 +1046,8 @@ function FitbouCustomiseRevenue(filter) {
                 longitudeMinutesInput.setAttribute('readonly', 'readonly');
             } else {
                 longitudeMinutesInput.removeAttribute('readonly');
-                // longitudeMinutesInput.setAttribute('min', lngsouthM);
-                // longitudeMinutesInput.setAttribute('max', lngnorthM);
+                longitudeMinutesInput.setAttribute('min', lngsouthM);
+                longitudeMinutesInput.setAttribute('max', lngnorthM);
                 longitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
             }
 
@@ -1058,8 +1058,8 @@ function FitbouCustomiseRevenue(filter) {
                 longitudeSecondsInput.setAttribute('readonly', 'readonly');
             } else {
                 longitudeSecondsInput.removeAttribute('readonly');
-                // longitudeSecondsInput.setAttribute('min', lonSecondsSouth.toFixed(2)); // Set min to two decimal places
-                // longitudeSecondsInput.setAttribute('max', lonSecondsNorth.toFixed(2)); // Set max to two decimal places
+                longitudeSecondsInput.setAttribute('min', lonSecondsSouth.toFixed(2)); // Set min to two decimal places
+                longitudeSecondsInput.setAttribute('max', lonSecondsNorth.toFixed(2)); // Set max to two decimal places
                 longitudeSecondsInput.setAttribute('step', '0.01'); // Step for seconds
             }
 
@@ -1255,34 +1255,34 @@ function updateFirstRowValues(table) {
 
     // Longitude Degrees
     newLongitudeDegreesInput.value = longitudeDegreesInput.value;
-    // newLongitudeDegreesInput.setAttribute('min', longitudeDegreesInput.getAttribute('min'));
-    // newLongitudeDegreesInput.setAttribute('max', longitudeDegreesInput.getAttribute('max'));
+    newLongitudeDegreesInput.setAttribute('min', longitudeDegreesInput.getAttribute('min'));
+    newLongitudeDegreesInput.setAttribute('max', longitudeDegreesInput.getAttribute('max'));
 
     // Longitude Minutes
     newLongitudeMinutesInput.value = longitudeMinutesInput.value;
-    // newLongitudeMinutesInput.setAttribute('min', longitudeMinutesInput.getAttribute('min'));
-    // newLongitudeMinutesInput.setAttribute('max', longitudeMinutesInput.getAttribute('max'));
+    newLongitudeMinutesInput.setAttribute('min', longitudeMinutesInput.getAttribute('min'));
+    newLongitudeMinutesInput.setAttribute('max', longitudeMinutesInput.getAttribute('max'));
 
     // Longitude Seconds
     newLongitudeSecondsInput.value = longitudeSecondsInput.value; // Copy value for seconds
-    // newLongitudeSecondsInput.setAttribute('min', longitudeSecondsInput.getAttribute('min')); // Set min
-    // newLongitudeSecondsInput.setAttribute('max', longitudeSecondsInput.getAttribute('max')); // Set max
+    newLongitudeSecondsInput.setAttribute('min', longitudeSecondsInput.getAttribute('min')); // Set min
+    newLongitudeSecondsInput.setAttribute('max', longitudeSecondsInput.getAttribute('max')); // Set max
     newLongitudeSecondsInput.setAttribute('step', '0.01'); // Set step for seconds to allow decimals
 
     // Latitude Degrees
     newLatitudeDegreesInput.value = latitudeDegreesInput.value;
-    // newLatitudeDegreesInput.setAttribute('min', latitudeDegreesInput.getAttribute('min'));
-    // newLatitudeDegreesInput.setAttribute('max', latitudeDegreesInput.getAttribute('max'));
+    newLatitudeDegreesInput.setAttribute('min', latitudeDegreesInput.getAttribute('min'));
+    newLatitudeDegreesInput.setAttribute('max', latitudeDegreesInput.getAttribute('max'));
 
     // Latitude Minutes
     newLatitudeMinutesInput.value = latitudeMinutesInput.value;
-    // newLatitudeMinutesInput.setAttribute('min', latitudeMinutesInput.getAttribute('min'));
-    // newLatitudeMinutesInput.setAttribute('max', latitudeMinutesInput.getAttribute('max'));
+    newLatitudeMinutesInput.setAttribute('min', latitudeMinutesInput.getAttribute('min'));
+    newLatitudeMinutesInput.setAttribute('max', latitudeMinutesInput.getAttribute('max'));
 
     // Latitude Seconds
     newLatitudeSecondsInput.value = latitudeSecondsInput.value; // Copy value for seconds
-    // newLatitudeSecondsInput.setAttribute('min', latitudeSecondsInput.getAttribute('min')); // Set min
-    // newLatitudeSecondsInput.setAttribute('max', latitudeSecondsInput.getAttribute('max')); // Set max
+    newLatitudeSecondsInput.setAttribute('min', latitudeSecondsInput.getAttribute('min')); // Set min
+    newLatitudeSecondsInput.setAttribute('max', latitudeSecondsInput.getAttribute('max')); // Set max
     newLatitudeSecondsInput.setAttribute('step', '0.01'); // Set step for seconds to allow decimals
 }
 

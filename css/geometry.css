@@ -130,10 +130,10 @@ form {
 }
 
 
-
+/* 
 .leaflet-interactive {
     transform: scale(1.2);
-}
+} */
 
 @media print {
     body {

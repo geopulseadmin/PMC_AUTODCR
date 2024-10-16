@@ -186,7 +186,7 @@ function handleURLParameters() {
 function getData(filter) {
     console.log("Fetching data with filter:", filter);
     const layers = ["PMC_test:plot1_layouts_test"];
-    const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp"];
+    const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp","id"];
 
     const promises = layers.map(layerName => {
         const url = `https://iwmsgis.pmc.gov.in/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${encodeURIComponent(layerName)}&CQL_FILTER=${encodeURIComponent(filter)}&outputFormat=application/json`;
@@ -194,11 +194,17 @@ function getData(filter) {
         $('#table-container').show();
 
         return $.getJSON(url).then(data => {
+            console.log(data)
             return data.features.map(feature => {
                 const properties = feature.properties;
                 let filteredData = {};
                 layerDetails.forEach(key => {
+                    if (key === 'id'){
+                        filteredData[key] = feature.id
+                    }else{
+
                     filteredData[key] = properties[key] || "";
+                    }
                 });
                 filteredData.geometry = feature.geometry;
                 return filteredData;
@@ -268,6 +274,9 @@ function paginateResults(data) {
         }
 
         editButton.on('click', function () {
+            alert("fffffffff")
+            console.log(item.id,"item.geometry",data)
+            window.location.href = `editing.html?id=${item.id}`;
             if (area !== grossPlotArea) {
                 openModal(item);
             } else {
@@ -403,11 +412,13 @@ function updateTableWithItem(item) {
     }
 
     editButton.on('click', function () {
-        if (area !== grossPlotArea) {
-            openModal(item);
-        } else {
-            alert("No discrepancies found. Editing is not required.");
-        }
+        
+        window.location.href = 'editing.html';
+        // if (area !== grossPlotArea) {
+        //     openModal(item);
+        // } else {
+        //     alert("No discrepancies found. Editing is not required.");
+        // }
     });
 
     const editRow = $('<tr></tr>').append(

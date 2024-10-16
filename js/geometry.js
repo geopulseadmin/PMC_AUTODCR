@@ -1,7 +1,3 @@
-// Define printPage globally
-function printPage() {
-    window.print();
-}
 
 $(document).ready(function () {
     // Initialize the map
@@ -12,9 +8,7 @@ $(document).ready(function () {
     $('.select2').select2();
 });
 
-/**
- * Initializes the Leaflet map with specified options and layers.
- */
+
 function initializeMap() {
     // Initialize the map
     var map = L.map("map", {
@@ -24,7 +18,7 @@ function initializeMap() {
         maxZoom: 20,
         zoomControl: false,
         scrollWheelZoom: true,
-        editable: true // Enable Leaflet.Editable
+        editable: false// Enable Leaflet.Editable
     });
 
     // Define tile layers
@@ -42,18 +36,18 @@ function initializeMap() {
     }).addTo(map);
 
     // Define WMS layers
-    var baseURL = "https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms";
+    var baseURL = "https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms";
 
-    var Plot_Layout = L.tileLayer.wms(baseURL, {
-        layers: "Plot_Layout",
+    var plot1_layouts_test = L.tileLayer.wms(baseURL, {
+        layers: "plot1_layouts_test",
         format: "image/png",
         transparent: true,
         tiled: true,
         version: "1.1.0",
         opacity: 1
     });
-    
-    map.on("zoomend", function() {
+
+    map.on("zoomend", function () {
         if (map.getZoom() > 17.2) {
             if (!map.hasLayer(googleSat)) {
                 map.removeLayer(osm);
@@ -67,21 +61,84 @@ function initializeMap() {
         }
     });
 
-    // Initialize Feature Group to store editable layers
-    var editableLayers = new L.FeatureGroup();
-    map.addLayer(editableLayers);
-    window.editableLayers = editableLayers; // Store globally for access in other functions
 
-    // Remove Leaflet.Draw as we are using Leaflet.Editable
-    // var drawControl = new L.Control.Draw({
-    //     edit: {
-    //         featureGroup: editableLayers,
-    //         edit: true,
-    //         remove: true
-    //     },
-    //     draw: false
-    // });
-    // map.addControl(drawControl);
+    var drawnItems = new L.FeatureGroup().addTo(map); // Create and add drawn items to the map
+
+    var drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems // Set the editable group for drawing tools
+        },
+        draw: {
+            polygon: {
+                shapeOptions: {
+                    color: "red", // Set the polygon border color
+                },
+                icon: new L.DivIcon({
+                    iconSize: new L.Point(6, 6), // Set the icon size
+                    className: "leaflet-div-icon", // Icon class
+                }),
+            },
+            polyline: false,
+            rectangle: false,
+            circle: false,
+            marker: false,
+        }
+    });
+    map.addControl(drawControl);
+    
+    // Loop through all layers on the map and find the GeoJSON layers
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.GeoJSON) {
+            console.log("Found GeoJSON layer:", layer);
+    
+            // Iterate through each feature in the GeoJSON and add it to the drawnItems feature group
+            layer.eachLayer(function(subLayer) {
+                drawnItems.addLayer(subLayer); // Add each feature to drawnItems so it can be edited
+            });
+        }
+    });
+    
+    // Handle the event when a new drawing is created
+    map.on(L.Draw.Event.CREATED, function (event) {
+        var layer = event.layer;
+      
+        // Add the newly created layer (polygon) to drawnItems for editing
+        drawnItems.addLayer(layer);
+    
+        // Calculate the area of the polygon (using turf.js)
+        if (layer instanceof L.Polygon) {
+            var area = turf.area(layer.toGeoJSON());
+            var areaText = 'Area: ' + (area).toFixed(2) + ' sq m'; // Area in square meters
+            layer.bindPopup(areaText).openPopup();
+        }
+    
+        var polygonId = 'polygon_' + L.stamp(layer); // Unique ID for each polygon
+        layer.polygonId = polygonId;
+    });
+    
+    // Event for editing existing polygons
+    map.on('draw:edited', function (e) {
+        var layers = e.layers;
+        layers.eachLayer(function (layer) {
+            if (layer instanceof L.Polygon) {
+                var area = turf.area(layer.toGeoJSON());
+                var areaText = 'Area: ' + (area).toFixed(2) + ' sq m'; // Area in square meters
+                layer.setPopupContent(areaText);
+                layer.openPopup();
+            }
+        });
+    });
+    
+    // Event for deleting polygons
+    map.on('draw:deleted', function (e) {
+        var layers = e.layers;
+        layers.eachLayer(function (layer) {
+            if (layer.polygonId) {
+                delete drawnPolygons[layer.polygonId]; // Delete from the drawnPolygons object
+            }
+        });
+    });
+    
 
     // Layer control
     var WMSlayers = {
@@ -91,12 +148,12 @@ function initializeMap() {
     };
 
     L.control.layers(WMSlayers, {
-        "Plot Layouts": Plot_Layout
+        "Plot Layouts": plot1_layouts_test
     }).addTo(map);
 
     // Store map in window for global access
     window.map = map;
-    window.Plot_Layout = Plot_Layout;
+    window.plot1_layouts_test = plot1_layouts_test;
     window.highlightLayer = null;
     window.currentHighlightLayer = null;
 }
@@ -118,19 +175,17 @@ function handleURLParameters() {
     console.log("CQL_FILTER:", filter);
 
     // Set WMS parameters with the filter
-    window.Plot_Layout.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "Plot_Layout" }).addTo(window.map);
+    window.plot1_layouts_test.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "plot1_layouts_test" }).addTo(window.map);
 
     // Fetch data based on the filter
     getData(filter);
 }
 
-/**
- * Fetches data from WFS based on the provided filter.
- * @param {string} filter - The CQL filter to apply.
- */
+
+
 function getData(filter) {
     console.log("Fetching data with filter:", filter);
-    const layers = ["AutoDCR:Plot_Layout"];
+    const layers = ["PMC_test:plot1_layouts_test"];
     const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp"];
 
     const promises = layers.map(layerName => {
@@ -165,10 +220,7 @@ function getData(filter) {
 
 // let highlightLayer = null;
 
-/**
- * Paginates and displays results in the table.
- * @param {Array} data - The data to display.
- */
+
 function paginateResults(data) {
     const itemsPerPage = 1;
     let currentPage = 1;
@@ -267,10 +319,7 @@ function paginateResults(data) {
         pagination.append(nextBtn);
     }
 
-    /**
-     * Highlights the selected feature on the map.
-     * @param {Object} geometry - The GeoJSON geometry to highlight.
-     */
+
     function highlightFeature(geometry) {
         // Remove existing highlightLayer if any
         if (highlightLayer) {
@@ -282,7 +331,7 @@ function paginateResults(data) {
                 color: '#FF0000',
                 weight: 3
             },
-            editable: true // Make it editable
+            // editable: false // Make it editable
         }).addTo(window.map);
 
         // Store the current highlight layer globally
@@ -296,108 +345,32 @@ function paginateResults(data) {
     displayPage(currentPage);
 }
 
-/**
- * Opens the modal with feature details and enables editing.
- * @param {Object} item - The data item to edit.
- */
+
 function openModal(item) {
     const modalBody = $('#modalBody');
     modalBody.empty();
 
     for (const [key, value] of Object.entries(item)) {
         if (key !== "geometry") {
-            modalBody.append(`<p><strong>${key}:</strong> ${value}</p>`);
+            // modalBody.append(`<p><strong>${key}:</strong> ${value}</p>`);
+            modalBody.append(`<div class="form-group">
+                <label for="${key}"><strong>${key}:</strong></label>
+                <input type="text" class="form-control" id="${key}" value="${value}">
+            </div>`);
         }
     }
 
     const infoModal = new bootstrap.Modal(document.getElementById('editFeatureModal'));
     infoModal.show();
 
-    // Handle Save Changes Button
-    $('#saveFeatureBtn').off('click').on('click', function () {
-        // Trigger the editing mode
-        enableEditing(item);
-        infoModal.hide();
-    });
+
 }
 
 let currentHighlightLayer = null;
 
-/**
- * Enables editing for the highlighted feature.
- * @param {Object} item - The data item to edit.
- */
-function enableEditing(item) {
-    if (!currentHighlightLayer) {
-        alert("No feature is highlighted for editing.");
-        return;
-    }
 
-    // Enable editing using Leaflet.Editable
-    currentHighlightLayer.enableEdit();
 
-    // Change the style to indicate edit mode
-    currentHighlightLayer.setStyle({
-        color: '#0000FF',
-        weight: 3,
-        dashArray: '5, 5'
-    });
 
-    // Inform the user
-    alert("You can now edit the geometry on the map. After editing, click 'Save Changes'.");
-
-    // Listen for the edit event
-    window.map.on('editable:editing', function (e) {
-        // Once editing is done, handle the geometry update
-        handleGeometryEdit(e, item);
-    });
-}
-
-/**
- * Handles the geometry edit event.
- * @param {Object} e - The edit event.
- * @param {Object} item - The data item being edited.
- */
-function handleGeometryEdit(e, item) {
-    // Get the edited layer
-    var layer = e.layer; // Note: Adjust according to Leaflet.Editable's event structure
-
-    // Get the new geometry
-    var newGeometry = layer.toGeoJSON().geometry;
-
-    // Update the item's geometry
-    item.geometry = newGeometry;
-
-    // Recalculate the area using Turf.js (ensure Turf.js is included)
-    var polygon = turf.polygon(newGeometry.coordinates);
-    var area = turf.area(polygon); // Area in square meters
-
-    // Update the item's area fields
-    item.area = area.toFixed(2); // Rounded to 2 decimal places
-    item.caseinformation_grossplotarea = area.toFixed(2); // Adjust as per your logic
-
-    // Update the table to reflect changes
-    updateTableWithItem(item);
-
-    // Reset the style
-    layer.setStyle({
-        color: '#FF0000',
-        weight: 3
-    });
-
-    // Disable editing
-    layer.disableEdit();
-
-    // Remove the edit event listener to prevent multiple triggers
-    window.map.off('editable:editing');
-
-    alert("Geometry and areas have been updated successfully.");
-}
-
-/**
- * Updates the table with the updated item data.
- * @param {Object} item - The updated data item.
- */
 function updateTableWithItem(item) {
     // Assuming itemsPerPage is 1, find the first row and update it
     const tableBody = $('#workTableData');
@@ -441,4 +414,58 @@ function updateTableWithItem(item) {
         $('<td colspan="2" class="text-center"></td>').append(editButton)
     );
     tableBody.append(editRow);
+}
+
+
+
+
+
+
+
+
+
+$(document).ready(function () {
+
+
+    // var geojsonData = geojsonLayer.toGeoJSON();
+    // console.log(geojsonData,"lllllllllllllllllllllllllll")
+    // const layer = e.layer;
+    // console.log( editableLayers)
+   
+    $('#saveButton').click(function () {
+     
+        const dataToSave = {
+          
+            key1: 'value1',
+            key2: 'value2',
+        };
+        saveFeature(dataToSave);
+    });
+});
+
+
+function saveFeature(data) {
+    console.log("Saving edited feature:", data);
+    // alert(data)
+    fetch('APIS/save-feature.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Feature saved successfully!');
+            // Make sure the save button is visible again if hidden
+            document.getElementById('saveButton').style.display = 'block';
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred.');
+    });
 }

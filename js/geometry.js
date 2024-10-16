@@ -1,16 +1,12 @@
-// js/geometry.js
+// Define printPage globally
+function printPage() {
+    window.print();
+}
 
-// Ensure the script runs after the DOM is fully loaded
 $(document).ready(function () {
     // Initialize the map
     initializeMap();
     handleURLParameters();
-    // $('#generatePdfBtn').on('click', printPage); // Already handled via onclick in HTML
-
-    // Initialize Print Function
-    function printPage() {
-        window.print();
-    }
 
     // Initialize Select2 (if used elsewhere)
     $('.select2').select2();
@@ -27,7 +23,8 @@ function initializeMap() {
         minZoom: 9,
         maxZoom: 20,
         zoomControl: false,
-        scrollWheelZoom: true
+        scrollWheelZoom: true,
+        editable: true // Enable Leaflet.Editable
     });
 
     // Define tile layers
@@ -44,11 +41,10 @@ function initializeMap() {
         maxZoom: 21
     }).addTo(map);
 
-    
     // Define WMS layers
     var baseURL = "https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms";
 
-    var plot1_layouts_test = L.tileLayer.wms(baseURL, {
+    var Plot_Layout = L.tileLayer.wms(baseURL, {
         layers: "Plot_Layout",
         format: "image/png",
         transparent: true,
@@ -56,35 +52,36 @@ function initializeMap() {
         version: "1.1.0",
         opacity: 1
     });
+    
     map.on("zoomend", function() {
         if (map.getZoom() > 17.2) {
-          if (!map.hasLayer( googleSat)) {
-            map.removeLayer(osm);
-            map.addLayer( googleSat);
-          }
+            if (!map.hasLayer(googleSat)) {
+                map.removeLayer(osm);
+                map.addLayer(googleSat);
+            }
         } else {
-          if (!map.hasLayer(osm)) {
-            map.removeLayer( googleSat  );
-            map.addLayer(osm);
-          }
+            if (!map.hasLayer(osm)) {
+                map.removeLayer(googleSat);
+                map.addLayer(osm);
+            }
         }
-      });
-   
+    });
+
     // Initialize Feature Group to store editable layers
     var editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
     window.editableLayers = editableLayers; // Store globally for access in other functions
 
-    // Initialize Leaflet Draw Control
-    var drawControl = new L.Control.Draw({
-        edit: {
-            featureGroup: editableLayers,
-            edit: true, // Disable default edit button
-            remove: true // Disable default delete button
-        },
-        draw: false // Disable all draw options
-    });
-    map.addControl(drawControl);
+    // Remove Leaflet.Draw as we are using Leaflet.Editable
+    // var drawControl = new L.Control.Draw({
+    //     edit: {
+    //         featureGroup: editableLayers,
+    //         edit: true,
+    //         remove: true
+    //     },
+    //     draw: false
+    // });
+    // map.addControl(drawControl);
 
     // Layer control
     var WMSlayers = {
@@ -94,12 +91,12 @@ function initializeMap() {
     };
 
     L.control.layers(WMSlayers, {
-        "Plot Layouts": plot1_layouts_test
+        "Plot Layouts": Plot_Layout
     }).addTo(map);
 
     // Store map in window for global access
     window.map = map;
-    window.plot1_layouts_test = plot1_layouts_test;
+    window.Plot_Layout = Plot_Layout;
     window.highlightLayer = null;
     window.currentHighlightLayer = null;
 }
@@ -121,7 +118,7 @@ function handleURLParameters() {
     console.log("CQL_FILTER:", filter);
 
     // Set WMS parameters with the filter
-    window.plot1_layouts_test.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "plot1_layouts_test" }).addTo(window.map);
+    window.Plot_Layout.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "Plot_Layout" }).addTo(window.map);
 
     // Fetch data based on the filter
     getData(filter);
@@ -166,7 +163,7 @@ function getData(filter) {
     });
 }
 
-let highlightLayer = null;
+// let highlightLayer = null;
 
 /**
  * Paginates and displays results in the table.
@@ -197,10 +194,8 @@ function paginateResults(data) {
         if (area !== grossPlotArea) {
             const message = "Gross plot area and drawn area are not equal. Please edit.";
             console.warn(message); // Logs to the console
-            // alert(message); // Displays an alert to the user
-
             // Highlight the discrepancy in the table
-            tableBody.append('<tr><td colspan="2" style="color: red; text-align: center;">' + message + '</td></tr>');
+            tableBody.append('<tr><td colspan="2" style="color:red; text-align: center;">' + message + '</td></tr>');
         }
 
         for (const [key, value] of Object.entries(item)) {
@@ -209,6 +204,7 @@ function paginateResults(data) {
                 tableBody.append(`<tr><td>${key}</td><td>${displayValue}</td></tr>`);
             }
         }
+
         // Add Edit Button
         const editButton = $('<button class="btn btn-primary">Edit</button>');
         if (area !== grossPlotArea) {
@@ -271,16 +267,28 @@ function paginateResults(data) {
         pagination.append(nextBtn);
     }
 
+    /**
+     * Highlights the selected feature on the map.
+     * @param {Object} geometry - The GeoJSON geometry to highlight.
+     */
     function highlightFeature(geometry) {
+        // Remove existing highlightLayer if any
         if (highlightLayer) {
-            window.map.removeLayer(highlightLayer);
+            map.removeLayer(highlightLayer);
         }
+
         highlightLayer = L.geoJSON(geometry, {
             style: {
                 color: '#FF0000',
                 weight: 3
-            }
+            },
+            editable: true // Make it editable
         }).addTo(window.map);
+
+        // Store the current highlight layer globally
+        window.currentHighlightLayer = highlightLayer;
+
+        // Fit map to the highlighted feature
         window.map.fitBounds(highlightLayer.getBounds());
     }
 
@@ -316,29 +324,6 @@ function openModal(item) {
 let currentHighlightLayer = null;
 
 /**
- * Highlights and prepares a feature for editing.
- * @param {Object} geometry - The GeoJSON geometry to highlight.
- */
-function highlightFeature(geometry) {
-    if (currentHighlightLayer) {
-        window.map.removeLayer(currentHighlightLayer);
-        window.editableLayers.removeLayer(currentHighlightLayer);
-    }
-
-    currentHighlightLayer = L.geoJSON(geometry, {
-        style: {
-            color: '#FF0000',
-            weight: 3
-        }
-    }).addTo(window.map);
-
-    // Add to editable layers for editing
-    window.editableLayers.addLayer(currentHighlightLayer);
-
-    window.map.fitBounds(currentHighlight_layer.getBounds());
-}
-
-/**
  * Enables editing for the highlighted feature.
  * @param {Object} item - The data item to edit.
  */
@@ -348,8 +333,8 @@ function enableEditing(item) {
         return;
     }
 
-    // Enable editing using Leaflet Draw's editing capabilities
-    currentHighlightLayer.editing.enable();
+    // Enable editing using Leaflet.Editable
+    currentHighlightLayer.enableEdit();
 
     // Change the style to indicate edit mode
     currentHighlightLayer.setStyle({
@@ -362,7 +347,8 @@ function enableEditing(item) {
     alert("You can now edit the geometry on the map. After editing, click 'Save Changes'.");
 
     // Listen for the edit event
-    currentHighlightLayer.on('edit', function (e) {
+    window.map.on('editable:editing', function (e) {
+        // Once editing is done, handle the geometry update
         handleGeometryEdit(e, item);
     });
 }
@@ -374,7 +360,7 @@ function enableEditing(item) {
  */
 function handleGeometryEdit(e, item) {
     // Get the edited layer
-    var layer = e.target;
+    var layer = e.layer; // Note: Adjust according to Leaflet.Editable's event structure
 
     // Get the new geometry
     var newGeometry = layer.toGeoJSON().geometry;
@@ -400,13 +386,12 @@ function handleGeometryEdit(e, item) {
     });
 
     // Disable editing
-    layer.editing.disable();
+    layer.disableEdit();
 
     // Remove the edit event listener to prevent multiple triggers
-    layer.off('edit');
+    window.map.off('editable:editing');
 
     alert("Geometry and areas have been updated successfully.");
-
 }
 
 /**
@@ -414,7 +399,6 @@ function handleGeometryEdit(e, item) {
  * @param {Object} item - The updated data item.
  */
 function updateTableWithItem(item) {
-   
     // Assuming itemsPerPage is 1, find the first row and update it
     const tableBody = $('#workTableData');
     tableBody.empty();
@@ -425,7 +409,6 @@ function updateTableWithItem(item) {
     if (area !== grossPlotArea) {
         const message = "Gross plot area and drawn area are not equal. Please edit.";
         console.warn(message); // Logs to the console
-        // No need to alert again
         tableBody.append('<tr><td colspan="2" style="color: red; text-align: center;">' + message + '</td></tr>');
     }
 
@@ -459,71 +442,3 @@ function updateTableWithItem(item) {
     );
     tableBody.append(editRow);
 }
-
-/**
- * (Optional) Sends a WFS-T Update request to the server with the updated feature.
- * Uncomment and implement if you wish to persist changes to the server.
- * 
- * function sendWFSUpdate(item) {
- *     // Construct the WFS-T XML payload
- *     const wfsUpdate = `
- *         <wfs:Transaction service="WFS" version="1.1.0"
- *             xmlns:wfs="http://www.opengis.net/wfs"
- *             xmlns:ogc="http://www.opengis.net/ogc"
- *             xmlns:gml="http://www.opengis.net/gml"
- *             xmlns:auto="http://www.yournamespace.com/auto">
- *             <wfs:Update typeName="AutoDCR:Plot_Layout">
- *                 <wfs:Property>
- *                     <wfs:Name>the_geom</wfs:Name>
- *                     <wfs:Value>
- *                         <gml:Polygon srsName="EPSG:4326">
- *                             <gml:exterior>
- *                                 <gml:LinearRing>
- *                                     <gml:coordinates>
- *                                         ${convertGeometryToGML(item.geometry)}
- *                                     </gml:coordinates>
- *                                 </gml:LinearRing>
- *                             </gml:exterior>
- *                         </gml:Polygon>
- *                     </wfs:Value>
- *                 </wfs:Property>
- *                 <!-- Add other properties if needed -->
- *                 <ogc:Filter>
- *                     <ogc:PropertyIsEqualTo>
- *                         <ogc:PropertyName>token</ogc:PropertyName>
- *                         <ogc:Literal>${item.token}</ogc:Literal>
- *                     </ogc:PropertyIsEqualTo>
- *                 </ogc:Filter>
- *             </wfs:Update>
- *         </wfs:Transaction>
- *     `;
- *
- *     // Send the request via AJAX
- *     $.ajax({
- *         url: "https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wfs",
- *         type: "POST",
- *         dataType: "xml",
- *         data: wfsUpdate,
- *         contentType: "text/xml",
- *         success: function (response) {
- *             console.log("WFS-T Update successful:", response);
- *             alert("Feature updated successfully on the server.");
- *         },
- *         error: function (xhr, status, error) {
- *             console.error("WFS-T Update failed:", error);
- *             alert("Failed to update feature on the server.");
- *         }
- *     });
- * }
- *
- * function convertGeometryToGML(geometry) {
- *     // Simple conversion for Polygon
- *     if (geometry.type === "Polygon") {
- *         let coordinates = geometry.coordinates[0].map(coord => coord.join(" ")).join(" ");
- *         return `<gml:coordinates>${coordinates}</gml:coordinates>`;
- *     }
- *     // Handle other geometry types as needed
- *     return "";
- * }
- */
-

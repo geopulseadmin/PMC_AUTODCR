@@ -34,6 +34,11 @@
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
   
 
+  <!-- Leaflet Editable JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.2.0/Leaflet.Editable.min.js"  referrerpolicy="no-referrer"></script>
+
+  <!-- Turf.js without integrity attribute -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body class="bg-light">
@@ -74,267 +79,28 @@
       </form>
     </section>
   </div>
+  <!-- Edit Feature Modal -->
+  <div class="modal fade" id="editFeatureModal" tabindex="-1" aria-labelledby="editFeatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"> 
+          <h5 class="modal-title" id="editFeatureModalLabel">Edit Feature</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Feature details will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="saveFeatureBtn" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <script>
-    // Initialize the map
-    var map = L.map("map", {
-      center: [18.52, 73.89],
-      zoom: 8,
-      minZoom: 9,
-      maxZoom: 16,
-      boxZoom: true,
-      trackResize: true,
-      wheelPxPerZoomLevel: 40,
-      zoomAnimation: true,
-      dragging: true,
-      zoomControl: false,
-      scrollWheelZoom: true,
-      doubleClickZoom: false,
-      touchZoom: false
-    });
-  
-    // Define tile layers
-    var googleSat = L.tileLayer("http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", {
-      maxZoom: 20,
-      subdomains: ["mt0", "mt1", "mt2", "mt3"]
-    });
-  
-    var Esri_WorldImagery = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-      maxZoom: 20
-    });
-  
-    var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19
-    }).addTo(map);
-  
-    // Define WMS layers
-    var baseURL = "https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms";
-  
-    var plot1_layouts_test = L.tileLayer.wms(baseURL, {
-      layers: "plot1_layouts_test",
-      format: "image/png",
-      transparent: true,
-      tiled: true,
-      version: "1.1.0",
-      opacity: 1
-    });
-  
-    var WMSlayers = {
-      "Esri": Esri_WorldImagery,
-      "Satellite": googleSat,
-      "osm": osm,
-      "plot1_layouts_test": plot1_layouts_test,
-    };
-  
-    // Add layer control
-    var control = new L.control.layers({}, WMSlayers).addTo(map);
-    control.setPosition('topright');
-  
-    var highlightLayer;
-  
-    const API_URL = "https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms"; // Updated to remote URL
-  
-    $(document).ready(function () {
-      // Parse URL parameters
-      var urlParams = new URLSearchParams(window.location.search);
-      var villageName = urlParams.get('token'); // Ensure 'token' is lowercase in URL
-      console.log("villageName:", villageName);
-  
-      if (!villageName) {
-        alert("No token provided in the URL.");
-        return;
-      }
-  
-      // Define the filter correctly
-      var filter = "token = '" + villageName + "'";
-      console.log("CQL_FILTER:", filter);
-  
-      // Set WMS parameters with the correct filter
-      plot1_layouts_test.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "plot1_layouts_test" }).addTo(map);
-  
-      // Fetch data based on the filter
-      getdata(filter);
-  
-      function getdata(filters) {
-        console.log("Fetching data with filter:", filters);
-        const layers = ["PMC_test:plot1_layouts_test"];
-        const promises = [];
-        const layerDetails = ["id", "token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp"];
-  
-        layers.forEach(function (layerName) {
-          const urlm = `https://iwmsgis.pmc.gov.in/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${encodeURIComponent(layerName)}&CQL_FILTER=${encodeURIComponent(filters)}&outputFormat=application/json`;
-  
-          console.log("WFS URL:", urlm);
-  
-          $('#table-container').show();
-  
-          const promise = $.getJSON(urlm).then(function (data) {
-            return data.features.map(feature => {
-              const properties = feature.properties;
-              let filteredData = {};
-              layerDetails.forEach(key => {
-                if (properties[key] !== undefined && properties[key] !== null) {
-                  filteredData[key] = properties[key];
-                } else if (feature[key] !== undefined) {
-                  filteredData[key] = JSON.stringify(feature[key]);
-                }
-              });
-              filteredData.geometry = feature.geometry;
-              return filteredData;
-            });
-          }).catch(function (error) {
-            console.error("Error fetching data from WFS:", error);
-            return [];
-          });
-  
-          promises.push(promise);
-        });
-  
-        Promise.all(promises).then(function (results) {
-          const flattenedResults = results.flat();
-          console.log("Fetched Data:", flattenedResults);
-          paginateResults(flattenedResults);
-        }).catch(function (error) {
-          console.error("An error occurred in Promise.all:", error);
-        });
-      }
-  
-     function paginateResults(data) {
-    const itemsPerPage = 1;
-    let currentPage = 1;
+  <script src="js/geometry.js"></script>
 
-    function displayPage(page) {
-        console.log("Displaying page:", page);
-        const tableBody = document.getElementById('workTableData');
-        tableBody.innerHTML = '';
-
-        if (data.length === 0) {
-            const emptyMessage = document.createElement('tr');
-            emptyMessage.className = 'empty-message';
-            emptyMessage.innerHTML = '<td colspan="2">No data available.</td>';
-            tableBody.appendChild(emptyMessage);
-            return;
-        }
-
-        const start = (page - 1) * itemsPerPage;
-        const end = Math.min(start + itemsPerPage, data.length);
-        for (let i = start; i < end; i++) {
-            const item = data[i];
-            for (const [key, value] of Object.entries(item)) {
-                if (key !== "geometry") {
-                    const row = document.createElement('tr');
-                    const displayValue = key === 'length_1' ? parseFloat(value).toFixed(2) : value;
-                    row.innerHTML = `<td>${key}</td><td>${displayValue}</td>`;
-                    tableBody.appendChild(row);
-                }
-            }
-        }
-
-        // Add Edit Button at the bottom of the table
-        const editRow = document.createElement('tr');
-        const editCell = document.createElement('td');
-        editCell.colSpan = 2; // Span across two columns
-        editCell.style.textAlign = "center"; // Center align the button
-        const editButton = document.createElement('button');
-        editButton.innerHTML = '<i class="fas fa-pen"></i> Edit'; //
-        editButton.classList.add('edit-button'); // Add CSS class for styling
-        editButton.addEventListener('click', function () {
-            console.log("Edit button clicked");
-            // Add your edit functionality here
-        });
-        editCell.appendChild(editButton);
-        editRow.appendChild(editCell);
-        tableBody.appendChild(editRow);
-
-        const paginationControls = document.getElementById('pagination-controls');
-        paginationControls.innerHTML = '';
-        highlightFeature(data[start].geometry);
-        updatePagination(page);
-    }
-
-    function updatePagination(page) {
-        const paginationControls = document.getElementById('pagination-controls');
-        paginationControls.innerHTML = '';
-
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        console.log("Total Pages:", totalPages);
-
-        // Previous Button
-        const prevButton = document.createElement('button');
-        prevButton.innerHTML = '<';
-        prevButton.classList.add('arrow');
-        prevButton.disabled = page === 1;
-        prevButton.addEventListener('click', () => {
-            if (page > 1) {
-                displayPage(page - 1);
-            }
-        });
-        paginationControls.appendChild(prevButton);
-
-        // Page Numbers
-        const maxVisiblePages = 5;
-        let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
-        let endPage = startPage + maxVisiblePages - 1;
-        if (endPage > totalPages) {
-            endPage = totalPages;
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            const button = document.createElement('button');
-            button.textContent = i;
-            button.classList.add('page-num');
-            if (i === page) {
-                button.classList.add('active');
-            }
-            button.addEventListener('click', () => {
-                displayPage(i);
-            });
-            paginationControls.appendChild(button);
-        }
-
-        // Next Button
-        const nextButton = document.createElement('button');
-        nextButton.innerHTML = '>';
-        nextButton.classList.add('arrow');
-        nextButton.disabled = page === totalPages;
-        nextButton.addEventListener('click', () => {
-            if (page < totalPages) {
-                displayPage(page + 1);
-            }
-        });
-        paginationControls.appendChild(nextButton);
-    }
-
-    function highlightFeature(geometry) {
-        if (highlightLayer) {
-            map.removeLayer(highlightLayer);
-        }
-        highlightLayer = L.geoJSON(geometry, {
-            style: {
-                color: '#0000FF',
-                weight: 5,
-                opacity: 0.65
-            }
-        }).addTo(map);
-        map.fitBounds(highlightLayer.getBounds());
-    }
-
-    // Display initial page
-    displayPage(currentPage);
-}
-
-  
-      // Define printPage function
-      function printPage() {
-        window.print();
-      }
-  
-      // Assign onclick event using jQuery
-      $('#generatePdfBtn').on('click', printPage);
-    });
-  </script>
-  
+ 
 </body>
 
 </html>

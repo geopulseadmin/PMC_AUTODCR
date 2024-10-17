@@ -233,7 +233,9 @@ function saveFeature(geometry, id,tokenredirect) {
         },
         success: function (data) {
             alert("saved", data)
-            window.location.href = `geometry.html?token=${tokenredirect}`
+            setTimeout(function() {
+                window.location.href = `geometry.html?token=${tokenredirect}`;
+            }, 5000);
         }
 
     })

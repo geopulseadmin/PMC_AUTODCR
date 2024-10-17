@@ -114,6 +114,7 @@ var Plot_Layout = L.tileLayer.wms(
   opacity: 1,
 }
 ).addTo(map);
+
 var Zone_layer = L.tileLayer.wms(
 "https://iwmsgis.pmc.gov.in/geoserver/wms",
 {
@@ -127,12 +128,153 @@ var Zone_layer = L.tileLayer.wms(
 }
 ).addTo(map);
 
+var TDR_Zones = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "TDR_Zones",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+        opacity: 1,
+    });
+
+var TOD_Zones = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "TOD_Zones",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+
+
+
+var PMC_Reservation = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "PMC_Reservation",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+var Red_Blue = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Red_Blue",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+var Yerwada_Jail = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Yerwada_Jail",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+
+var Railway_Buffer = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Railway_Buffer",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+var PMC_Lake = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Lake",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+    var JE_Names = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "JE_Names",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+
+var Monuments = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Monuments",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+
+
+
+    var aviation = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Aviation_data",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+var Garden = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "Garden",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+var DevelopmentRestriction = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "DevelopmentRestriction",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+
+
+
 var baseLayers = {
   "OSM": osm,
   "Esri": Esri_WorldImagery,
   "Satellite": googleSat,
   "stamen": stamen,
 };
+
 
 var overlayLayers = {
   // "Plot": PlotBoundary_Layer,
@@ -141,6 +283,18 @@ var overlayLayers = {
   "Zone_layer":Zone_layer,
   "Plot_Layout":Plot_Layout,
   "Revenue":Revenue_Layer1,
+  JE_Names: JE_Names,
+  TDR_Zones: TDR_Zones,
+  TOD_Zones: TOD_Zones,
+  PMC_Reservation: PMC_Reservation,
+  Garden: Garden,
+  DevelopmentRestriction: DevelopmentRestriction,
+  Yerwada_Jail: Yerwada_Jail,
+  Red_Blue: Red_Blue,
+  Railway_Buffer: Railway_Buffer,
+  PMC_Lake: PMC_Lake,
+  Monuments: Monuments,
+  Aviation: aviation
 };
 
 L.control.layers(baseLayers, overlayLayers).addTo(map);

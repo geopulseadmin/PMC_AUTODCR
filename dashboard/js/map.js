@@ -99,7 +99,7 @@ var Village_Boundary1 = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/Au
   tiled: true,
   version: "1.1.0",
   opacity: 1
-}).addTo(map);
+});
 
 
 var Plot_Layout = L.tileLayer.wms(
@@ -283,18 +283,18 @@ var overlayLayers = {
   "Zone_layer":Zone_layer,
   "Plot_Layout":Plot_Layout,
   "Revenue":Revenue_Layer1,
-  JE_Names: JE_Names,
-  TDR_Zones: TDR_Zones,
-  TOD_Zones: TOD_Zones,
-  PMC_Reservation: PMC_Reservation,
-  Garden: Garden,
-  DevelopmentRestriction: DevelopmentRestriction,
-  Yerwada_Jail: Yerwada_Jail,
-  Red_Blue: Red_Blue,
-  Railway_Buffer: Railway_Buffer,
-  PMC_Lake: PMC_Lake,
-  Monuments: Monuments,
-  Aviation: aviation
+  "JE_Names": JE_Names,
+  "TDR_Zones": TDR_Zones,
+ 
+  "PMC_Reservation": PMC_Reservation,
+  "Garden": Garden,
+  "DevelopmentRestriction": DevelopmentRestriction,
+  "Yerwada_Jail": Yerwada_Jail,
+  "Red_Blue": Red_Blue,
+  "Railway_Buffer": Railway_Buffer,
+  "PMC_Lake": PMC_Lake,
+  "Monuments": Monuments,
+  "Aviation": aviation
 };
 
 L.control.layers(baseLayers, overlayLayers).addTo(map);

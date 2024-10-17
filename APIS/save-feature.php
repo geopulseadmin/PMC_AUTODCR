@@ -1,6 +1,6 @@
 <?php
 // Include the database connection configuration
-include 'config.php'; // Ensure the correct path to config.php
+include 'db.php'; // Ensure the correct path to config.php
 
 // Enable error reporting for debugging (remove in production)
 ini_set('display_errors', 1);

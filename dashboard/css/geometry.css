@@ -1,0 +1,154 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+form {
+    max-width: 1325px;
+    margin: auto;
+    padding: 30px;
+    background-color: transparent;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Logo Styles */
+.logopng1{
+    height: 50px;
+    width:50px;
+    border: 2px solid#0077DA;
+    border-radius: 10px;
+    background-color: white;
+    padding: 5px;
+   position: absolute;
+   z-index: 9999;
+   top: 2%;
+   left: 0.5%;
+  }
+
+/* Map Section Styles */
+#map-section {
+    margin-top: 20px;
+    position: relative;
+}
+
+#map {
+    top: 0px;
+    /* left: -16%; */
+    height: 70vh;
+    width: 50vw;
+    z-index: 0;
+} 
+
+#table-container {
+    flex: 1;
+    margin-left:0px;
+    height: 70vh;
+    overflow-x: auto;
+}
+
+/* External CSS for the print icon */
+#printContainer {
+    float: right;
+    margin-top: -40px;
+    margin-left: 95%;
+}
+
+#printContainer .fa-print {
+    font-size: 25px;
+    color: #0077DA; /* Applying the color you want */
+}
+
+/* External CSS for GeoPulse Analytics link */
+.geopulseaname {
+    color: #0077DA; /* Set the desired color */
+    position: absolute;
+    z-index: 99999;
+    bottom: 0.5%; /* Position from the bottom */
+    right: 0; /* Position from the right */
+    font-weight: bold;
+    font-size: 10px; /* Font size */
+}
+
+
+
+.pagination {
+    margin-top: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.pagination button {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin: 0 5px;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #007bff;
+    /* border: 1px solid black; */
+}
+
+.pagination button.active {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    background-color: #007bff;
+    color: white;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+}
+
+.pagination .arrow {
+    background-color: transparent;
+    border: none;
+}
+
+.pagination .arrow:hover {
+    background-color: transparent !important;
+    color: inherit;
+}
+
+.pagination .arrow:focus {
+    outline: none;
+}
+
+
+
+.leaflet-interactive {
+    transform: scale(1.2);
+}
+
+@media print {
+    body {
+        size: tabloid landscape;
+        margin: 10mm 10mm 10mm 10mm;
+    }
+
+    .pagination,
+    .geopulseaname,
+    #generatePdfBtn {
+        display: none;
+    }
+
+    table {
+        width: 100%;
+        font-size: 10pt;
+    }
+}

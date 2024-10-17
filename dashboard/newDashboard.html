@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard</title>
+  <link rel="icon" href="image/pmcjpeg.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <link rel="stylesheet" href="css/style2.css">
+  <link rel="stylesheet" href="css/leafletCustom.css">
+
+  <!-- Include daterangepicker CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"   />
+
+
+  <!--daterangepicker-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+
+</head>
+<body>
+
+
+  <div class="container-fluid p-0">
+    <!-- Top Section -->
+    <div class="row top-section m-0">
+      <div class="col-12 d-flex justify-content-between align-items-center p-0">
+
+      </div>
+    </div>
+
+ 
+    <div id="tablecontainer"></div>
+    <!-- popup -->
+    <div id="infoModal"
+      style="display: none; position: absolute; background-color: white; border: 1px solid #ddd; padding: 10px; z-index: 9999; max-width: 300px;">
+      <h4>Feature Information</h4>
+      <div id="modalContent"></div>
+      <button onclick="closeModal()">
+
+        
+        <i class="fa fa-times"></i>
+      </button>
+      
+    </div>
+
+
+    <!-- Map Section -->
+    <div class="north-arrow-container">
+      <img src="image/North New.png" class="north-arrow" alt="North Arrow">
+    </div>
+          
+
+    
+
+  
+
+        <!-- new code date -->
+        <div class="filters" id="filters" style="">
+          <h3 class="filter-title">Filter</h3>
+          <span class="close-icon" onclick="closeFilters()">&#215;</span>
+          <div class="filter_div">
+            
+            <!-- <div class="filter-group">
+              <label for="token" onclick="toggleFilter(this)">Token No<span class="icon-container"><i
+                    class="fa-solid fa-angle-down"></i></span><span class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2 abcscroll " multiple="multiple" id="token"></ul>
+            </div> -->
+            <div class="filter-group">
+              <label for="siteaddress_area" onclick="toggleFilter(this)">Village <span class="icon-container"><i
+                    class="fa-solid fa-angle-down"></i></span><span class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="villageSearch">
+              <!-- <img src="image/searchfilter.svg"> -->
+              <ul class="select2  abcscroll" multiple="multiple" id="siteaddress_area"></ul>
+            </div>
+            <div class="filter-group">
+              <label for="caseinformation_proposaltype" onclick="toggleFilter(this)">Proposal Type<span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2 " multiple="multiple" id="caseinformation_proposaltype"></ul>
+            </div>
+
+            <!-- <div class="filter-group">
+              <label for="gut_no" onclick="toggleFilter(this)">Survey No <span class="icon-container"><i
+                    class="fa-solid fa-angle-down"></i></span><span class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="statusSearch">
+              <ul class="select2  abcscroll" multiple="multiple" id="gut_no"></ul>
+            </div> -->
+            <!-- <div class="filter-group">
+              <label for="ownerinformation_firstname" onclick="toggleFilter(this)">Owner Name <span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2 abcscroll " multiple="multiple" id="ownerinformation_firstname"></ul>
+            </div> -->
+            <div class="filter-group">
+              <label for="caseinformation_applyfor" onclick="toggleFilter(this)">Apply For <span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="widthSearch">
+              <ul class="select2 abcscroll" multiple="multiple" id="caseinformation_applyfor"></ul>
+            </div>
+
+            <div class="filter-group">
+              <label for="caseinformation_casetype" onclick="toggleFilter(this)">Case Type <span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2 " multiple="multiple" id="caseinformation_casetype"></ul>
+            </div>
+            
+            
+            <div class="filter-group">
+              <label for="caseinformation_grossplotarea" onclick="toggleFilter(this)">Gross Plot Area <span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2 abcscroll" multiple="multiple" id="caseinformation_grossplotarea"></ul>
+            </div>
+            <div class="filter-group">
+              <label for="plotdetails_developmentzonedp" onclick="toggleFilter(this)">Development Zone DP <span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2   abcscroll p-1" multiple="multiple" id="plotdetails_developmentzonedp"></ul>
+            </div>
+            
+            <div class="stat-button">
+              <div class="stat-label">Total Count:</div>
+              <div class="stat-value" id=""></div>
+            </div>
+          </div>
+
+          <!-- <div class="showCount">
+            <h5 class="tablestats" id="tablestats" style="font-size: large;"> </h5>
+          </div> -->
+
+          <!-- <div class="stat-button">
+            <div class="stat-label">Total Count:</div>
+            <div class="stat-value" id=""></div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--table-->
+  <button id="openTableBtn"><img src="image/table.svg" alt="" class="tablebtn"></button>
+  <!--image-->
+
+
+
+
+  <!-- Summary Section -->
+  <div class="summary-section">
+    <div class="summary-header">
+      <h2 class="">Summary of Commencement</h2>
+      <!-- <button class="close-legend-btn" id="closeLegendButton">&#215;</button> -->
+      <button id="closeSummaryButton" class="close-summary-btn">&times;</button> <!-- Close button -->
+      <div class="proposal-info">
+        <span>Total number of proposals: 06</span>
+        <div class="proposal-icons">
+          <button class="btn-action"><img src="./image/Refresh.svg" alt="Refresh"></button>
+          <button class="btn-action" id="printButton"><img src="./image/Print.svg" alt="Print"></button>
+          <button class="btn-action" id="excelButton"><img src="./image/Excel.svg" alt="Export">
+          </button>
+          <div id="excelData"></div>
+        </div>
+
+        <div class="navigation-icons">
+          <button class="slider-button prev-button">&lt;</button>
+          <button class="slider-button next-button">&gt;</button>
+          <button id="closeButton">&times;</button> <!-- Close button -->
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!--card1-->
+    <div class="cards slider">
+      <div class="slider-item">
+        <div class="building-permissions">Building Permissions</div>
+        <div class="main-container">
+          <div class="text-small text-600 text-right position-total">Total</div>
+          <div class="text-small text-400 text-right position-submitted">Submitted</div>
+          <div class="text-small text-400 text-right position-approved">Approved</div>
+          <div class="text-small text-400 text-right position-process">In Process</div>
+          <div class="text-small text-400 text-right position-rejected">Rejected</div>
+          <div class="text-small text-400 text-center position-bottom-1">1500</div>
+          <div class="text-small text-400 text-center position-bottom-2">1000</div>
+          <div class="text-small text-400 text-center position-bottom-3">500</div>
+          <div class="text-small text-400 text-center position-bottom-4">0</div>
+          <div class="border-solid" style="left: 265px; top: 176px;"></div>
+          <div class="border-solid" style="left: 205px; top: 176px;"></div>
+          <div class="border-solid" style="left: 145px; top: 176px;"></div>
+          <div class="border-solid" style="left: 93px; top: 176px;"></div>
+          <div class="border-dotted-vertical"></div>
+          <div class="border-dotted-horizontal"></div>
+          <div class="bars-container">
+            <div class="bar-item">
+              <div class="bar-red"></div>
+              <div class="text-small text-400">770</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-yellow"></div>
+              <div class="text-small text-400">147</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-cyan"></div>
+              <div class="text-small text-400">397</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-green"></div>
+              <div class="text-small text-400">323</div>
+            </div>
+            <div class="bar-item" style="align-self: stretch;">
+              <div class="bar-blue"></div>
+              <div class="text-small text-400">1315</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!--card2-->
+      <div class=" slider slider-item">
+        <div class="header-text">Plinth</div>
+        <div class="content-">
+          <div class="label total">Total</div>
+          <div class="label submitted">Submitted</div>
+          <div class="label approved">Approved</div>
+          <div class="label in-process">In Process</div>
+          <div class="label rejected">Rejected</div>
+
+          <div class="number total">750</div>
+          <div class="number submitted">500</div>
+          <div class="number approved">250</div>
+          <div class="number in-process">0</div>
+
+          <div class="vertical-line vertical-line-1"></div>
+          <div class="vertical-line vertical-line-2"></div>
+          <div class="vertical-line vertical-line-3"></div>
+          <div class="vertical-line vertical-line-4"></div>
+          <div class="horizontal-dotted-line"></div>
+          <div class="bottom-dotted-line"></div>
+
+          <div class="status-bars">
+            <div class="status-bar">
+              <div class="bar bar-0"></div>
+              <div class="label">0</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-6-yellow"></div>
+              <div class="label">6</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-6-blue"></div>
+              <div class="label">6</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-593"></div>
+              <div class="label">593</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-12"></div>
+              <div class="label">12</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!--card3-->
+      <div class="slider slider-item">
+
+        <div class="building-permissions">Building Permissions</div>
+        <div class="main-container">
+          <div class="text-small text-600 text-right position-total">Total</div>
+          <div class="text-small text-400 text-right position-submitted">Submitted</div>
+          <div class="text-small text-400 text-right position-approved">Approved</div>
+          <div class="text-small text-400 text-right position-process">In Process</div>
+          <div class="text-small text-400 text-right position-rejected">Rejected</div>
+          <div class="text-small text-400 text-center position-bottom-1">1500</div>
+          <div class="text-small text-400 text-center position-bottom-2">1000</div>
+          <div class="text-small text-400 text-center position-bottom-3">500</div>
+          <div class="text-small text-400 text-center position-bottom-4">0</div>
+          <div class="border-solid" style="left: 265px; top: 176px;"></div>
+          <div class="border-solid" style="left: 205px; top: 176px;"></div>
+          <div class="border-solid" style="left: 145px; top: 176px;"></div>
+          <div class="border-solid" style="left: 93px; top: 176px;"></div>
+          <div class="border-dotted-vertical"></div>
+          <div class="border-dotted-horizontal"></div>
+          <div class="bars-container">
+            <div class="bar-item">
+              <div class="bar-red"></div>
+              <div class="text-small text-400">770</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-yellow"></div>
+              <div class="text-small text-400">147</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-cyan"></div>
+              <div class="text-small text-400">397</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-green"></div>
+              <div class="text-small text-400">323</div>
+            </div>
+            <div class="bar-item" style="align-self: stretch;">
+              <div class="bar-blue"></div>
+              <div class="text-small text-400">1315</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--card4-->
+      <div class="  slider-item">
+        <div class="header-text">Plinth</div>
+        <div class="content-">
+          <div class="label total">Total</div>
+          <div class="label submitted">Submitted</div>
+          <div class="label approved">Approved</div>
+          <div class="label in-process">In Process</div>
+          <div class="label rejected">Rejected</div>
+
+          <div class="number total">750</div>
+          <div class="number submitted">500</div>
+          <div class="number approved">250</div>
+          <div class="number in-process">0</div>
+
+          <div class="vertical-line vertical-line-1"></div>
+          <div class="vertical-line vertical-line-2"></div>
+          <div class="vertical-line vertical-line-3"></div>
+          <div class="vertical-line vertical-line-4"></div>
+          <div class="horizontal-dotted-line"></div>
+          <div class="bottom-dotted-line"></div>
+
+          <div class="status-bars">
+            <div class="status-bar">
+              <div class="bar bar-0"></div>
+              <div class="label">0</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-6-yellow"></div>
+              <div class="label">6</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-6-blue"></div>
+              <div class="label">6</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-593"></div>
+              <div class="label">593</div>
+            </div>
+            <div class="status-bar">
+              <div class="bar bar-12"></div>
+              <div class="label">12</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <div class="map-container">
+    <div id="map"></div>
+    
+    <button id="searchButton" class="search-button">
+      <img src="image/Search.svg" alt="Search Icon" class="search">
+    </button>
+
+
+    
+    <button id="calendarButton" class="calendar-button">
+      <i class="fa-solid fa-calendar-days"></i>
+  </button>
+  
+  </div>
+
+  <!--calender-->
+  <div class="daterange-container">
+    <input type="text" name="daterange" id="daterange"class="form-control">
+    <i id="calendarIcon" class="fa-solid fa-calendar-days"></i>
+  </div>
+
+  <!--search bar -->
+  
+
+        <div class="SearchBar search-container" id="search-container" >
+          <select class="search-icon" aria-label="" id="search_type">
+              <option value="">Select Type</option>
+            </select>
+            <input class="form-contro ms-2" type="search" placeholder="Search" aria-label="Search"
+            id="searchInputDashboard"  />
+          <div id="autocompleteSuggestions" class="autocomplete-suggestions"></div>
+          <!-- <img src="image/Arrow.svg" id="search-arrow" class="search-arrow" alt=""> -->
+          </div> 
+
+
+  <!-- Toggle Button -->
+  <button id="toggleClusterLegend" class="toggle-legend">
+    <img src="image/legendbottom.svg" alt="" class="toggle-icon">
+  </button>
+
+  <div id="cluster_legend" class="cluster_legend hidden ">
+    <div class="cluster_legend-title">Proposal Types
+</div>
+    <!-- <hr> -->
+  </div>
+
+  <a href="https://geopulsea.com/" class="geopulseaname">@GeoPulse Analytics</a>
+  <a class="logoPMC">
+    <img src="image/pmcjpeg.png" alt="Button Image">
+  </a>
+  <!--.tab-section OPTION-->
+
+
+  <div class="tab-section">
+    <div class="tab-main">
+      <div class="component-7" id="optionsButton">
+        <img class="ui-iconbookmarklight" alt="" src="image/light.svg" />
+        <div class="analytics">Options</div>
+      </div>
+      <div class="component-6" id="analyticsButton">
+        <img class="chart-fill-icon" alt="" src="image/Chart_fill.svg" />
+        <div class="analytics">Attributes</div>
+      </div>
+     
+    </div>
+
+    <!-- Options Content (Initially Hidden) -->
+    <div class="tabs-options" id="tabsOptions" style="display: none">
+      <div class="component-10-parent">
+        <!-- This is the existing component with the icon -->
+
+        <div class="component-10" id="toggleFilters">
+      
+          <img class="right-icons" src="image/filter.svg" alt="Search Icon" id="filter-icon"">
+  
+          <div class="component-10-child"></div>
+        </div>
+
+
+
+        <div class="component-11  toggle" id="toggleButton">
+          <img class="right-icons" alt="" src="image/Frame 1410126260.svg" />
+          <div class="component-11-child"></div>
+        </div>
+        <div class="component-11 toggle" id="Button">
+          <img class="right-icons" alt="" src="image/Pie.svg" />
+          <div class="component-11-child"></div>
+        </div>
+        
+        
+        <div id="box" class="box">
+          <span id="closeBox" class="box-icon">&times;</span>
+          
+          <div id="box-content">Loading proposal type and project count...</div>
+          
+        </div>
+
+        
+
+        <div class="component-11 toggle" id="toggleButton1">
+          <div class="right-icons3">
+            <img class="vuesaxboldgrid-6-icon" alt="" src="image/grid-6.svg" />
+          </div>
+          <div class="component-11-child"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- This div will be replaced when options are clicked -->
+    <div class="tab-parent" id="tabParent">
+      <div class="tab" data-tab="status" i>
+        <div class="status">Status</div>
+      </div>
+      <div class="tab" data-tab="area">
+        <div class="status">Area</div>
+      </div>
+      <div class="tab" data-tab="explore">
+        <div class="status">Explore</div>
+      </div>
+    </div>
+   
+    <!--legend -->
+    <div class="legends hidden">
+      <div class="header">
+        <div class="legends1">Legends</div>
+        <button class="close-legend-btn" id="closeLegendButton">&times;</button>
+
+      </div>
+      <div class="missing-link-buffer-container-parent">
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Aviation Data</div>
+          <div class="parent">
+            <div class="div">
+              <div class="child">
+              </div>
+              <div class="n1">N1</div>
+            </div>
+            <div class="frame-parent">
+              <div class="item">
+              </div>
+              <div class="nda-arp">N2</div>
+            </div>
+            <div class="frame-parent">
+              <div class="inner">
+              </div>
+              <div class="nda-arp">N3</div>
+            </div>
+            <div class="frame-parent">
+              <div class="rectangle-div">
+              </div>
+              <div class="nda-arp">N4</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child1">
+              </div>
+              <div class="nda-arp">N5</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child2">
+              </div>
+              <div class="nda-arp">N6</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child3">
+              </div>
+              <div class="nda-arp">N8</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child4">
+              </div>
+              <div class="nda-arp">NDA ARP</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child5">
+              </div>
+              <div class="nda-arp">P1</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child6">
+              </div>
+              <div class="nda-arp">P2</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child7">
+              </div>
+              <div class="nda-arp">P3</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child8">
+              </div>
+              <div class="nda-arp">P4</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child9">
+              </div>
+              <div class="nda-arp">P5</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child10">
+              </div>
+              <div class="nda-arp">P6</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child11">
+              </div>
+              <div class="nda-arp">P8</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child12">
+              </div>
+              <div class="nda-arp">P9</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child4">
+              </div>
+              <div class="nda-arp">Pune ARP</div>
+            </div>
+            <div class="frame-parent">
+              <div class="child14">
+              </div>
+              <div class="nda-arp">Zone is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: DP Ward Road</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <img class="frame-child" alt="" src="image/Frame 1410126079.svg">
+              <div class="nda-arp">Single Symbol</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Garden</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-item">
+              </div>
+              <div class="buffer-is">Buffer is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: JE Names</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <img class="frame-child" alt="" src="image/Frame 1410126079.svg">
+              <div class="buffer-is">Buffer is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Lake</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child1">
+              </div>
+              <div class="nda-arp">Single Symbol</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Monuments</div>
+          <div class="parent">
+            <div class="frame-parent">
+              <div class="frame-child2">
+              </div>
+              <div class="nda-arp">100.00000000000</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child3">
+              </div>
+              <div class="nda-arp">100.00000000000</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child4">
+              </div>
+              <div class="nda-arp">Distance is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: PLU Ward</div>
+          <div class="parent">
+            <div class="frame-parent">
+              <div class="frame-child5">
+              </div>
+              <div class="nda-arp">&lt;Null&gt;</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child6">
+              </div>
+              <div class="commercial-zone">Commercial Zone </div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child7">
+              </div>
+              <div class="nda-arp">Existing PSP Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child8">
+              </div>
+              <div class="nda-arp">Existing Recreational Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child9">
+              </div>
+              <div class="nda-arp">Existing Traffic & Transport Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child10">
+              </div>
+              <div class="nda-arp">Existing Utility Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child11">
+              </div>
+              <div class="nda-arp">Industrial Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child6">
+              </div>
+              <div class="nda-arp">Proposed Commercial Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child7">
+              </div>
+              <div class="nda-arp">Proposed PSP Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child8">
+              </div>
+              <div class="nda-arp">Proposed Recreational Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child15">
+              </div>
+              <div class="nda-arp">Proposed Residential Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child9">
+              </div>
+              <div class="nda-arp">Proposed Transport Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child10">
+              </div>
+              <div class="nda-arp">Proposed Utility Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child7">
+              </div>
+              <div class="nda-arp">PSP Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child8">
+              </div>
+              <div class="nda-arp">Recretional Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child20">
+              </div>
+              <div class="nda-arp">Residential Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child21">
+              </div>
+              <div class="nda-arp">Slum Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child9">
+              </div>
+              <div class="nda-arp">Transportation Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child23">
+              </div>
+              <div class="nda-arp">Water Body</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child24">
+              </div>
+              <div class="nda-arp">Broad_lu is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Boundary</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <img class="frame-child" alt="" src="image/Frame 1410126079.svg">
+              <div class="buffer-is">Buffer is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: PLU Ward</div>
+          <div class="parent">
+            <div class="frame-parent">
+              <div class="frame-child5">
+              </div>
+              <div class="nda-arp">Commercial Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child6">
+              </div>
+              <div class="nda-arp">Economically Weaker Section</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child7">
+              </div>
+              <div class="nda-arp">PSP Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child8">
+              </div>
+              <div class="nda-arp">Recretional Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child9">
+              </div>
+              <div class="nda-arp">Transport Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child10">
+              </div>
+              <div class="nda-arp">Utility Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child11">
+              </div>
+              <div class="nda-arp">Broad_LU is “</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child6">
+              </div>
+              <div class="nda-arp">Proposed Commercial Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child7">
+              </div>
+              <div class="nda-arp">Proposed PSP Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child8">
+              </div>
+              <div class="nda-arp">Proposed Recreational Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child15">
+              </div>
+              <div class="nda-arp">Proposed Residential Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child9">
+              </div>
+              <div class="nda-arp">Proposed Transport Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child10">
+              </div>
+              <div class="nda-arp">Proposed Utility Reservation</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child7">
+              </div>
+              <div class="nda-arp">PSP Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child8">
+              </div>
+              <div class="nda-arp">Recretional Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child20">
+              </div>
+              <div class="nda-arp">Residential Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child21">
+              </div>
+              <div class="nda-arp">Slum Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child9">
+              </div>
+              <div class="nda-arp">Transportation Zone</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child23">
+              </div>
+              <div class="nda-arp">Water Body</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child24">
+              </div>
+              <div class="nda-arp">Broad_lu is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Railway Buffer</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child45">
+              </div>
+              <div class="nda-arp">Distance is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Red_Blue</div>
+          <div class="parent">
+            <div class="frame-parent">
+              <div class="frame-child46">
+              </div>
+              <div class="nda-arp">Bank to Blue line</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child47">
+              </div>
+              <div class="nda-arp">Blue to Red line</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Revenue 1</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child48">
+              </div>
+              <div class="nda-arp">Single Symbol Lable Rule</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: TDR Zones</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <img class="frame-child" alt="" src="image/Frame 1410126079.svg">
+              <div class="buffer-is">Buffer is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: TOD Zones</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child50">
+              </div>
+              <div class="buffer-is">Single Symbol Lable Rule</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Village Boundary</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child51">
+              </div>
+              <div class="nda-arp">Single Symbol</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Ward Boundary</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <img class="frame-child" alt="" src="image/ward.svg">
+              <div class="buffer-is">Buffer is “</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Yerwada Jail</div>
+          <div class="parent">
+            <div class="frame-parent">
+              <div class="frame-child53">
+              </div>
+              <div class="nda-arp">150 Buffer</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child54">
+              </div>
+              <div class="nda-arp">100 Buffer</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child55">
+              </div>
+              <div class="nda-arp">50 Buffer</div>
+            </div>
+            <div class="frame-parent">
+              <div class="frame-child56">
+              </div>
+              <div class="nda-arp">0 Buffer</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Auto Test</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child57">
+              </div>
+              <div class="buffer-is">Single Symbol Lable Rule</div>
+            </div>
+          </div>
+        </div>
+        <div class="missing-link-buffer-container">
+          <div class="autodcr-aviation-data">AutoDCR: Plot Boundary</div>
+          <div class="div18">
+            <div class="frame-parent">
+              <div class="frame-child57">
+              </div>
+              <div class="buffer-is">Single Symbol Lable Rule</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--graphs-->
+    <div class="data-graphs">
+      <div class="summary-of-commencement">
+        Summary of Commencement
+        <div class="summary-close">&times;</div>
+      </div>
+      <div class="data-container">
+        <div class="actions">
+          <div class="proposals-count">
+            <div class="total-number-of">Total proposals:</div>
+            <b class="b">06</b>
+          </div>
+          <div class="icons">
+            <img class="marketeqrefresh-round-icon" alt="" src="image/Refresh.svg "> |
+
+
+            <img class="marketeqrefresh-round-icon" alt="Print" src="image/Print.svg" onclick="printWindow()">
+
+            <img class="marketeqrefresh-round-icon" alt="" src="image/Excel.svg">
+
+          </div>
+        </div>
+        <div class="graph-container">
+          <div class="graph-dropdown">
+            <div class="status-wise">
+              <div class="building-permissions-parent">
+                <div class="summary-of-commencement">Building Permissions</div>
+                <img class="toggle-icon up-icon" alt="" src="image/up.svg"> <!-- Up arrow initially shown -->
+                <img class="toggle-icon down-icon" alt="" src="image/down.svg" style="display: none;">
+                <!-- Down arrow initially hidden -->
+
+              </div>
+              <div class="bar-chart-container">
+                <div class="total">Total</div>
+                <div class="submitted">Submitted</div>
+                <div class="approved">Approved</div>
+                <div class="in-process">In Process</div>
+                <div class="rejected">Rejected</div>
+                <div class="div">1500</div>
+                <div class="div1">1000</div>
+                <div class="div2">500</div>
+                <div class="div3">0</div>
+                <div class="segment-line-4">
+                </div>
+                <div class="segment-line-3">
+                </div>
+                <div class="segment-line-2">
+                </div>
+                <div class="segment-line-1">
+                </div>
+                <img class="partition-line-middle-icon" alt="" src="Partition_line_Middle.svg">
+
+                <img class="partition-line-bottom-icon" alt="" src="Partition_line_Bottom.svg">
+
+                <div class="bar-graphs">
+                  <div class="bar-rejected">
+                    <div class="bar-rejected-child">
+                    </div>
+                    <div class="b">770</div>
+                  </div>
+                  <div class="bar-rejected">
+                    <div class="bar-in-process-child">
+                    </div>
+                    <div class="b">147</div>
+                  </div>
+                  <div class="bar-rejected">
+                    <div class="bar-approved-child">
+                    </div>
+                    <div class="b">397</div>
+                  </div>
+                  <div class="bar-rejected">
+                    <div class="bar-submitted-child">
+                    </div>
+                    <div class="b">323</div>
+                  </div>
+                  <div class="bar-total">
+                    <div class="bar-total-child">
+                    </div>
+                    <div class="b">1315</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="graph-dropdown">
+            <div class="status-wise1">
+              <div class="building-permissions-parent">
+                <div class="summary-of-commencement">Plinth</div>
+                <img class="toggle-icon up-icon" alt="" src="image/up.svg"> <!-- Up arrow initially shown -->
+                <img class="toggle-icon down-icon" alt="" src="image/down.svg" style="display: none;">
+                <!-- Down arrow initially hidden -->
+
+
+              </div>
+              <div class="bar-chart-container">
+                <div class="total">Total</div>
+                <div class="submitted">Submitted</div>
+                <div class="approved">Approved</div>
+                <div class="in-process">In Process</div>
+                <div class="rejected">Rejected</div>
+                <div class="div9">750</div>
+                <div class="div10">500</div>
+                <div class="div2">250</div>
+                <div class="div3">0</div>
+                <div class="segment-line-4">
+                </div>
+                <div class="segment-line-3">
+                </div>
+                <div class="segment-line-2">
+                </div>
+                <div class="segment-line-1">
+                </div>
+                <img class="partition-line-middle-icon" alt="" src="Partition_line_Middle.svg">
+
+                <img class="partition-line-bottom-icon" alt="" src="Partition_line_Bottom.svg">
+
+                <div class="bar-graphs1">
+                  <div class="bar-rejected1">
+                    <div class="bar-rejected-item">
+                    </div>
+                    <div class="b">0</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-in-process-item">
+                    </div>
+                    <div class="b">6</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-approved-item">
+                    </div>
+                    <div class="b">6</div>
+                  </div>
+                  <div class="bar-submitted1">
+                    <div class="bar-submitted-item">
+                    </div>
+                    <div class="b">593</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-total-item">
+                    </div>
+                    <div class="b">12</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="graph-dropdown">
+            <div class="status-wise">
+              <div class="building-permissions-parent">
+                <div class="summary-of-commencement">Occupancy</div>
+                <img class="toggle-icon up-icon" alt="" src="image/up.svg"> <!-- Up arrow initially shown -->
+                <img class="toggle-icon down-icon" alt="" src="image/down.svg" style="display: none;">
+                <!-- Down arrow initially hidden -->
+
+              </div>
+              <div class="bar-chart-container">
+                <div class="total">Total</div>
+                <div class="submitted">Submitted</div>
+                <div class="approved">Approved</div>
+                <div class="in-process">In Process</div>
+                <div class="rejected">Rejected</div>
+                <div class="div18">300</div>
+                <div class="div19">400</div>
+                <div class="div20">200</div>
+                <div class="div21">100</div>
+                <div class="div3">0</div>
+                <div class="segment-line-42">
+                </div>
+                <div class="segment-line-43">
+                </div>
+                <div class="segment-line-32">
+                </div>
+                <div class="segment-line-22">
+                </div>
+                <div class="segment-line-1">
+                </div>
+                <img class="partition-line-middle-icon" alt="" src="Partition_line_Middle.svg">
+
+                <img class="partition-line-bottom-icon2" alt="" src="Partition_line_Bottom.svg">
+
+                <div class="bar-graphs">
+                  <div class="bar-rejected1">
+                    <div class="bar-rejected-inner">
+                    </div>
+                    <div class="b">15</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-in-process-inner">
+                    </div>
+                    <div class="b">44</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-approved-inner">
+                    </div>
+                    <div class="b">227</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-submitted-inner">
+                    </div>
+                    <div class="b">229</div>
+                  </div>
+                  <div class="bar-submitted1">
+                    <div class="bar-total-inner">
+                    </div>
+                    <div class="b">286</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="graph-dropdown">
+            <div class="status-wise">
+              <div class="building-permissions-parent">
+                <div class="summary-of-commencement">Gunthewari</div>
+                <img class="toggle-icon up-icon" alt="" src="image/up.svg"> <!-- Up arrow initially shown -->
+                <img class="toggle-icon down-icon" alt="" src="image/down.svg" style="display: none;">
+                <!-- Down arrow initially hidden -->
+
+
+
+              </div>
+              <div class="bar-chart-container">
+                <div class="total">Total</div>
+                <div class="submitted">Submitted</div>
+                <div class="approved">Approved</div>
+                <div class="in-process">In Process</div>
+                <div class="rejected">Rejected</div>
+                <div class="div28">7.5</div>
+                <div class="div29">10</div>
+                <div class="div30">5</div>
+                <div class="div31">2.5</div>
+                <div class="div3">0</div>
+                <div class="segment-line-42">
+                </div>
+                <div class="segment-line-43">
+                </div>
+                <div class="segment-line-32">
+                </div>
+                <div class="segment-line-22">
+                </div>
+                <div class="segment-line-1">
+                </div>
+                <img class="partition-line-middle-icon" alt="" src="Partition_line_Middle.svg">
+
+                <img class="partition-line-bottom-icon2" alt="" src="Partition_line_Bottom.svg">
+
+                <div class="bar-graphs3">
+                  <div class="bar-rejected1">
+                    <div class="bar-rejected-item">
+                    </div>
+                    <div class="b">0</div>
+                  </div>
+                  <div class="bar-submitted1">
+                    <div class="bar-in-process-child1">
+                    </div>
+                    <div class="b">8</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-approved-child1">
+                    </div>
+                    <div class="b">0</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-submitted-child1">
+                    </div>
+                    <div class="b">2</div>
+                  </div>
+                  <div class="bar-submitted1">
+                    <div class="bar-total-child1">
+                    </div>
+                    <div class="b">8</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="graph-dropdown">
+            <div class="status-wise">
+              <div class="building-permissions-parent">
+                <div class="summary-of-commencement">Risk Based Approval</div>
+                <img class="toggle-icon up-icon" alt="" src="image/up.svg"> <!-- Up arrow initially shown -->
+                <img class="toggle-icon down-icon" alt="" src="image/down.svg" style="display: none;">
+                <!-- Down arrow initially hidden -->
+
+
+              </div>
+              <div class="bar-chart-container">
+                <div class="total">Total</div>
+                <div class="submitted">Submitted</div>
+                <div class="approved">Approved</div>
+                <div class="in-process">In Process</div>
+                <div class="rejected">Rejected</div>
+                <div class="div38">15</div>
+                <div class="div39">10</div>
+                <div class="div40">05</div>
+                <div class="div3">0</div>
+                <div class="segment-line-4">
+                </div>
+                <div class="segment-line-3">
+                </div>
+                <div class="segment-line-2">
+                </div>
+                <div class="segment-line-1">
+                </div>
+                <img class="partition-line-middle-icon" alt="" src="Partition_line_Middle.svg">
+
+                <img class="partition-line-bottom-icon2" alt="" src="Partition_line_Bottom.svg">
+
+                <div class="bar-graphs4">
+                  <div class="bar-rejected1">
+                    <div class="bar-rejected-child1">
+                    </div>
+                    <div class="b">2</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-in-process-child2">
+                    </div>
+                    <div class="b">6</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-approved-child2">
+                    </div>
+                    <div class="b">6</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-submitted-child2">
+                    </div>
+                    <div class="b">0</div>
+                  </div>
+                  <div class="bar-submitted1">
+                    <div class="bar-total-child2">
+                    </div>
+                    <div class="b">14</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="graph-dropdown">
+            <div class="status-wise">
+              <div class="building-permissions-parent">
+                <div class="summary-of-commencement">IT & ITES Approval</div>
+                <img class="toggle-icon up-icon" alt="" src="image/up.svg"> <!-- Up arrow initially shown -->
+                <img class="toggle-icon down-icon" alt="" src="image/down.svg" style="display: none;">
+                <!-- Down arrow initially hidden -->
+
+
+              </div>
+              <div class="bar-chart-container">
+                <div class="total">Total</div>
+                <div class="submitted">Submitted </div>
+                <div class="approved">Approved</div>
+                <div class="in-process">In Process</div>
+                <div class="rejected">Rejected</div>
+                <div class="div47">100</div>
+                <div class="div48">50</div>
+                <div class="div3">0</div>
+                <div class="segment-line-47">
+                </div>
+                <div class="segment-line-35">
+                </div>
+                <div class="segment-line-1">
+                </div>
+                <img class="partition-line-middle-icon" alt="" src="Partition_line_Middle.svg">
+
+                <img class="partition-line-bottom-icon2" alt="" src="Partition_line_Bottom.svg">
+
+                <div class="bar-graphs5">
+                  <div class="bar-rejected1">
+                    <div class="bar-rejected-child2">
+                    </div>
+                    <div class="b">14</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-in-process-child3">
+                    </div>
+                    <div class="b">63</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-approved-child3">
+                    </div>
+                    <div class="b">25</div>
+                  </div>
+                  <div class="bar-rejected1">
+                    <div class="bar-submitted-child3">
+                    </div>
+                    <div class="b">48</div>
+                  </div>
+                  <div class="bar-submitted1">
+                    <div class="bar-total-child3">
+                    </div>
+                    <div class="b">102</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/@turf/turf"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+      integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8"
+      src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+    <script src="js/map.js"></script>
+    <script src="js/filter.js"></script>
+    <script src="js/script.js"></script>
+
+
+
+
+</body>
+</html>

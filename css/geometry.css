@@ -50,7 +50,7 @@ form {
 #table-container {
     flex: 1;
     margin-left:0px;
-    height: 70vh;
+    height: 80vh;
     overflow-x: auto;
 }
 

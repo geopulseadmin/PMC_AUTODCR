@@ -274,7 +274,7 @@ function paginateResults(data) {
         }
 
         editButton.on('click', function () {
-            alert("fffffffff")
+            // alert("fffffffff")
             console.log(item.id,"item.geometry",data)
             window.location.href = `editing.html?id=${item.id}`;
             if (area !== grossPlotArea) {

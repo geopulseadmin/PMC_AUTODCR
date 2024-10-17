@@ -40,6 +40,21 @@
 
   <!-- Turf.js without integrity attribute -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+  <style>
+    #saveButton {
+    background: white;
+    font-weight: bold;
+    border: 2px solid #b1ada7;
+    padding: 7px;
+    border-radius: 4px;
+    position: absolute;
+    top: 35vh;
+    left: 14.5vw;
+    color:#585358;
+}
+  </style>
 </head>
 
 <body class="bg-light">
@@ -47,23 +62,23 @@
   <div id="content" style="width: 100%" class="container">
     <div id="button-container" class=""></div>
 
-    <section id="map-section" class="row">
-      <div class="col-md-8">
-        <form class="mt-3" style="overflow: hidden">
+    <section id="map-section" >
+      <div class="">
+        <form class="mt" style="overflow: hidden">
           <div style="margin: 0; float: left">
-            <h5 class="text-secondary">Preview Map</h5>
+            <!-- <h5 class="text-secondary">Preview Map</h5> -->
           </div>
-          <div style="float: right; margin-top: -40px; margin-left: 95%">
+          <!-- <div style="float: right; margin-top: -40px; margin-left: 95%">
             <i class="fa-solid fa-print text-primary" id="generatePdfBtn" onclick="printPage()"
               style="font-size: 25px"></i>
-          </div>
-          <div id="map" style="height: 600px;"></div>
+          </div> -->
+          <div id="map" style="height: 600px; width: 100%;"></div>
           <a class="geopulseaname"
             style="color: darkblue; position: absolute; z-index: 99999; bottom: 0.5%; right: 0; font-weight: bold; font-size: 10px;">@GeoPulse
             Analytics</a>
         </form>
       </div>
-      <div class="col-md-4">
+      <!-- <div class="col-md-4">
         <div id="table-container" class="mt-3">
           <table id="workTable" class="table table-bordered table-hover"
             style="width: 100% !important; font-size: 10px">
@@ -79,10 +94,10 @@
           <div id="pagination-controls" class="pagination d-flex justify-content-center">
           </div>
         </div>
-      </div>
+      </div> -->
     </section>
   </div>
-  <button id="saveButton">Save</button>
+  <button id="saveButton"><i class="fa-solid fa-floppy-disk"></i></button>
   <!-- Edit Feature Modal (Added earlier) -->
   <div class="modal fade" id="editFeatureModal" tabindex="-1" aria-labelledby="editFeatureModalLabel" aria-hidden="true">
     <div class="modal-dialog">

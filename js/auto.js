@@ -1,7 +1,7 @@
 
 var map, geojson;
-const API_URL = "https://iwmsgis.pmc.gov.in/geopulse/autodcr_test/";
-// const API_URL = "http://localhost/autodcr/";
+// const API_URL = "https://iwmsgis.pmc.gov.in/geopulse/autodcr_test/";
+const API_URL = "http://localhost/PMC_PROJECT/PMC_AUTODCR/";
 // const API_URL = "http://localhost/geotap/autodcr/"
 
 // Add Basemap
@@ -959,6 +959,7 @@ function FitbouCustomiseRevenue(filter) {
             filter +
             "&outputFormat=application/json";
         $.getJSON(urlm, function (data) {
+            
             geojson = L.geoJson(data, {});
 
             // Latitude and Longitude Input Fields
@@ -1015,6 +1016,7 @@ function FitbouCustomiseRevenue(filter) {
                 latitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
             }
 
+            
             // Update latitude seconds
             if (latSecondsSouth === latSecondsNorth) {
                 latitudeSecondsInput.removeAttribute('readonly');
@@ -1235,8 +1237,10 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
     getMapBounds(coordinates)
 });
 
+
 function updateFirstRowValues(table) {
-    var firstRow = table.rows[1]; // Index 0 is the header row
+    
+    var firstRow = table.rows[1]; 
 
     var longitudeDegreesInput = firstRow.cells[0].querySelector('input[name="longitudeDegrees[]"]');
     var longitudeMinutesInput = firstRow.cells[1].querySelector('input[name="longitudeMinutes[]"]');
@@ -1289,7 +1293,9 @@ function updateFirstRowValues(table) {
 
 
 
+
 function extractLastRowValues(table) { // Add the table parameter
+
     var lastRow = table.rows[table.rows.length - 2]; // Get the last row
 
     // console.log(table.rows.length ,"table.rows.length ",table.rows,"lastRow",lastRow)
@@ -1315,12 +1321,10 @@ function extractLastRowValues(table) { // Add the table parameter
 
 
 
-
-
-
 let markers = [];
 
 function addCoordinateRow(table) {
+    
     var row = table.insertRow();
     var longitudeDegreesCell = row.insertCell();
     var longitudeMinutesCell = row.insertCell();
@@ -1445,11 +1449,6 @@ function addCoordinateRow(table) {
 
     updateFirstRowValues(table); // Update first row values
 
-
-
-
-
-
     actionCell.innerHTML = '<button type="button" class="deleteRowBtn"><img src="png/delete.svg" alt="Delete" style=""></button>';
 
     // Add event listener to delete button
@@ -1465,14 +1464,30 @@ function addCoordinateRow(table) {
 }
 
 
+document.querySelector('.subbtn').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevents the default form submission behavior
 
-document.getElementById('coordinateForm').addEventListener('submit', function (event) {
-    // alert("heheh")
-    event.preventDefault();
-    var formData = new FormData(this);
+    alert("Submit button clicked!"); // Alert triggered
+
+    handleFormSubmission();
+    // You can call your form submission logic here if needed
+});
+
+
+document.getElementById('submitButton').addEventListener('click', function (event) {
+    alert("hehehe")
+    event.preventDefault(); // Prevent the default form submission
+
+    // Manually call form submission logic
+    handleFormSubmission();
+    alert("worked")
+});
+
+function handleFormSubmission() {
+    alert("getting vdata")
+    var formData = new FormData(document.getElementById('coordinateForm'));
     var coordinates = [];
-    // //console.log("Form submitted. Form data:", formData);
-    // Process form data here
+    
     formData.getAll('longitudeDegrees[]').forEach(function (longitudeDegrees, index) {
         var longitudeMinutes = formData.getAll('longitudeMinutes[]')[index];
         var longitudeSeconds = formData.getAll('longitudeSeconds[]')[index];
@@ -1484,37 +1499,84 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         var parsedLongitude = parseDMS(longitudeDegrees, longitudeMinutes, longitudeSeconds);
         var parsedLatitude = parseDMS(latitudeDegrees, latitudeMinutes, latitudeSeconds);
         coordinates.push([parsedLatitude, parsedLongitude]);
-        // console.log(coordinates)
     });
 
-
-
-    markershow = [];
-    // Add markers to the map
     if (coordinates.length < 4) {
         alert('Please enter at least four coordinates.');
         return;
     } else {
-        console.log(coordinates, "coordinates")
-        var polygon = L.polygon(coordinates).addTo(map);// Function to open the legend div when clicked
-
+        console.log(coordinates, "coordinates");
+        var polygon = L.polygon(coordinates).addTo(map);
 
         map.fitBounds(polygon.getBounds());
 
-        var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygon
+        var polygonId = 'polygon_' + L.stamp(polygon);
         polygon.polygonId = polygonId;
         drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
-        // //console.log('888888888888', polygon.toGeoJSON().geometry.coordinates);
         var polygonLayer = polygon;
         drawnItems.addLayer(polygonLayer);
-
-        // //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
     }
-});
+    alert("completed")
+}
+
+
+
+// document.getElementById('coordinateForm').addEventListener('submit', function (event) {
+    
+//     alert("heheh")
+//     console.log("firsatr forms")
+//     event.preventDefault();
+//     var formData = new FormData(this);
+//     var coordinates = [];
+//     // //console.log("Form submitted. Form data:", formData);
+//     // Process form data here
+//     console.log("htbbgtgbyhubnghbg")
+//     formData.getAll('longitudeDegrees[]').forEach(function (longitudeDegrees, index) {
+//         var longitudeMinutes = formData.getAll('longitudeMinutes[]')[index];
+//         var longitudeSeconds = formData.getAll('longitudeSeconds[]')[index];
+//         var latitudeDegrees = formData.getAll('latitudeDegrees[]')[index];
+//         var latitudeMinutes = formData.getAll('latitudeMinutes[]')[index];
+//         var latitudeSeconds = formData.getAll('latitudeSeconds[]')[index];
+
+//         // Parse DMS strings into decimal degrees
+//         var parsedLongitude = parseDMS(longitudeDegrees, longitudeMinutes, longitudeSeconds);
+//         var parsedLatitude = parseDMS(latitudeDegrees, latitudeMinutes, latitudeSeconds);
+//         coordinates.push([parsedLatitude, parsedLongitude]);
+        
+//         // console.log(coordinates)
+//     });
+
+//     markershow = [];
+//     // Add markers to the map
+//     if (coordinates.length < 4) {
+//         alert('Please enter at least four coordinates.');
+//         return;
+//     } else {
+//         console.log(coordinates, "coordinates")
+//         var polygon = L.polygon(coordinates).addTo(map);// Function to open the legend div when clicked
+
+
+//         map.fitBounds(polygon.getBounds());
+
+//         var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygon
+//         polygon.polygonId = polygonId;
+//         drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
+//         // //console.log('888888888888', polygon.toGeoJSON().geometry.coordinates);
+//         var polygonLayer = polygon;
+//         drawnItems.addLayer(polygonLayer);
+
+//         // //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
+//     }
+// });
 
 // Function to parse DMS format to decimal degrees
 function parseDMS(degrees, minutes, seconds) {
+    try {
     return parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / 3600;
+} catch (error) {
+    console.error("Error parsing DMS:", error.message);
+    return null;
+}
 }
 
 

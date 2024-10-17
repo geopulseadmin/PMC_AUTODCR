@@ -138,20 +138,6 @@ var TDR_Zones = L.tileLayer
         opacity: 1,
     });
 
-var TOD_Zones = L.tileLayer
-    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
-        layers: "TOD_Zones",
-        format: "image/png",
-        transparent: true,
-        tiled: true,
-        version: "1.1.0",
-
-        opacity: 1,
-    });
-
-
-
-
 var PMC_Reservation = L.tileLayer
     .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
         layers: "PMC_Reservation",
@@ -285,7 +271,7 @@ var overlayLayers = {
   "Revenue":Revenue_Layer1,
   "JE_Names": JE_Names,
   "TDR_Zones": TDR_Zones,
- 
+ "TOD_Zones":TOD_Zones,
   "PMC_Reservation": PMC_Reservation,
   "Garden": Garden,
   "DevelopmentRestriction": DevelopmentRestriction,

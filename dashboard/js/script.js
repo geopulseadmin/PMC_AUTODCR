@@ -98,6 +98,7 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       headers.forEach(header => {
         // Convert header to camelCase or other naming convention if necessary
         let propertyName = header.replace(/ /g, '');
+        console.log(propertyName,"propertyName")
         if (header === 'token') {
           mappedData[propertyName] = (feature.properties[header]).toFixed(2); // Format to two decimal places
       } else {
@@ -107,7 +108,7 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       
       mappedData.geometry = feature.geometry;
       work_id.push(feature.properties.token)
-      console.log(mappedData,"mappedDatamappedData");
+      
 
       return mappedData;
     });
@@ -116,9 +117,12 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       return sum + feature.properties.token;
     }, 0);
     let uniqueCount = new Set(work_id).size;
-    console.log(work_id.id, "lllllllllllll",work_id,uniqueCount)
+    console.log(work_id.token, "lllllllllllll",work_id,uniqueCount)
     document.getElementById('tablestats').innerHTML = `
-    
+     <div class="stat-button">
+          <div class="stat-label">Total Count:</div>
+          <div class="stat-value" id="">${uniqueCount}</div>
+        </div>
    
   `;
   
@@ -152,7 +156,7 @@ const cluster_url = "https://iwmsgis.pmc.gov.in/geoserver/";
   loadAndProcessGeoJSON(cluster_url, cluster_layerName, filterString1);
   getCheckedValues(function (filterString) {
     const mainfilter = combineFilters(filterString1, filterString);
-    console.log("Filter Stringinsidedfgnjfhfufh: ", mainfilter);
+    // console.log("Filter Stringinsidedfgnjfhfufh: ", mainfilter);
     loadAndProcessGeoJSON(cluster_url, cluster_layerName, mainfilter);
     // loadAndProcessGeoJSON(main_url, layername, mainfilter);
     FilterAndZoom(mainfilter);
@@ -268,7 +272,7 @@ function getCheckedValues(callback) {
             FilterAndZoomforvillage(ff)
           }
           filters.push(`${key} IN ('${selectedValues[key].join("','")}')`);
-          console.log(key,"forororroro")
+          // console.log(key,"forororroro")
         }
       }
 
@@ -435,7 +439,7 @@ async function showtable(typeName, geoServerURL, cqlFilter, headers,headerMappin
   function createTable(data, headers) {
     var tableContainer = document.getElementById('tablecontainer');
     if (!tableContainer) {
-      console.error("Table container not found");
+      // console.error("Table container not found");
       return;
     }
     tableContainer.innerHTML = ""; // Clear any existing content
@@ -764,7 +768,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function getValues(callback) {
       var geoServerURL = `${main_url}AutoDCR/wms?service=WFS&version=1.1.0&request=GetFeature&typeName=Plot_Layout&propertyName=${selectedValue}&outputFormat=application/json`;
-      console.log(geoServerURL, "geoServerURLsearch");
+      // console.log(geoServerURL, "geoServerURLsearch");
 
       $.getJSON(geoServerURL, function (data) {
         var workTypeSet = new Set();
@@ -784,7 +788,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Convert the Set to an array
         var uniqueWorkTypes = Array.from(workTypeSet);
-        console.log(uniqueWorkTypes, "uniqueWorkTypes");
+        // console.log(uniqueWorkTypes, "uniqueWorkTypes");
 
         // Call the callback function with the uniqueWorkTypes array
         callback(uniqueWorkTypes);
@@ -794,7 +798,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Call getValues function and initialize autocomplete
     getValues(function (data) {
       // console.log("heheheh", data);
-      console.log(selectedValue, "LLLLLLLLLLLLLLLLLLLLLL")
+      // console.log(selectedValue, "LLLLLLLLLLLLLLLLLLLLLL")
       // Initialize autocomplete with fetched data
       autocomplete(document.getElementById("searchInputDashboard"), data);
     });
@@ -819,16 +823,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
           item.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
           item.addEventListener("click", function () {
             selectedValue = this.getElementsByTagName("input")[0].value; // Store the selected value
-            console.log(selectedValue, "ppppppppppppppppp")
+            // console.log(selectedValue, "ppppppppppppppppp")
 
 
             var searchtypefield = $("#search_type").val();
-            console.log(searchtypefield, "ppppppppppppppppp99999999")
+            // console.log(searchtypefield, "ppppppppppppppppp99999999")
             let cqlFilter;
 
             cqlFilter = `${searchtypefield} IN ('${selectedValue}')`;
 
-            console.log(cqlFilter, "cqlFilter")
+            // console.log(cqlFilter, "cqlFilter")
 
 
 
@@ -848,7 +852,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             
 
 
-            console.log("Adding layers with filter:", cqlFilter);
+            // console.log("Adding layers with filter:", cqlFilter);
             Plot_Layout.addTo(map).bringToFront();
            Village_Boundary1.addTo(map).bringToFront();
             fitbous(cqlFilter);
@@ -979,7 +983,7 @@ let isModalOpen = false; // Flag to track modal visibility
 
 // Function to handle right-click on the map
 async function handleMapRightClick(e) {
-  console.log("Right-click event:", e);
+  // console.log("Right-click event:", e);
 
   let bbox = map.getBounds().toBBoxString();
   let size = map.getSize();
@@ -991,7 +995,7 @@ async function handleMapRightClick(e) {
     let selectedKeys = layerDetails[layer];
     let workspace = "AutoDCR";
     let urrr = `https://iwmsgis.pmc.gov.in/geoserver/${workspace}/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=${layer}&STYLES&LAYERS=${layer}&exceptions=application%2Fvnd.ogc.se_inimage&INFO_FORMAT=application/json&FEATURE_COUNT=50&X=${Math.round(e.containerPoint.x)}&Y=${Math.round(e.containerPoint.y)}&SRS=EPSG%3A4326&WIDTH=${size.x}&HEIGHT=${size.y}&BBOX=${bbox}`;
-    console.log("WMS Request URL:", urrr);
+    // console.log("WMS Request URL:", urrr);
 
     try {
       let response = await fetch(urrr);
@@ -1010,7 +1014,7 @@ async function handleMapRightClick(e) {
           }
         }
         let detaildata1 = `<table style='width:100%;' class='popup-table'>${txtk1}<tr><td>Coordinates</td><td>${e.latlng}</td></tr></table>`;
-        console.log("Modal Content:", detaildata1);
+        // console.log("Modal Content:", detaildata1);
 
         // Update the modal content
         document.getElementById("modalContent").innerHTML = detaildata1;
@@ -1580,7 +1584,7 @@ $(document).ready(function () {
   // Function to load initial data
   function loadinitialData(cql_filter) {
       const url = `${main_url}AutoDCR/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=${layername}&outputFormat=application/json&cql_filter=${encodeURIComponent(cql_filter)}`;
-      console.log(url, "Main URL");
+      // console.log(url, "Main URL");
 
       return $.getJSON(url).then(function (data) {
           // Create villageLayer from GeoJSON data

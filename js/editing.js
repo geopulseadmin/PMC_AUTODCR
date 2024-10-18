@@ -173,7 +173,7 @@ $(document).ready(async function () {
 
     $('#saveButton').click(function () {
         console.log(geojsonLayer, "geojsonLayer")
-        // console.log(geojsonLayer.length,"ppppppp")
+        console.log(geojsonLayer.length,"ppppppp")
         geojsonLayer.eachLayer(function (layer) {
             var geojson = layer.toGeoJSON();
             var coordinates = geojson.geometry.coordinates;

@@ -1,7 +1,7 @@
 <?php
 $host = 'iwmsgis.pmc.gov.in';
-$dbname = 'AutoDCR';
-// $dbname = 'Test';
+// $dbname = 'AutoDCR';
+$dbname = 'Test';
 $username = 'postgres';
 $password = "pmc992101";
 

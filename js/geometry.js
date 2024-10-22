@@ -436,12 +436,6 @@ function updateTableWithItem(item) {
 
 
 $(document).ready(function () {
-
-
-    // var geojsonData = geojsonLayer.toGeoJSON();
-    // console.log(geojsonData,"lllllllllllllllllllllllllll")
-    // const layer = e.layer;
-    // console.log( editableLayers)
    
     $('#saveButton').click(function () {
      

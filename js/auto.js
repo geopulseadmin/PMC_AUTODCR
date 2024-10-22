@@ -1,7 +1,7 @@
 
 var map, geojson;
-// const API_URL = "https://iwmsgis.pmc.gov.in/geopulse/autodcr_test/";
-const API_URL = "http://localhost/PMC_PROJECT/PMC_AUTODCR/";
+const API_URL = "https://iwmsgis.pmc.gov.in/geopulse/autodcr_test/";
+// const API_URL = "http://localhost/autodcr/";
 // const API_URL = "http://localhost/geotap/autodcr/"
 
 // Add Basemap
@@ -323,7 +323,6 @@ L.control.zoom({
 
 
 // draw-----------------------------------------------------
-
 var drawnItems = new L.FeatureGroup().addTo(map);
 
 var drawControl = new L.Control.Draw({
@@ -959,7 +958,6 @@ function FitbouCustomiseRevenue(filter) {
             filter +
             "&outputFormat=application/json";
         $.getJSON(urlm, function (data) {
-            
             geojson = L.geoJson(data, {});
 
             // Latitude and Longitude Input Fields
@@ -999,8 +997,8 @@ function FitbouCustomiseRevenue(filter) {
                 latitudeDegreesInput.setAttribute('readonly', 'readonly');
             } else {
                 latitudeDegreesInput.removeAttribute('readonly');
-                // latitudeDegreesInput.setAttribute('min', latsouth);
-                // latitudeDegreesInput.setAttribute('max', latnorth);
+                latitudeDegreesInput.setAttribute('min', latsouth);
+                latitudeDegreesInput.setAttribute('max', latnorth);
                 latitudeDegreesInput.setAttribute('step', '1'); // Step for degrees
             }
 
@@ -1016,7 +1014,6 @@ function FitbouCustomiseRevenue(filter) {
                 latitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
             }
 
-            
             // Update latitude seconds
             if (latSecondsSouth === latSecondsNorth) {
                 latitudeSecondsInput.removeAttribute('readonly');
@@ -1036,8 +1033,8 @@ function FitbouCustomiseRevenue(filter) {
                 longitudeDegreesInput.setAttribute('readonly', 'readonly');
             } else {
                 longitudeDegreesInput.removeAttribute('readonly');
-                // longitudeDegreesInput.setAttribute('min', lngsouth);
-                // longitudeDegreesInput.setAttribute('max', lngnorth);
+                longitudeDegreesInput.setAttribute('min', lngsouth);
+                longitudeDegreesInput.setAttribute('max', lngnorth);
                 longitudeDegreesInput.setAttribute('step', '1'); // Step for degrees
             }
 
@@ -1149,7 +1146,11 @@ function processCSV(kmlContent) {
 
         var polygonLayer = polygon;
         drawnItems.addLayer(polygonLayer);
-      
+        // // for saving coordinates
+        // var polygonId = 'polygon_csv'
+        // drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
+        // // //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
+
         var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygon
 
         // drawnItems.addLayer(polygon);
@@ -1169,7 +1170,7 @@ function processCSV(kmlContent) {
 }
 
 
-// for adding coordinates manulay------------------------------------------------------------------------------------------
+// for adding coordinates manulay
 
 
 document.getElementById('toggleFormBtn').addEventListener('click', function () {
@@ -1233,10 +1234,8 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
     getMapBounds(coordinates)
 });
 
-
 function updateFirstRowValues(table) {
-    
-    var firstRow = table.rows[1]; 
+    var firstRow = table.rows[1]; // Index 0 is the header row
 
     var longitudeDegreesInput = firstRow.cells[0].querySelector('input[name="longitudeDegrees[]"]');
     var longitudeMinutesInput = firstRow.cells[1].querySelector('input[name="longitudeMinutes[]"]');
@@ -1289,9 +1288,7 @@ function updateFirstRowValues(table) {
 
 
 
-
 function extractLastRowValues(table) { // Add the table parameter
-
     var lastRow = table.rows[table.rows.length - 2]; // Get the last row
 
     // console.log(table.rows.length ,"table.rows.length ",table.rows,"lastRow",lastRow)
@@ -1317,10 +1314,12 @@ function extractLastRowValues(table) { // Add the table parameter
 
 
 
+
+
+
 let markers = [];
 
 function addCoordinateRow(table) {
-    
     var row = table.insertRow();
     var longitudeDegreesCell = row.insertCell();
     var longitudeMinutesCell = row.insertCell();
@@ -1384,7 +1383,7 @@ function addCoordinateRow(table) {
     latitudeDegreesInput.value = '18';
     latitudeDegreesInput.style.width = '50px';
     latitudeDegreesInput.style.position = 'absolute';
-    latitudeDegreesInput.style.left = '39%';
+    latitudeDegreesInput.style.left = '40%';
     latitudeDegreesInput.style.borderBottomLeftRadius = '5px';
     latitudeDegreesInput.style.borderTopLeftRadius = '5px';
     latitudeDegreesInput.style.borderTop = '2px solid #3c3cb8';
@@ -1399,7 +1398,7 @@ function addCoordinateRow(table) {
     latitudeMinutesInput.setAttribute('name', 'latitudeMinutes[]');
     latitudeMinutesInput.style.width = '40px';
     latitudeMinutesInput.style.position = 'absolute';
-    latitudeMinutesInput.style.left = '46%';
+    latitudeMinutesInput.style.left = '48%';
     latitudeMinutesInput.style.borderTop = '2px solid  #3c3cb8';
     latitudeMinutesInput.style.borderBottom = '2px solid  #3c3cb8';
     latitudeMinutesInput.style.borderLeft = '2px solid  #bbb';
@@ -1411,7 +1410,7 @@ function addCoordinateRow(table) {
     latitudeSecondsInput.setAttribute('step', '0.01'); // Allow decimal increments for seconds
     latitudeSecondsInput.style.width = '60px';
     latitudeSecondsInput.style.position = 'absolute';
-    latitudeSecondsInput.style.left = '54%';
+    latitudeSecondsInput.style.left = '56%';
     latitudeSecondsInput.style.borderTop = '2px solid  #3c3cb8';
     latitudeSecondsInput.style.borderBottom = '2px solid #3c3cb8';
     latitudeSecondsInput.style.borderRight = '2px solid #3c3cb8';
@@ -1426,7 +1425,7 @@ function addCoordinateRow(table) {
     heightfloatCellInput.setAttribute('name', 'heightfloatCell[]');
     heightfloatCellInput.style.width = '70px';
     heightfloatCellInput.style.position = 'absolute';
-    heightfloatCellInput.style.left = '69%';
+    heightfloatCellInput.style.left = '74%';
     heightfloatCellInput.style.borderBottomLeftRadius = '5px';
     heightfloatCellInput.style.borderTopLeftRadius = '5px';
     heightfloatCellInput.style.borderTop = '2px solid #3c3cb8';
@@ -1445,6 +1444,11 @@ function addCoordinateRow(table) {
 
     updateFirstRowValues(table); // Update first row values
 
+
+
+
+
+
     actionCell.innerHTML = '<button type="button" class="deleteRowBtn"><img src="png/delete.svg" alt="Delete" style=""></button>';
 
     // Add event listener to delete button
@@ -1460,30 +1464,14 @@ function addCoordinateRow(table) {
 }
 
 
-document.querySelector('.subbtn').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevents the default form submission behavior
 
-    alert("Submit button clicked!"); // Alert triggered
-
-    handleFormSubmission();
-    // You can call your form submission logic here if needed
-});
-
-
-document.getElementById('submitButton').addEventListener('click', function (event) {
-    alert("hehehe")
-    event.preventDefault(); // Prevent the default form submission
-
-    // Manually call form submission logic
-    handleFormSubmission();
-    alert("worked")
-});
-
-function handleFormSubmission() {
-    alert("getting vdata")
-    var formData = new FormData(document.getElementById('coordinateForm'));
+document.getElementById('coordinateForm').addEventListener('submit', function (event) {
+    // alert("heheh")
+    event.preventDefault();
+    var formData = new FormData(this);
     var coordinates = [];
-    
+    // //console.log("Form submitted. Form data:", formData);
+    // Process form data here
     formData.getAll('longitudeDegrees[]').forEach(function (longitudeDegrees, index) {
         var longitudeMinutes = formData.getAll('longitudeMinutes[]')[index];
         var longitudeSeconds = formData.getAll('longitudeSeconds[]')[index];
@@ -1495,41 +1483,38 @@ function handleFormSubmission() {
         var parsedLongitude = parseDMS(longitudeDegrees, longitudeMinutes, longitudeSeconds);
         var parsedLatitude = parseDMS(latitudeDegrees, latitudeMinutes, latitudeSeconds);
         coordinates.push([parsedLatitude, parsedLongitude]);
+        // console.log(coordinates)
     });
 
+
+
+    markershow = [];
+    // Add markers to the map
     if (coordinates.length < 4) {
         alert('Please enter at least four coordinates.');
         return;
     } else {
-        console.log(coordinates, "coordinates");
-        var polygon = L.polygon(coordinates).addTo(map);
+        console.log(coordinates, "coordinates")
+        var polygon = L.polygon(coordinates).addTo(map);// Function to open the legend div when clicked
+
 
         map.fitBounds(polygon.getBounds());
 
-        var polygonId = 'polygon_' + L.stamp(polygon);
+        var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygon
         polygon.polygonId = polygonId;
         drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
+        // //console.log('888888888888', polygon.toGeoJSON().geometry.coordinates);
         var polygonLayer = polygon;
         drawnItems.addLayer(polygonLayer);
+
+        // //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
     }
-    alert("completed")
-}
+});
 
 // Function to parse DMS format to decimal degrees
 function parseDMS(degrees, minutes, seconds) {
-    try {
     return parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / 3600;
-} catch (error) {
-    console.error("Error parsing DMS:", error.message);
-    return null;
 }
-}
-
-
-
-// for adding coordinates manulay------------------------------------------------------------------------------------------
-
-
 
 function getSelectedValues1() {
     var selectedValues = [];
@@ -1589,8 +1574,8 @@ async function savevalues() {
             var cqlFilterget = getSelectedValues();
             const selected_dropdown = JSON.stringify(cqlFilterget);
             const villageName = JSON.stringify(values);
-            // var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
-            var DrawnPolygonDetails = 'Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m'
+            var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
+
             const selected_guts = JSON.stringify(getSelectedValues1());
             const selected_village = JSON.stringify(getFilters());
 
@@ -1804,7 +1789,13 @@ async function savevalues() {
                         newMap.fitBounds(mapBounds);
 
                         console.log(correctedCoordinates, "newCoordinates1")
-                    
+                        // L.polygon(correctedCoordinates, {
+                        //     color: 'blue',       // Border color
+                        //     weight: 3,          // Border thickness
+                        //     fillOpacity: 0.2    // Transparency for the filled area
+                        // }).addTo(newMap);
+
+
                     }, 500); // Increased timeout for map loading
                 }
             });
@@ -1817,12 +1808,30 @@ async function savevalues() {
             var tenPercemax = (grossplotarea * 1.1); // 10% of gross plot area
             var tenPercemin = (grossplotarea * 0.9);
 
+            // if (polygonArea > tenPercemax || polygonArea < tenPercemin) {
+            //     popupMessage = `The polygon area is ${polygonArea.toFixed(2)} and Grossplotarea is ${grossplotarea.toFixed(2)} \n
+            //      the polygon area should not more or less than 10% of the GrossPlotArea`;
+            //     showPopup(popupMessage);
+
+            // } else {
+            // alert("hello")
             showTableModal(exampleData);
 
+            // }
+
+            // showTableModal(exampleData);
+
+            // -------------------------
         }
         )
     }
 }
+
+
+// }
+// for conveting degree decimals to degree minutes and seconds
+
+///////////////////////////////////////////////
 
 
 function convertToDMS(decimal) {
@@ -1836,6 +1845,8 @@ function convertToDMS(decimal) {
 
 
 async function submitForm() {
+    // alert("Data Saved")
+    // console.log(drawnPolygons, "drawnPolygonslllllllllll")
 
     for (const polygonId in drawnPolygons) {
         // var polygonId= "";
@@ -1860,13 +1871,24 @@ async function submitForm() {
         // map.fitBounds(bounds);
         var layers = ["AutoDCR:Revenue_1"];
 
-        var url = "https://iwmsgis.pmc.gov.in/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=";
+        var url = "https://iwmsgis.pmc.gov.in//geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=";
         var propertyName = "village_name,TPS_Name,Gut_No,geom";
         var outputFormat = "application/json";
         var values = await IntersectAreaWithPolygon(pp, layers, url, propertyName, bounds.toBBoxString(), outputFormat)
         var cqlFilterget = getSelectedValues()
         const selected_dropdown = JSON.stringify(cqlFilterget)
         const villageName = JSON.stringify(values);
+
+
+
+        // var values = await IntersectAreaWithPolygon(pp, layers, url, propertyName, bounds.toBBoxString(), outputFormat);
+        // var cqlFilterget = getSelectedValues();
+        // const selected_dropdown = JSON.stringify(cqlFilterget);
+        // const villageName = JSON.stringify(values);
+        // var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
+
+
+
         const selected_guts = JSON.stringify(getSelectedValues1());
         const selected_village = JSON.stringify(getFilters());
         const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
@@ -2024,7 +2046,7 @@ async function submitForm() {
                 // localStorage.setItem('coordinates',coordinates1);
                 // console.log("localstorage")
 
-                window.location.href = 'dashboard.html';
+                // window.location.href = 'dashboard.html';
 
                 // if(response.data.id != undefined){
 
@@ -2088,7 +2110,13 @@ async function submitForm() {
                 console.error('Error calling API:', xhr.responseText);
             },
         });
-        };
+        // window.location.href = 'dashboard.html';
+        // setTimeout(function () {
+        //                             window.close();
+        //                         }, 10000); // 5000 milliseconds = 5 seconds
+
+
+    };
 }
 
 
@@ -2098,7 +2126,8 @@ document.getElementById("getinfo").onclick = function () {
 
 function infovalues() {
     if (Object.keys(drawnPolygons).length === 0) {
-              return; // Exit the function early
+        // alert("No coordinates drawn on map.");
+        return; // Exit the function early
     }
 
     Object.keys(drawnPolygons).forEach(async function (polygonId) {
@@ -2164,6 +2193,8 @@ async function IntersectAreaWithPolygon(drawnPolygon, layers, url, propertyName,
     return combinedSummary;
 }
 
+
+
 function IntersectwithASLM(drawnPolygon, layers, url, propertyName, bounds, outputFormat) {
     var distancefromNDA = []
     var distancefromPuneairport = []
@@ -2225,6 +2256,9 @@ function IntersectwithASLM(drawnPolygon, layers, url, propertyName, bounds, outp
     });
 
 }
+
+
+
 // new added___________________________________________
 
 async function Intersection(drawnPolygon, layers, url, propertyName, bounds, outputFormat) {
@@ -2277,9 +2311,42 @@ async function Intersection(drawnPolygon, layers, url, propertyName, bounds, out
                         }
                     }
 
-                   
+                    // //console.log(properties, "HHHHHHHH");
+                    // let keay = Object.keys(attributes);
+                    // for (let ind in keay) {
+                    //     let key = keay[ind];
+                    //     if (properties.hasOwnProperty(key)) {
+                    //         let value = properties[key];
+                    //         value.push(properties['area'])
+                    //         let attributes_value = attributes[key];
+                    //         if (!intersectvalues[attributes_value]) {
+                    //             intersectvalues[attributes_value] = []; // Create an array for each key if it doesn't exist
+                    //         }
+                    //         intersectvalues[attributes_value].push(value); // Push value into the array
+                    //         //console.log(attributes_value, value, "workingsss");
+                    //     //     let pp = value+"area"
+                    //     // intersectvalues[pp] = properties['area'];
+
+                    //     }
+
+                    // }
+                    // Include 'area' property in intersectvalues
+
+
                 });
-           
+                // intersectedLayer.eachLayer(function (layer) {
+                //     var properties = layer.feature.properties;
+                //     for (let key of attributes) {
+                //         if (properties.hasOwnProperty(key)) {
+                //             let value = properties[key];
+                //             if (!intersectvalues[key]) {
+                //                 intersectvalues[key] = []; // Create an array for each key if it doesn't exist
+                //             }
+                //             intersectvalues[key].push(value); // Push value into the array
+                //             //console.log(value, "workingsss");
+                //         }
+                //     }
+                // });
             } else {
                 //console.log('No valid features found in the response.');
             }
@@ -2299,6 +2366,84 @@ $('#saveToAutoDCRButton').click(function () {
     localStorage.setItem('editedCoordinates', JSON.stringify(drawnPolygons));
     // window.location.href = 'dashboard.html';
 });
+
+
+
+// Function to show modal with table
+// function showTableModal(data) {
+//     var modal = $('#dataPageModal');
+//     var table = modal.find('#popup-table tbody');
+
+//     table.empty();
+
+//     data.forEach(function (row) {
+//         var tr = $('<tr>');
+//         row.forEach(function (cell) {
+//             tr.append('<td>' + cell + '</td>');
+//         });
+//         table.append(tr);
+//     });
+
+//     // Show modal
+//     modal.modal('show');
+// }
+
+// function showTableModal(data) {
+//     // Clear the existing table content
+//     $('#popup-table tbody').empty();
+
+//     data.forEach(function (row) {
+//         var rowHtml = '<tr>';
+//         rowHtml += '<td>' + row[0] + '</td>';
+//         rowHtml += '<td>' + row[1] + '</td>';
+//         rowHtml += '</tr>';
+//         $('#popup-table tbody').append(rowHtml);
+//     });
+
+//     // Show the modal
+//     $('#dataPageModal').modal('show');
+// }
+
+
+// function showTableModal(data) {
+//     var modal = $('#dataPageModal');
+//     var table = modal.find('#popup-table tbody');
+
+//     // Clear existing rows
+//     table.empty();
+
+//     data.forEach(function (item) {
+//         var attribute = item[0];
+//         var result = item[1];
+//         //console.log(item,"item")
+
+//         if (attribute === 'Coordinates') {
+//             // Generate nested table HTML for coordinates
+//             var coordinatesTableHtml = generateCoordinatesTable(result);
+
+//             // Append a row with nested table HTML
+//             table.append(`
+//                 <tr>
+//                     <td>${attribute}</td>
+//                     <td>${coordinatesTableHtml}</td>
+//                 </tr>
+//             `);
+//             //console.log(coordinatesTableHtml,"coordinatesTableHtml")
+//         } else {
+//             // For other attributes, just append them normally
+//             table.append(`
+//                 <tr>
+//                     <td>${attribute}</td>
+//                     <td>${result}</td>
+//                 </tr>
+//             `);
+//         }
+//     });
+
+//     // Show the modal
+//     modal.modal('show');
+// }
+
 
 
 // for popupedit

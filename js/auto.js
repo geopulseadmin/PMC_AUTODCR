@@ -1011,18 +1011,18 @@ function FitbouCustomiseRevenue(filter) {
                 latitudeMinutesInput.removeAttribute('readonly');
                 latitudeMinutesInput.setAttribute('min', latsouthM);
                 latitudeMinutesInput.setAttribute('max', latnorthM);
-                latitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
+                latitudeMinutesInput.setAttribute('step', '0.1'); // Step for minutes
             }
 
             // Update latitude seconds
             if (latSecondsSouth === latSecondsNorth) {
                 latitudeSecondsInput.removeAttribute('readonly');
-                latitudeSecondsInput.value = latSecondsSouth.toFixed(2); // Use toFixed for two decimal places
+                latitudeSecondsInput.value = latSecondsSouth.toFixed(3); // Use toFixed for two decimal places
                 latitudeSecondsInput.setAttribute('readonly', 'readonly');
             } else {
                 latitudeSecondsInput.removeAttribute('readonly');
-                latitudeSecondsInput.setAttribute('min', latSecondsSouth.toFixed(2)); // Set min to two decimal places
-                latitudeSecondsInput.setAttribute('max', latSecondsNorth.toFixed(2)); // Set max to two decimal places
+                latitudeSecondsInput.setAttribute('min', latSecondsSouth.toFixed(3)); // Set min to two decimal places
+                latitudeSecondsInput.setAttribute('max', latSecondsNorth.toFixed(3)); // Set max to two decimal places
                 latitudeSecondsInput.setAttribute('step', '0.01'); // Step for seconds
             }
 
@@ -1047,7 +1047,7 @@ function FitbouCustomiseRevenue(filter) {
                 longitudeMinutesInput.removeAttribute('readonly');
                 longitudeMinutesInput.setAttribute('min', lngsouthM);
                 longitudeMinutesInput.setAttribute('max', lngnorthM);
-                longitudeMinutesInput.setAttribute('step', '1'); // Step for minutes
+                longitudeMinutesInput.setAttribute('step', '0.1'); // Step for minutes
             }
 
             // Update longitude seconds
@@ -1057,8 +1057,8 @@ function FitbouCustomiseRevenue(filter) {
                 longitudeSecondsInput.setAttribute('readonly', 'readonly');
             } else {
                 longitudeSecondsInput.removeAttribute('readonly');
-                longitudeSecondsInput.setAttribute('min', lonSecondsSouth.toFixed(2)); // Set min to two decimal places
-                longitudeSecondsInput.setAttribute('max', lonSecondsNorth.toFixed(2)); // Set max to two decimal places
+                longitudeSecondsInput.setAttribute('min', lonSecondsSouth.toFixed(3)); // Set min to two decimal places
+                longitudeSecondsInput.setAttribute('max', lonSecondsNorth.toFixed(3)); // Set max to two decimal places
                 longitudeSecondsInput.setAttribute('step', '0.01'); // Step for seconds
             }
 
@@ -1124,9 +1124,6 @@ function processKML(kmlString) {
 
             var polygonId = 'polygon_' + L.stamp(polygonLayer);
             drawnPolygons[polygonId] = polygonLayer.toGeoJSON().geometry.coordinates;
-            // //console.log('hhhhhhhhhokkkk', polygonLayer.toGeoJSON().geometry.coordinates);
-
-            // Attach the polygonId to the layer for future reference
             polygonLayer.polygonId = polygonId;
         });
 
@@ -1146,31 +1143,16 @@ function processCSV(kmlContent) {
 
         var polygonLayer = polygon;
         drawnItems.addLayer(polygonLayer);
-        // // for saving coordinates
-        // var polygonId = 'polygon_csv'
-        // drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
-        // // //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
 
-        var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygon
-
-        // drawnItems.addLayer(polygon);
-
-        // Attach the polygonId to the layer for future reference
+        var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygo
         polygon.polygonId = polygonId;
-
-        // Save coordinates
         drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
-        // //console.log('hhhhhhhhhokkkk', polygonLayer.toGeoJSON().geometry.coordinates);
-
         map.fitBounds(polygon.getBounds());
 
     } else {
         alert('Invalid csv file.');
     }
 }
-
-
-// for adding coordinates manulay
 
 
 document.getElementById('toggleFormBtn').addEventListener('click', function () {
@@ -1190,21 +1172,15 @@ document.getElementById('closeFormBtn').addEventListener('click', function () {
 $('#formContainer').draggable();
 
 
-
-
 let coordinates = []; // This will hold your latitude and longitude pairs
 
-// Function to get bounds of all coordinates
 function getMapBounds(coordinates) {
     // Create a new LatLngBounds object
     var bounds = L.latLngBounds();
 
-    // Loop through your coordinates and extend bounds
     coordinates.forEach(coord => {
         bounds.extend(L.latLng(coord[0], coord[1])); // coord[0] is latitude, coord[1] is longitude
     });
-
-    // Fit map to the bounds
     map.fitBounds(bounds);
 }
 
@@ -1230,7 +1206,6 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
     // Add marker to the map
     var marker = L.marker([parsedLatitude, parsedLongitude]).addTo(map);
     markers.push(marker); // Store the marker reference
-    // map.setView([parsedLatitude, parsedLongitude], 17); // Optional: Center map on new marker
     getMapBounds(coordinates)
 });
 
@@ -1286,14 +1261,8 @@ function updateFirstRowValues(table) {
 }
 
 
-
-
 function extractLastRowValues(table) { // Add the table parameter
     var lastRow = table.rows[table.rows.length - 2]; // Get the last row
-
-    // console.log(table.rows.length ,"table.rows.length ",table.rows,"lastRow",lastRow)
-
-    // Extract the input values from the last row
     var longitudeDegrees = lastRow.cells[0].querySelector('input[name="longitudeDegrees[]"]').value;
     var longitudeMinutes = lastRow.cells[1].querySelector('input[name="longitudeMinutes[]"]').value;
     var longitudeSeconds = lastRow.cells[2].querySelector('input[name="longitudeSeconds[]"]').value;
@@ -1311,10 +1280,6 @@ function extractLastRowValues(table) { // Add the table parameter
         latitudeSeconds: latitudeSeconds
     };
 }
-
-
-
-
 
 
 let markers = [];
@@ -1507,7 +1472,6 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         var polygonLayer = polygon;
         drawnItems.addLayer(polygonLayer);
 
-        // //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
     }
 });
 
@@ -1542,8 +1506,6 @@ function getFilters() {
     return filters;
 }
 
-
-
 async function savevalues() {
     // //console.log("Drawn polygons:", drawnPolygons);
 
@@ -1553,8 +1515,6 @@ async function savevalues() {
         Object.keys(drawnPolygons).forEach(async function (polygonId) {
             // //console.log(polygonId, "polygonIdpolygonIdpolygonIdpolygonIdpolygonIdpolygonId")
             var coordinates = drawnPolygons[polygonId]
-            // //console.log('coordinates111111', coordinates);
-
 
             var pp = turf.polygon(coordinates);
 
@@ -1713,13 +1673,8 @@ async function savevalues() {
 
             const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
             const correctedCoordinates = coordinates1.map(coord => [coord[1], coord[0]]);
-            console.log(correctedCoordinates, "correctedCoordinates");
-            // console.log(coordinates1,"coordinates221")
             const mapBounds = L.latLngBounds(correctedCoordinates);
-            // //console.log(coordinates1,"edited")
-            // This is converting decimal degrees to degree minutes and seconds
             const dmsCoordinates = coordinates1.map(coord => [convertToDMS(coord[0]), convertToDMS(coord[1])]);
-            console.log(dmsCoordinates, "dmsCoordinates")
 
             // Create a div for the map dynamically
             var mspd = `<div id="newMap" style="height: 250px; width: 100%; margin-top: 20px; .leaflet-touch .leaflet-bar a {
@@ -1787,15 +1742,6 @@ async function savevalues() {
                     setTimeout(function () {
                         newMap.invalidateSize();
                         newMap.fitBounds(mapBounds);
-
-                        console.log(correctedCoordinates, "newCoordinates1")
-                        // L.polygon(correctedCoordinates, {
-                        //     color: 'blue',       // Border color
-                        //     weight: 3,          // Border thickness
-                        //     fillOpacity: 0.2    // Transparency for the filled area
-                        // }).addTo(newMap);
-
-
                     }, 500); // Increased timeout for map loading
                 }
             });
@@ -1808,28 +1754,14 @@ async function savevalues() {
             var tenPercemax = (grossplotarea * 1.1); // 10% of gross plot area
             var tenPercemin = (grossplotarea * 0.9);
 
-            // if (polygonArea > tenPercemax || polygonArea < tenPercemin) {
-            //     popupMessage = `The polygon area is ${polygonArea.toFixed(2)} and Grossplotarea is ${grossplotarea.toFixed(2)} \n
-            //      the polygon area should not more or less than 10% of the GrossPlotArea`;
-            //     showPopup(popupMessage);
 
-            // } else {
-            // alert("hello")
             showTableModal(exampleData);
 
-            // }
-
-            // showTableModal(exampleData);
-
-            // -------------------------
         }
         )
     }
 }
 
-
-// }
-// for conveting degree decimals to degree minutes and seconds
 
 ///////////////////////////////////////////////
 
@@ -1845,13 +1777,11 @@ function convertToDMS(decimal) {
 
 
 async function submitForm() {
-    // alert("Data Saved")
-    // console.log(drawnPolygons, "drawnPolygonslllllllllll")
 
     for (const polygonId in drawnPolygons) {
         // var polygonId= "";
         var coordinates = drawnPolygons[polygonId];
-        console.log('coordinatessubmit', coordinates);
+        // console.log('coordinatessubmit', coordinates);
         // console.log(layer,"layerlayer")
         var pp = turf.polygon(coordinates);
 
@@ -1879,38 +1809,15 @@ async function submitForm() {
         const selected_dropdown = JSON.stringify(cqlFilterget)
         const villageName = JSON.stringify(values);
 
-
-
-        // var values = await IntersectAreaWithPolygon(pp, layers, url, propertyName, bounds.toBBoxString(), outputFormat);
-        // var cqlFilterget = getSelectedValues();
-        // const selected_dropdown = JSON.stringify(cqlFilterget);
-        // const villageName = JSON.stringify(values);
-        // var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
-
-
-
         const selected_guts = JSON.stringify(getSelectedValues1());
         const selected_village = JSON.stringify(getFilters());
         const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
-
-        // const dmsCoordinates = coordinates1.map(coord => [convertToDMS(coord[0]), convertToDMS(coord[1])]);
-        // console.log("coordinate111111", coordinates1, token)
-        // alert("Data saved")
-
-
-        // saving data from softttech into the database ---------------------------------------------------------------------
-
 
         $.ajax({
             type: "GET",
             url: "APIS/proxyGetPreApprovalData.php?TokenNo=" + encodeURIComponent(token),
             success: function (data) {
-                // console.log(data, "llllllllllll");
-                // let data = JSON.parse(apiResponse);
-                // console.log(data, "llllllllllll")
-                // alert("dcvfvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'")
-
-                // Creating the payload from the provided JSON data
+  
                 let payload = {
                     token: data.Token,  // From the root
                     village_name: data.SiteAddress[0]?.Area || '',  // From SiteAddress array

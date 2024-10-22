@@ -1,6 +1,8 @@
 <?php
 // proxyGetPreApprovalData.php
  
+
+// get preapproval data fro drawing polygon and save whatever info comes from api
 header("Access-Control-Allow-Origin: https://iwmsgis.pmc.gov.in"); // Adjust as needed
 header("Content-Type: application/json");
  

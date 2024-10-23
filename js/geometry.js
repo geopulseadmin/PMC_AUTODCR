@@ -249,19 +249,47 @@ function paginateResults(data) {
         const area = parseFloat(item.area);
         const grossPlotArea = parseFloat(item.caseinformation_grossplotarea);
 
-        if (area !== grossPlotArea) {
-            const message = "Gross plot area and drawn area are not equal. Please edit.";
-            console.warn(message); // Logs to the console
-            // Highlight the discrepancy in the table
-            tableBody.append('<tr><td colspan="2" style="color:red; text-align: center;">' + message + '</td></tr>');
-        }
 
-        for (const [key, value] of Object.entries(item)) {
-            if (key !== "geometry") {
-                const displayValue = (key === 'area' || key === 'caseinformation_grossplotarea') ? parseFloat(value).toFixed(2) : value;
-                tableBody.append(`<tr><td>${key}</td><td>${displayValue}</td></tr>`);
-            }
+
+
+    // Calculate the percentage difference
+    const percentageDifference = Math.abs((area - grossPlotArea) / grossPlotArea) * 100;
+
+    let message;
+    let messageColor;
+
+    // Check if the difference is within ±10%
+    if (percentageDifference <= 10) {
+        message = "Gross plot area and drawn area are matched.";
+        messageColor = "green"; // Green message for within ±10%
+    } else {
+        message = "Gross plot area and drawn area are not equal. Please edit.";
+        messageColor = "red"; // Red message for more than ±10%
+    }
+
+    // Display the message in the specified color
+    tableBody.append(`<tr><td colspan="2" style="color:${messageColor}; text-align: center;">${message}</td></tr>`);
+
+    for (const [key, value] of Object.entries(item)) {
+        if (key !== "geometry") {
+            const displayValue = (key === 'area' || key === 'caseinformation_grossplotarea') ? parseFloat(value).toFixed(2) : value;
+            tableBody.append(`<tr><td>${key}</td><td>${displayValue}</td></tr>`);
         }
+    }
+
+        // if (area !== grossPlotArea) {
+        //     const message = "Gross plot area and drawn area are not equal. Please edit.";
+        //     console.warn(message); // Logs to the console
+        //     // Highlight the discrepancy in the table
+        //     tableBody.append('<tr><td colspan="2" style="color:red; text-align: center;">' + message + '</td></tr>');
+        // }
+
+        // for (const [key, value] of Object.entries(item)) {
+        //     if (key !== "geometry") {
+        //         const displayValue = (key === 'area' || key === 'caseinformation_grossplotarea') ? parseFloat(value).toFixed(2) : value;
+        //         tableBody.append(`<tr><td>${key}</td><td>${displayValue}</td></tr>`);
+        //     }
+        // }
 
         // Add Edit Button
         const editButton = $('<button class="btn btn-primary">Edit</button>');
@@ -275,9 +303,10 @@ function paginateResults(data) {
 
         editButton.on('click', function () {
             // alert("fffffffff")
-            console.log(item.id,"item.geometry",data)
+            // console.log(item.id,"item.geometry",data)
             window.location.href = `editing.html?id=${item.id}`;
-            if (area !== grossPlotArea) {
+            // if (area !== grossPlotArea) {
+            if (percentageDifference > 10) {
                 openModal(item);
             } else {
                 alert("No discrepancies found. Editing is not required.");
@@ -388,11 +417,28 @@ function updateTableWithItem(item) {
     const area = parseFloat(item.area);
     const grossPlotArea = parseFloat(item.caseinformation_grossplotarea);
 
-    if (area !== grossPlotArea) {
-        const message = "Gross plot area and drawn area are not equal. Please edit.";
-        console.warn(message); // Logs to the console
-        tableBody.append('<tr><td colspan="2" style="color: red; text-align: center;">' + message + '</td></tr>');
+    // if (area !== grossPlotArea) {
+    //     const message = "Gross plot area and drawn area are not equal. Please edit.";
+    //     console.warn(message); // Logs to the console
+    //     tableBody.append('<tr><td colspan="2" style="color: red; text-align: center;">' + message + '</td></tr>');
+    // }
+
+    // Calculate the percentage difference
+    const percentageDifference = Math.abs((area - grossPlotArea) / grossPlotArea) * 100;
+
+    let message;
+    let messageColor;
+
+    // Check if the difference is within ±10%
+    if (percentageDifference <= 10) {
+        message = "Gross plot area and drawn area are matched.";
+        messageColor = "green"; // Green message for within ±10%
+    } else {
+        message = "Gross plot area and drawn area are not equal. Please edit.";
+        messageColor = "red"; // Red message for more than ±10%
     }
+
+
 
     for (const [key, value] of Object.entries(item)) {
         if (key !== "geometry") {
@@ -403,7 +449,9 @@ function updateTableWithItem(item) {
 
     // Add Edit Button
     const editButton = $('<button class="btn btn-primary">Edit</button>');
-    if (area !== grossPlotArea) {
+    if (percentageDifference > 10) {
+    
+    // if (area !== grossPlotArea) {
         // Enable Edit button
         editButton.prop('disabled', false);
     } else {
@@ -427,21 +475,7 @@ function updateTableWithItem(item) {
     tableBody.append(editRow);
 }
 
-
-
-
-
-
-
-
-
 $(document).ready(function () {
-
-
-    // var geojsonData = geojsonLayer.toGeoJSON();
-    // console.log(geojsonData,"lllllllllllllllllllllllllll")
-    // const layer = e.layer;
-    // console.log( editableLayers)
    
     $('#saveButton').click(function () {
      

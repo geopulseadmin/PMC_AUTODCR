@@ -156,7 +156,8 @@ if (pg_num_rows($checkResult) > 0) {
             additionsinnetplotarea_recreationalopenspace = $54,
             additionsinnetplotarea_plotinapprovedlayout = $55,
             additionsinnetplotarea_proposedslumtdrarea = $56,
-            additionsinnetplotarea_amenitytdrarea = $57
+            additionsinnetplotarea_amenitytdrarea = $57,
+            \"BCP_No\" = $58
         WHERE token = $1
     ";
 
@@ -217,13 +218,15 @@ if (pg_num_rows($checkResult) > 0) {
         $additionsinnetplotarea_recreationalopenspace,
         $additionsinnetplotarea_plotinapprovedlayout,
         $additionsinnetplotarea_proposedslumtdrarea,
-        $additionsinnetplotarea_amenitytdrarea
+        $additionsinnetplotarea_amenitytdrarea,
+        $BCP_No
+
     ];
 
     $result = pg_query_params($conn, $updateQuery, $params);
 
     if ($result) {
-        $logQuery = "INSERT INTO checkdcr (token, update_timestamp) VALUES ($1, NOW())";
+        $logQuery = 'INSERT INTO "check" (token, update_timestamp) VALUES ($1, NOW())';
         pg_query_params($conn, $logQuery, [$token]);
         echo json_encode(["status" => "success", "message" => "Record updated successfully."]);
     } else {

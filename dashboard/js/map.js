@@ -37,14 +37,14 @@ var Esri_WorldImagery = L.tileLayer(
 //   opacity: 1
 // }).addTo(map);
 
-var Revenue_Layer = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
-  layers: "Revenue_1",
-  format: "image/png",
-  transparent: true,
-  tiled: true,
-  version: "1.1.0",
-  opacity: 1
-});
+// var Revenue_Layer = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+//   layers: "Revenue_1",
+//   format: "image/png",
+//   transparent: true,
+//   tiled: true,
+//   version: "1.1.0",
+//   opacity: 1
+// });
 
 var Revenue_Layer1 = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
   layers: "Revenue_1",
@@ -100,12 +100,10 @@ var Village_Boundary1 = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/Au
   version: "1.1.0",
   opacity: 1
 });
-
-
 var Plot_Layout = L.tileLayer.wms(
-"https://iwmsgis.pmc.gov.in/geoserver/wms",
+"https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms",
 {
-  layers: "Plot_Layout",
+  layers: "plot1_layouts_test",
   format: "image/png",
   transparent: true,
   tiled: true,
@@ -114,6 +112,19 @@ var Plot_Layout = L.tileLayer.wms(
   opacity: 1,
 }
 ).addTo(map);
+
+// var Plot_Layout = L.tileLayer.wms(
+// "https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms",
+// {
+//   layers: "Plot_Layout",
+//   format: "image/png",
+//   transparent: true,
+//   tiled: true,
+//   version: "1.1.0",
+//   maxZoom: 21,
+//   opacity: 1,
+// }
+// ).addTo(map);
 
 var Zone_layer = L.tileLayer.wms(
 "https://iwmsgis.pmc.gov.in/geoserver/wms",
@@ -137,6 +148,20 @@ var TDR_Zones = L.tileLayer
         version: "1.1.0",
         opacity: 1,
     });
+
+var TOD_Zones = L.tileLayer
+    .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+        layers: "TOD_Zones",
+        format: "image/png",
+        transparent: true,
+        tiled: true,
+        version: "1.1.0",
+
+        opacity: 1,
+    });
+
+
+
 
 var PMC_Reservation = L.tileLayer
     .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
@@ -271,7 +296,7 @@ var overlayLayers = {
   "Revenue":Revenue_Layer1,
   "JE_Names": JE_Names,
   "TDR_Zones": TDR_Zones,
- "TOD_Zones":TOD_Zones,
+  "TOD_Zones" : TOD_Zones,
   "PMC_Reservation": PMC_Reservation,
   "Garden": Garden,
   "DevelopmentRestriction": DevelopmentRestriction,

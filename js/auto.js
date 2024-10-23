@@ -20,8 +20,7 @@ var map = L.map("map", {
 var stamen = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
 );
-//   .addTo(map);
-// var map = L.map("map", {}).setView([18.52, 73.895], 12, L.CRS.EPSG4326);
+
 
 var googleSat = L.tileLayer(
     "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
@@ -49,10 +48,6 @@ var baseLayers = {
     "stamen": stamen,
 };
 
-// .addTo(map);
-
-
-// for only gut showing
 var Revenue_Layer1 = L.tileLayer
     .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
         layers: "Revenue_1",
@@ -65,9 +60,6 @@ var Revenue_Layer1 = L.tileLayer
         opacity: 1,
     });
 
-
-
-
 var Revenue_Layer = L.tileLayer
     .wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
         layers: "Revenue_1",
@@ -76,7 +68,6 @@ var Revenue_Layer = L.tileLayer
         tiled: true,
         version: "1.1.0",
         maxZoom: 25,
-
         opacity: 1,
     });
 
@@ -88,7 +79,6 @@ var JE_Names = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -102,7 +92,6 @@ var PLU_Layer = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -144,7 +133,6 @@ var TOD_Zones = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -158,7 +146,6 @@ var PMC_Reservation = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -169,7 +156,6 @@ var Red_Blue = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -180,7 +166,6 @@ var Yerwada_Jail = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -192,7 +177,6 @@ var Railway_Buffer = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -203,7 +187,6 @@ var PMC_Lake = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -214,12 +197,8 @@ var Monuments = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
-
-
-
 
 
 var Village_Boundary = L.tileLayer
@@ -229,7 +208,6 @@ var Village_Boundary = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     }).addTo(map);
 
@@ -242,7 +220,6 @@ var aviation = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -253,7 +230,6 @@ var Garden = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 var DevelopmentRestriction = L.tileLayer
@@ -263,7 +239,6 @@ var DevelopmentRestriction = L.tileLayer
         transparent: true,
         tiled: true,
         version: "1.1.0",
-
         opacity: 1,
     });
 
@@ -305,7 +280,6 @@ map.on("zoomend", function () {
 });
 
 
-
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -313,13 +287,26 @@ function getQueryParam(param) {
 
 var control = new L.control.layers(baseLayers, WMSlayers).addTo(map);
 control.setPosition('topright');
-
 // Remove the default zoom control
 map.zoomControl.remove();
 
 L.control.zoom({
     position: 'bottomright'
 }).addTo(map);
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    var select = document.getElementById("search_type");
+    select.size = 3; // Set the size to show 3 options
+});
+
+
 
 
 // draw-----------------------------------------------------
@@ -590,6 +577,7 @@ $(document).ready(function () {
 
         $.getJSON(geoServerURL)
             .done(function (data) {
+            
                 villageArray = villageArray.sort();
                 // //console.log(villageArray, "villageArray")
                 var select = document.getElementById("search_type");

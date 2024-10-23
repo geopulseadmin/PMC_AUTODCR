@@ -129,20 +129,29 @@ font-size: 12px;
   display: none;
 }
 /* autodcr */
-
-
 #search_type {
   position: absolute;
-  top: 20px;
-  left: 20%;
+  top: -1px;
+  right: 50%;
   transform: translateX(-50%);
   z-index: 999;
   width: 190px;
-  border-radius: 10px;
+  outline: none !important;
   padding: 5px;
   font-size: 14px;
-  border: 2px solid #3c3cb8;
+  border-radius: 5px 0px 0px 0px;
+  border: none;
   background-color: #fff;
+  /* Allow height to adjust based on the number of options */
+  height: auto; /* Ensures the height will adjust dynamically */
+  max-height: 200px; /* Optional: Set a max-height if you want to limit the height */
+  overflow-y: auto; /* Enables scrolling if the number of options exceeds the max-height */
+}
+
+/* Style when the select dropdown is focused */
+#search_type:focus {
+  outline: none;
+  border-color: blue;
 }
 
 .header h5 {
@@ -648,22 +657,21 @@ background: var(--Blue-500, #0077DA);
   -ms-user-select: none;
   user-select: none;
 }
-
 .dropdown-container {
- 
   position: absolute;
   top: 21px;
-  left: 35%;
+  left: 34%;
   transform: translateX(-50%);
   z-index: 999;
   width: 190px;
-  
-  border-radius: 10px;
   padding: 5px;
   font-size: 14px;
   background-color: #fff;
-  border: 2px solid #3c3cb8;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.35); /* Adds a subtle shadow */
+  
+
 }
+
 
 
 
@@ -700,21 +708,61 @@ background: var(--Blue-500, #0077DA);
   box-sizing: border-box;
   padding: 8px 0 0 8px ;
 }
-
 input[type="search"] {
-  padding: 2px ;
+  padding: 5px;
   font-size: 12px;
-  border: 2px solid #3c3cb8;
-  border-radius: 5px;
+  border: 2px solid gray;
+  border-radius: 11px;
 }
-
 ul {
-  margin: -10px 0 5px 0  ;  
+  margin: -10px 0 5px 0;  
   max-height: 200px;
   overflow-y: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
   list-style-type: none;
 }
+
+/* Hide scrollbar for WebKit-based browsers (Chrome, Safari, Edge) */
+ul::-webkit-scrollbar {
+  width: 0; /* Completely hide the scrollbar */
+  height: 0;
+}
+
+/* Show scrollbar only when hovering over the ul */
+ul:hover {
+  scrollbar-width: thin; /* Show thin scrollbar for Firefox on hover */
+}
+
+/* WebKit-based browsers: show thin scrollbar on hover */
+ul:hover::-webkit-scrollbar {
+  width: 4px; /* You can adjust this width as needed */
+}
+
+ul:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Optional: customize the scrollbar color */
+  border-radius: 10px; /* Optional: make the scrollbar rounded */
+}
+
+ul:hover::-webkit-scrollbar-track {
+  background: transparent; /* Optional: customize the track background */
+}
+
+
+
+/* WebKit-based browsers (Chrome, Safari, Edge) */
+ul::-webkit-scrollbar {
+  width: 6px; /* Set the width of the scrollbar */
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Customize the scrollbar color */
+  border-radius: 10px; /* Make the scrollbar rounded */
+}
+
+ul::-webkit-scrollbar-track {
+  background: transparent; /* Optional: set the track (background) of the scrollbar */
+}
+
 
 input[type="checkbox"] {
   position: relative;
@@ -761,19 +809,6 @@ input[type="checkbox"] {
     position: absolute;
     z-index: 9999;
     top: 1%;
-}
-  #search_type {
-    position: absolute;
-    top: 21px;
-    left: 120px;
-    transform: translateX(-50%);
-    z-index: 999;
-    width: 120px;
-    border-radius: 10px;
-    padding: 5px;
-    font-size: 14px;
-    border: 2px solid #3c3cb8;
-    background-color: #fff;
 }
 .dropdown-container {
   position: absolute;
@@ -1704,4 +1739,8 @@ tbody, td, tfoot, th, thead, tr {
     border-color: inherit;
     border-style: solid;
     border-width: 1px solid !important;
+}
+select:-internal-list-box option:checked {
+  background-color: blue !important;
+  color: white; /* Or any other color that suits your design */
 }

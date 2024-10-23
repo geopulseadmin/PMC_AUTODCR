@@ -147,25 +147,24 @@
     <header class="header justify-content-between bg-transparent" id="header">
         <img src="png/pmcjpeg.png" alt="" class="logopng">
 
-        <div>
-            <select id="search_type" class="" aria-label="Select a village">
-                <option value="">Select Village</option>
-            </select>
-
+        <div class="dropdown-wrapper">
+            
             <div class="dropdown-container">
-                <div class="dropdown-button noselect">
-                    <div class="dropdown-label ">Survey No</div>
-                    <div class="dropdown-quantity pe-3">(<span class="quantity">Any</span>)</div>
-                    <i class="fa-solid fa-angle-down ps"></i>
-                </div>
-                <div class="dropdown-list" style="display: none;">
-                    <input type="search" placeholder="SurveyNo/CTC/Plot" class="dropdown-search ps-2"
-                        id="surveySearch" />
+                <select id="search_type" class="" aria-label="Select a village">
+                    <!-- <option value="">Select village</option> -->
+                </select>
+            
+
+                
+                    <!-- Optional elements or icons can be added here -->
+             
+                <div class="dropdown-list">
+                    <input type="search" placeholder="SurveyNo/CTC/Plot" class="dropdown-search ps-2" id="surveySearch" />
                     <ul id="stateList"></ul>
                 </div>
-            </div>
+           
         </div>
-
+        
         <div class="custom-button1">
             <input id="fileInput" type="file" accept=".kml" style="display:none;" title="Upload KML/KMZ/CSV File">
             <label class="upload-btn">
@@ -874,7 +873,7 @@
 
         function closeDropdown() {
             var dropdownList = document.querySelector(".dropdown-list");
-            dropdownList.style.display = "none";
+            dropdownList.style.display = "";
         }
 
         document.addEventListener("click", function (event) {
@@ -915,7 +914,7 @@
 
             // Show validation alert if the survey number is not found
             if (inputValue && !found) {
-                alert("Survey number not found. Please check the survey number. If you have coordinates, please insert them.");
+                // alert("Survey number not found. Please check the survey number. If you have coordinates, please insert them.");
                 // Clear the input box
                 surveySearchInput.value = "";
             }

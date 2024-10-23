@@ -1,0 +1,82 @@
+ /* For WebKit browsers */
+ .leaflet-control-layers-list {
+    padding: 7px; /* Add padding to the div */
+    overflow-x: hidden; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 250px; /* Adjust the height for vertical scroll */
+    white-space: nowrap; /* Prevent the content from wrapping */
+  }
+  
+  /* Custom scrollbar styles for WebKit browsers */
+  .leaflet-control-layers-list::-webkit-scrollbar {
+    width: 4px; /* Width of the vertical scrollbar */
+    height: 4px; /* Height of the horizontal scrollbar */
+  }
+  
+  .leaflet-control-layers-list::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Rounded corners of the scrollbar thumb */
+  }
+  
+  .leaflet-control-layers-list::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+  }
+      #map{
+        position: relative;
+      }
+      #saveButton {
+        background: green;
+      font-weight: bold;
+      border: none;
+      padding: 9px;
+      border-radius: 6px;
+      position: absolute;
+      bottom: 3vh;
+      right: 1.5vw;
+      color: white;
+      z-index: 999;
+  }
+  .geopulseaname {
+      color: #0077DA; /* Set the desired color */
+      position: absolute;
+      z-index: 99999;
+      bottom: 0.5%; /* Position from the bottom */
+      right: 0; /* Position from the right */
+      font-weight: bold;
+      font-size: 10px; /* Font size */
+  }
+  
+  
+  .leaflet-container .leaflet-control-attribution {
+      
+      display: none;
+    }
+  /* .leaflet-control-zoom{
+    position: relative;
+    right: 3px;
+    bottom: 17px;
+    border: 1px solid;
+  } */
+
+
+  #table-container {
+    position: absolute;
+    z-index: 999;
+    background: white;
+    border: aliceblue;
+    bottom: 14px;
+    left: 10px;
+}
+  .close{
+    
+      background: red;
+      border: none;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+  
+  }
+  .modal-content {
+    position: absolute;
+    top: 37vh;
+}

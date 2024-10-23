@@ -853,7 +853,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
             // console.log("Adding layers with filter:", cqlFilter);
-            Plot_Layout.addTo(map).bringToFront();
+            // Plot_Layout.addTo(map).bringToFront();
            Village_Boundary1.addTo(map).bringToFront();
             fitbous(cqlFilter);
 

@@ -1509,6 +1509,8 @@ function getFilters() {
 async function savevalues() {
     // //console.log("Drawn polygons:", drawnPolygons);
 
+
+
     if (Object.keys(drawnPolygons).length === 0) {
         alert("Please draw a polygon / upload KML , KMZ , CSV / Add Coordinates before proceeding.");
     } else {

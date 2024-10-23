@@ -1358,7 +1358,7 @@ function addCoordinateRow(table) {
     longitudeMinutesInput.setAttribute('name', 'longitudeMinutes[]');
     longitudeMinutesInput.style.width = '40px';
     longitudeMinutesInput.style.position = 'absolute';
-    longitudeMinutesInput.style.left = '14%';
+    longitudeMinutesInput.style.left = '13%';
     longitudeMinutesInput.style.borderTop = '2px solid  #3c3cb8';
     longitudeMinutesInput.style.borderBottom = '2px solid  #3c3cb8';
     longitudeMinutesInput.style.borderLeft = '2px solid  #bbb';
@@ -1366,12 +1366,12 @@ function addCoordinateRow(table) {
     // Longitude Seconds
     var longitudeSecondsInput = document.createElement('input');
     longitudeSecondsInput.setAttribute('type', 'number');
-    longitudeSecondsInput.setAttribute('placeholder', '24.43″');
+    longitudeSecondsInput.setAttribute('placeholder', '24.43');
     longitudeSecondsInput.setAttribute('name', 'longitudeSeconds[]');
     longitudeSecondsInput.setAttribute('step', '0.01'); // Allow decimal increments for seconds
     longitudeSecondsInput.style.width = '59px';
     longitudeSecondsInput.style.position = 'absolute';
-    longitudeSecondsInput.style.left = '22%';
+    longitudeSecondsInput.style.left = '21%';
     longitudeSecondsInput.style.borderTop = '2px solid  #3c3cb8';
     longitudeSecondsInput.style.borderBottom = '2px solid #3c3cb8';
     longitudeSecondsInput.style.borderRight = '2px solid #3c3cb8';
@@ -1415,7 +1415,7 @@ function addCoordinateRow(table) {
     latitudeSecondsInput.setAttribute('step', '0.01'); // Allow decimal increments for seconds
     latitudeSecondsInput.style.width = '60px';
     latitudeSecondsInput.style.position = 'absolute';
-    latitudeSecondsInput.style.left = '54%';
+    latitudeSecondsInput.style.left = '53%';
     latitudeSecondsInput.style.borderTop = '2px solid  #3c3cb8';
     latitudeSecondsInput.style.borderBottom = '2px solid #3c3cb8';
     latitudeSecondsInput.style.borderRight = '2px solid #3c3cb8';
@@ -1430,14 +1430,19 @@ function addCoordinateRow(table) {
     heightfloatCellInput.setAttribute('name', 'heightfloatCell[]');
     heightfloatCellInput.style.width = '70px';
     heightfloatCellInput.style.position = 'absolute';
-    heightfloatCellInput.style.left = '69%';
+    heightfloatCellInput.style.left = '68%';
     heightfloatCellInput.style.borderBottomLeftRadius = '5px';
     heightfloatCellInput.style.borderTopLeftRadius = '5px';
     heightfloatCellInput.style.borderTop = '2px solid #3c3cb8';
     heightfloatCellInput.style.borderLeft = '2px solid #3c3cb8';
     heightfloatCellInput.style.borderBottom = '2px solid #3c3cb8';
     heightfloatCellInput.style.borderRight = '2px solid  #3c3cb8';
+    
 
+
+// Adding border-radius to all corners
+heightfloatCellInput.style.borderRadius = '5px'; 
+    
     // Append inputs to their respective cells
     longitudeDegreesCell.appendChild(longitudeDegreesInput);
     longitudeMinutesCell.appendChild(longitudeMinutesInput);

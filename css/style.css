@@ -18,7 +18,7 @@ body{
   color: white !important;
 } */
 .leaflet-retina .leaflet-control-layers-toggle {
-  background-image: url("png/Layers_Icon.png") !important;
+  background-image: url("png/Layers_Icon.png");
   background-size: 20px 24px;
   border: none; /* Remove any border around the image */
   background-repeat: no-repeat; /* Ensure the image does not repeat */
@@ -27,7 +27,7 @@ body{
 .leaflet-draw-actions a {
   background-color: #919187;
   border-left: 1px solid #AAA;
-  color: #FFF !important;
+  color: #FFF ;
   font: 11px / 19px "Helvetica Neue", Arial, Helvetica, sans-serif;
   line-height: 28px;
   text-decoration: none;
@@ -581,7 +581,7 @@ background: var(--Blue-500, #0077DA);
   background-color:transparent ;
   position: relative;
   top:11px;
-  left: 30px;
+ right: 60px;
   z-index: 99999;
   font-size: 14px;
   color:#f44336;
@@ -591,7 +591,7 @@ background: var(--Blue-500, #0077DA);
   border-right: none;
   padding: 5px 10px;
   margin-top:10%;
-  margin-left: -280%;
+
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -1698,4 +1698,10 @@ input[type="checkbox"] {
 #formContainer::-webkit-scrollbar-track {
   background: #f1f1f1; /* Track background */
   border-radius: 4px; /* Rounded edges for the track */
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 1px solid !important;
 }

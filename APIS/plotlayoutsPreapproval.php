@@ -1,14 +1,16 @@
 <?php
-
+require 'config.php'; 
 // Database configuration
-$host = 'iwmsgis.pmc.gov.in';
-$dbname = 'AutoDCR';
-$port = 5432;
-$username = 'postgres';
-$password = 'pmc992101';
+// $host = 'iwmsgis.pmc.gov.in';
+$dbname = 'Test';
+// $port = 5432;
+// $username = 'postgres';
+// $password = 'pmc992101';
 
 // Establishing the connection
-$conn = pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
+// $conn = pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
+$conn = pg_connect("host=$host dbname=$dbname user=$username password=$password");
+
 
 // Check if the connection was successful
 if (!$conn) {

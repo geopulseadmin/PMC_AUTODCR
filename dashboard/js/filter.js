@@ -99,7 +99,7 @@ function createClusterIcon(cluster) {
     var caseinformation_proposaltype = marker.feature.properties.caseinformation_proposaltype;
     var caseinformation_casetype = marker.feature.properties.caseinformation_casetype; // Assume this property exists for case type
     
-    // console.log("Case Type:", caseinformation_casetype); // Debugging to check case type
+    // //console.log("Case Type:", caseinformation_casetype); // Debugging to check case type
 
     // Handle missing case information
     if (!caseinformation_casetype) {

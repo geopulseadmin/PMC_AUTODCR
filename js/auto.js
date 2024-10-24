@@ -375,7 +375,7 @@ map.on(L.Draw.Event.CREATED, function (event) {
     if (drawnPolygon.geometry.type === 'Polygon') {
         drawnPolygons[polygonId] = drawnPolygon.geometry.coordinates;
     } else {
-        // //console.log('Drawn geometry is not a valid Polygon.');
+        // ////console.log('Drawn geometry is not a valid Polygon.');
     }
 
 
@@ -433,7 +433,7 @@ function updateButtonState() {
 
 const handshakingCode = getQueryParam('village_name');
 const token = getQueryParam('TOKEN');
-//console.log(token, "token");
+////console.log(token, "token");
 
 
 $(document).ready(function () {
@@ -442,7 +442,7 @@ $(document).ready(function () {
     const village_name = villageEntry ? villageEntry.name : null;
     const TpsName = villageEntry ? villageEntry.tps_name : null;
 
-    console.log(token, "token");
+    //console.log(token, "token");
     // var filters ='';
     // Fetch data from the API first
     // Extract the data from the API response
@@ -452,7 +452,7 @@ $(document).ready(function () {
         // data: { TokenNo: token }, // Pass the token as a parameter
         success: function (data) {
             // let data = JSON.parse(apiResponse);
-            console.log(data, "llllllllllll")
+            //console.log(data, "llllllllllll")
             // Prepare the payload for saving to the database
             let payload = {
                 token: data.Token,
@@ -495,8 +495,8 @@ $(document).ready(function () {
                 // receivingtdrzone: data.PlotDetails[0]?.ReceivingTDRZone || '',
                 developmentzonedp: data.PlotDetails[0]?.DevelopmentZoneDP || ''
             };
-            console.log(payload, JSON.stringify(data))
-            console.log("grossplotarea: ", data.CaseInformation.GrossPlotArea)
+            //console.log(payload, JSON.stringify(data))
+            //console.log("grossplotarea: ", data.CaseInformation.GrossPlotArea)
 
             displayPayloadInDiv(payload);
 
@@ -583,14 +583,14 @@ $(document).ready(function () {
 
         // villageArray =[]
         var cqlFilter = "village_name IN('" + village_name + "') OR TPS_Name IN('" + TpsName + "')";
-        // //console.log(cqlFilter, "filterr")
+        // ////console.log(cqlFilter, "filterr")
 
         var geoServerURL = "https://iwmsgis.pmc.gov.in//geoserver/AutoDCR/wms?service=WFS&version=1.1.0&request=GetFeature&typeName=Revenue_1&propertyName=village_name&outputFormat=application/json&CQL_FILTER=" + encodeURIComponent(cqlFilter);
 
         $.getJSON(geoServerURL)
             .done(function (data) {
                 villageArray = villageArray.sort();
-                // //console.log(villageArray, "villageArray")
+                // ////console.log(villageArray, "villageArray")
                 var select = document.getElementById("search_type");
                 villageArray.forEach(function (village) {
                     var option = document.createElement("option");
@@ -606,18 +606,18 @@ $(document).ready(function () {
 
                 if (village_name && select) {
                     select.value = village_name;
-                    // //console.log(select.value, "pppppp")
+                    // ////console.log(select.value, "pppppp")
                     var Village_name = 'village_name'
                     // let filters = `${Village_name} = '${village_name}'`;
                     var selectedValue = document.getElementById("search_type").value;
-                    // //console.log("gheheheehehehheeh", selectedValue)
+                    // ////console.log("gheheheehehehheeh", selectedValue)
 
                     // var selectedValueVillage = village_name
                     var Village_name = 'village_name'
                     // filters = `${Village_name} = '${selectedValueVillage}'`;
                     let filters = `village_name ='${selectedValue}' OR TPS_Name ='${selectedValue}'`;
 
-                    // console.log(filters,"filters")
+                    // //console.log(filters,"filters")
                     FitbouCustomiseRevenue(filters)
                     Revenue_Layer.setParams({
                         CQL_FILTER: filters,
@@ -630,7 +630,7 @@ $(document).ready(function () {
                     function getvalues(callback) {
                         if (!filters.trim()) {
                             // If filters are empty, call the callback with an empty array
-                            // //console.log("No filters provided, skipping data fetch.");
+                            // ////console.log("No filters provided, skipping data fetch.");
                             if (callback && typeof callback === "function") {
                                 callback([]);
                             }
@@ -661,7 +661,7 @@ $(document).ready(function () {
                                 }
                                 return 0;
                             });
-                            // //console.log(Uniqueguts, "Uniqueguts")
+                            // ////console.log(Uniqueguts, "Uniqueguts")
                             if (callback && typeof callback === "function") {
                                 callback(Uniqueguts);
                             }
@@ -674,7 +674,7 @@ $(document).ready(function () {
 
                         var stateList = $('#stateList');
                         stateList.empty();
-                        // //console.log(stateList,"stateList")
+                        // ////console.log(stateList,"stateList")
                         _.each(Uniqueguts, function (state) {
                             var listItem = $('<li><input name="' + state + '" type="checkbox"><label for="' + state + '">' + state + '</label></li>');
                             stateList.append(listItem);
@@ -722,7 +722,7 @@ $("#search_type").change(function () {
     const village_name = villageEntry ? villageEntry.name : null;
     const TpsName = villageEntry ? villageEntry.tps_name : null;
     var selectedValueVillage = $(this).val();
-    // //console.log(selectedValueVillage, "selectedValueVillage")
+    // ////console.log(selectedValueVillage, "selectedValueVillage")
     let filters;
 
     // Check if selectedValueVillage exists in village_name column
@@ -778,7 +778,7 @@ $("#search_type").change(function () {
     function getvalues(callback) {
 
         if (!filters.trim()) {
-            // //console.log("No filters provided, skipping data fetch.");
+            // ////console.log("No filters provided, skipping data fetch.");
             if (callback && typeof callback === "function") {
                 callback([]);
             }
@@ -800,7 +800,7 @@ $("#search_type").change(function () {
             });
             var Uniqueguts = Array.from(gutvalues);
 
-            // //console.log("Unique Gut Numbers:", Uniqueguts);
+            // ////console.log("Unique Gut Numbers:", Uniqueguts);
 
             if (callback && typeof callback === "function") {
                 callback(Uniqueguts);
@@ -811,11 +811,11 @@ $("#search_type").change(function () {
 
 
     getvalues(function (Uniqueguts) {
-        // //console.log(Uniqueguts, "Uniqueguts");
+        // ////console.log(Uniqueguts, "Uniqueguts");
 
         var stateList = $('#stateList');
         stateList.empty();
-        // //console.log(stateList,"stateList")
+        // ////console.log(stateList,"stateList")
         _.each(Uniqueguts, function (state) {
             var listItem = $('<li><input name="' + state + '" type="checkbox"><label for="' + state + '">' + state + '</label></li>');
             stateList.append(listItem);
@@ -855,10 +855,10 @@ $("#search_type").change(function () {
 })
 
 $(document).on('change', '#stateList input[type="checkbox"]', function () {
-    // //console.log("hehehe")
+    // ////console.log("hehehe")
     getFiltersval()
     var cqlFilter = getSelectedValues();
-    console.log(cqlFilter, "Selected filters");
+    //console.log(cqlFilter, "Selected filters");
     if (cqlFilter) {
         // Update the map with the new filter
         FitbouCustomiseRevenue(cqlFilter);
@@ -871,7 +871,7 @@ $(document).on('change', '#stateList input[type="checkbox"]', function () {
     }
     else {
         // FitbouCustomiseRevenue(cqlFilter);
-        // //console.log("No filters selected");
+        // ////console.log("No filters selected");
     }
 });
 
@@ -883,7 +883,7 @@ function getFiltersval() {
     const selectedValueVillage = villageEntry ? villageEntry.name : null;
 
 
-    //console.log(filters, "filtersjjjjjjjjjjjjjjj")
+    ////console.log(filters, "filtersjjjjjjjjjjjjjjj")
 }
 
 
@@ -895,7 +895,7 @@ function getSelectedValues() {
 
 
     var selectedValuev = document.getElementById("search_type").value;
-    // //console.log("gheheheehehehheeh", selectedValue)
+    // ////console.log("gheheheehehehheeh", selectedValue)
 
     // var selectedValueVillage = village_name
     var Village_name = 'village_name'
@@ -906,10 +906,10 @@ function getSelectedValues() {
 
 
 
-    // //console.log("pass")
+    // ////console.log("pass")
     $('input[type="checkbox"]:checked').each(function () {
         var name = $(this).attr('name');
-        // //console.log(name, "selecffffffffffffff")
+        // ////console.log(name, "selecffffffffffffff")
         if (name !== undefined) {
             selectedValues.push("'" + name + "'");
         }
@@ -920,7 +920,7 @@ function getSelectedValues() {
     } else {
         cqlFilterGut = ""
     }
-    // //console.log(cqlFilterGut, "cqlFilterGut")
+    // ////console.log(cqlFilterGut, "cqlFilterGut")
 
     var cqlFilter = "";
     if (cqlFilterGut) {
@@ -978,7 +978,7 @@ function FitbouCustomiseRevenue(filter) {
             latSecondsSouth = ((geojson.getBounds()._southWest.lat % 1) * 3600) % 60; // Convert to seconds and get the fractional part
             // Calculate north latitude seconds as a floating-point number
             latSecondsNorth = ((geojson.getBounds()._northEast.lat % 1) * 3600) % 60; // Convert to seconds and get the fractional part
-            console.log(latSecondsSouth, "latSecondsSouth", latSecondsNorth, "latSecondsNorth")
+            //console.log(latSecondsSouth, "latSecondsSouth", latSecondsNorth, "latSecondsNorth")
 
             lngsouth = parseInt(Math.floor(geojson.getBounds()._southWest.lng));
             lngnorth = parseInt(Math.floor(geojson.getBounds()._northEast.lng));
@@ -989,7 +989,7 @@ function FitbouCustomiseRevenue(filter) {
             lonSecondsSouth = ((geojson.getBounds()._southWest.lng % 1) * 3600) % 60; // Convert to seconds and get the fractional part
             // Calculate north longitude seconds as a floating-point number
             lonSecondsNorth = ((geojson.getBounds()._northEast.lng % 1) * 3600) % 60; // Convert to seconds and get the fractional part
-            console.log(lonSecondsSouth, "lonSecondsSouth", lonSecondsNorth, "lonSecondsNorth")
+            //console.log(lonSecondsSouth, "lonSecondsSouth", lonSecondsNorth, "lonSecondsNorth")
             // Update latitude degrees
             if (latsouth === latnorth) {
                 latitudeDegreesInput.removeAttribute('readonly');
@@ -1138,7 +1138,7 @@ function processCSV(kmlContent) {
     var data = Papa.parse(kmlContent, { header: true, dynamicTyping: true }).data;
     data = data.filter(row => row.latitude !== null && row.longitude !== null);
     var polygon = L.polygon(data.map(coord => [coord.latitude, coord.longitude])).addTo(map);
-    // //console.log("oooooooooooooooooo", polygon)
+    // ////console.log("oooooooooooooooooo", polygon)
     if (polygon.getBounds().isValid()) {
 
         var polygonLayer = polygon;
@@ -1157,7 +1157,7 @@ function processCSV(kmlContent) {
 
 document.getElementById('toggleFormBtn').addEventListener('click', function () {
     var selectedVillage = document.getElementById("search_type").value;
-    //console.log(selectedVillage, "selectedVillage")
+    ////console.log(selectedVillage, "selectedVillage")
 
 
     var formContainer = document.getElementById('formContainer');
@@ -1201,7 +1201,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
 
     // Create an array to store the last coordinate
     coordinates.push([parsedLatitude, parsedLongitude]);
-    console.log(coordinates, "Last row values extracted");
+    //console.log(coordinates, "Last row values extracted");
 
     // Add marker to the map
     var marker = L.marker([parsedLatitude, parsedLongitude]).addTo(map);
@@ -1269,7 +1269,7 @@ function extractLastRowValues(table) { // Add the table parameter
     var latitudeDegrees = lastRow.cells[3].querySelector('input[name="latitudeDegrees[]"]').value;
     var latitudeMinutes = lastRow.cells[4].querySelector('input[name="latitudeMinutes[]"]').value;
     var latitudeSeconds = lastRow.cells[5].querySelector('input[name="latitudeSeconds[]"]').value;
-    // console.log(longitudeSeconds,"longitudeSeconds",latitudeSeconds)
+    // //console.log(longitudeSeconds,"longitudeSeconds",latitudeSeconds)
 
     return {
         longitudeDegrees: longitudeDegrees,
@@ -1435,7 +1435,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
     event.preventDefault();
     var formData = new FormData(this);
     var coordinates = [];
-    // //console.log("Form submitted. Form data:", formData);
+    // ////console.log("Form submitted. Form data:", formData);
     // Process form data here
     formData.getAll('longitudeDegrees[]').forEach(function (longitudeDegrees, index) {
         var longitudeMinutes = formData.getAll('longitudeMinutes[]')[index];
@@ -1448,7 +1448,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         var parsedLongitude = parseDMS(longitudeDegrees, longitudeMinutes, longitudeSeconds);
         var parsedLatitude = parseDMS(latitudeDegrees, latitudeMinutes, latitudeSeconds);
         coordinates.push([parsedLatitude, parsedLongitude]);
-        // console.log(coordinates)
+        // //console.log(coordinates)
     });
 
 
@@ -1459,7 +1459,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         alert('Please enter at least four coordinates.');
         return;
     } else {
-        console.log(coordinates, "coordinates")
+        //console.log(coordinates, "coordinates")
         var polygon = L.polygon(coordinates).addTo(map);// Function to open the legend div when clicked
 
 
@@ -1468,7 +1468,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         var polygonId = 'polygon_' + L.stamp(polygon); // Use a unique ID for each polygon
         polygon.polygonId = polygonId;
         drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
-        // //console.log('888888888888', polygon.toGeoJSON().geometry.coordinates);
+        // ////console.log('888888888888', polygon.toGeoJSON().geometry.coordinates);
         var polygonLayer = polygon;
         drawnItems.addLayer(polygonLayer);
 
@@ -1531,7 +1531,7 @@ async function checkLinePolygonIntersection(geom, layer, cql_filterm = "", callb
 
         // Use Turf.js to check for intersection between the polygons
         var intersects = turf.booleanIntersects(polygonGeoJSON, anotherPolygonGeoJSON);
-        console.log(intersects, "Intersection result");
+        //console.log(intersects, "Intersection result");
 
         // Pass the intersection result to the callback
         callback(intersects);
@@ -1565,7 +1565,7 @@ async function savevalues() {
                 alert("Please draw a polygon / upload KML , KMZ , CSV / Add Coordinates before proceeding.");
             } else {
                 Object.keys(drawnPolygons).forEach(async function (polygonId) {
-                    // //console.log(polygonId, "polygonIdpolygonIdpolygonIdpolygonIdpolygonIdpolygonId")
+                    // ////console.log(polygonId, "polygonIdpolygonIdpolygonIdpolygonIdpolygonIdpolygonId")
                     var coordinates = drawnPolygons[polygonId]
 
 
@@ -1576,7 +1576,7 @@ async function savevalues() {
                         [bbox[1], bbox[0]], // Southwest coordinate (minY, minX)
                         [bbox[3], bbox[2]]  // Northeast coordinate (maxY, maxX)
                     ]);
-                    // //console.log('pp',pp);
+                    // ////console.log('pp',pp);
                     map.fitBounds(bounds);
                     var layers = ["AutoDCR:Revenue_1"];
 
@@ -1598,7 +1598,7 @@ async function savevalues() {
                     var layers2 = ["AutoDCR:TOD_Zones", "AutoDCR:TDR_Zones", "AutoDCR:JE_Names", "AutoDCR:DevelopmentRestriction", "AutoDCR:Garden",
                         "AutoDCR:PMC_Reservation", "AutoDCR:Red_Blue", "AutoDCR:Yerwada_Jail", "AutoDCR:Railway_Buffer", "AutoDCR:Lake", "AutoDCR:Monuments", "AutoDCR:Aviation_data"];
                     var restriction_details = await Intersection(pp, layers2, url, propertyName, bounds.toBBoxString(), outputFormat)
-                    //console.log(restriction_details, "restriction_details")
+                    ////console.log(restriction_details, "restriction_details")
 
 
 
@@ -1632,7 +1632,7 @@ async function savevalues() {
                     // Close the table
                     htmlTable += "</table>";
 
-                    //console.log(htmlTable);
+                    ////console.log(htmlTable);
 
                     var restriction_detail = JSON.stringify(restriction_details)
 
@@ -1690,7 +1690,7 @@ async function savevalues() {
                         data.forEach(function (item) {
                             var attribute = item[0];
                             var result = item[1];
-                            //console.log(item, "item")
+                            ////console.log(item, "item")
 
                             if (attribute === 'Coordinates') {
                                 // Generate nested table HTML for coordinates
@@ -1704,7 +1704,7 @@ async function savevalues() {
                     </tr>
                 `);
 
-                                //console.log(coordinatesTableHtml, "coordinatesTableHtml")
+                                ////console.log(coordinatesTableHtml, "coordinatesTableHtml")
                             }
                             // else if{}
                             else {
@@ -1790,7 +1790,7 @@ async function savevalues() {
 
                             // Example usage with correctedCoordinates
                             updatePolygon(correctedCoordinates);
-                            console.log(correctedCoordinates, "newCoordinates1")
+                            //console.log(correctedCoordinates, "newCoordinates1")
                             // Ensure the map has loaded fully before fitting to bounds
                             setTimeout(function () {
                                 newMap.invalidateSize();
@@ -1838,20 +1838,20 @@ async function submitForm() {
     for (const polygonId in drawnPolygons) {
         // var polygonId= "";
         var coordinates = drawnPolygons[polygonId];
-        // console.log('coordinatessubmit', coordinates);
-        // console.log(layer,"layerlayer")
+        // //console.log('coordinatessubmit', coordinates);
+        // //console.log(layer,"layerlayer")
         var pp = turf.polygon(coordinates);
 
         localStorage.setItem('coordinates', coordinates);
 
         var bbox = turf.bbox(pp); // bbox is [minX, minY, maxX, maxY]
-        console.log(bbox, "bboc")
+        //console.log(bbox, "bboc")
         var bounds = L.latLngBounds([
             [bbox[1], bbox[0]], // Southwest coordinate (minY, minX)
             [bbox[3], bbox[2]]  // Northeast coordinate (maxY, maxX)
         ]);
         localStorage.setItem('bounds', bbox);
-        console.log(coordinates, "updateed")
+        //console.log(coordinates, "updateed")
         var pp = turf.polygon(coordinates);
         // L.geoJSON(pp).addTo(map)
         var bounds = L.geoJSON(pp).getBounds();
@@ -1948,8 +1948,8 @@ async function submitForm() {
 
 
 
-                // console.log(payload, JSON.stringify(data))
-                // console.log("grossplotarea: ", data.CaseInformation.GrossPlotArea)
+                // //console.log(payload, JSON.stringify(data))
+                // //console.log("grossplotarea: ", data.CaseInformation.GrossPlotArea)
 
                 $.ajax({
                     type: "POST",
@@ -1963,7 +1963,7 @@ async function submitForm() {
                     success: function (response) {
 
                         alert("datasaved")
-                        console.log(response)
+                        //console.log(response)
 
                     },
                     error: function (xhr, status, error) {
@@ -2005,10 +2005,10 @@ async function submitForm() {
             }),
             success: function (response) {
 
-                // console.log("Coordinates saved successfully", response);
+                // //console.log("Coordinates saved successfully", response);
                 localStorage.setItem('lastInsertedPlotBoundaryId', response.data.id);
                 // localStorage.setItem('coordinates',coordinates1);
-                // console.log("localstorage")
+                // //console.log("localstorage")
 
                 // window.location.href = 'dashboard.html';
 
@@ -2062,7 +2062,7 @@ async function submitForm() {
                 },
             }),
             success: function (response) {
-                console.log('API response received:', response);
+                //console.log('API response received:', response);
                 if (response.Status) {
                     // window.location.href = 'data.html';
                     //     setTimeout(function () {
@@ -2096,7 +2096,7 @@ function infovalues() {
 
     Object.keys(drawnPolygons).forEach(async function (polygonId) {
         var coordinates = drawnPolygons[polygonId];
-        // //console.log(coordinates, "drawcoordinates")
+        // ////console.log(coordinates, "drawcoordinates")
         var pp = turf.polygon(coordinates);
         L.geoJSON(pp).addTo(map)
         var bounds = L.geoJSON(pp).getBounds();
@@ -2108,7 +2108,7 @@ function infovalues() {
         var outputFormat = "application/json";
         IntersectwithASLM(pp, layers1, url, propertyName1, bounds.toBBoxString(), outputFormat)
         var restriction_details = await Intersection(pp, layers2, url, propertyName1, bounds.toBBoxString(), outputFormat)
-        //console.log(restriction_details, "restriction_details")
+        ////console.log(restriction_details, "restriction_details")
 
     })
 };
@@ -2142,7 +2142,7 @@ async function IntersectAreaWithPolygon(drawnPolygon, layers, url, propertyName,
                     });
                     resolve(summaryByVillage);
                 } else {
-                    //console.log('No valid features found in the response.');
+                    ////console.log('No valid features found in the response.');
                     resolve([]);
                 }
             }).fail(function () {
@@ -2167,7 +2167,7 @@ function IntersectwithASLM(drawnPolygon, layers, url, propertyName, bounds, outp
             "&propertyName=" + propertyName + "&bbox=" +
             bounds +
             "&outputFormat=" + outputFormat;
-        // //console.log(urlm)
+        // ////console.log(urlm)
         return new Promise((resolve, reject) => {
             $.getJSON(urlm, function (data) {
                 if (data && data.features && data.features.length > 0) {
@@ -2195,7 +2195,7 @@ function IntersectwithASLM(drawnPolygon, layers, url, propertyName, bounds, outp
                     // intersectedLayer.addTo(map);
                     intersectedLayer.eachLayer(function (layer) {
                         var properties = layer.feature.properties;
-                        // //console.log(properties, "properties")
+                        // ////console.log(properties, "properties")
                         var area = turf.area(layer.feature);
                         layer.bindPopup(`Area: ${area.toFixed(2)} sq meters<br>Zone: ${JSON.stringify(properties.Aviation_Zone)} <br> Distance: ${JSON.stringify(properties.Aviation_Distance)}  <br> Elevation: ${JSON.stringify(properties.Aviation_Elevation)}<br> Distance fromNDA : ${distancefromNDA.map(d => d.toFixed(3))} Meters. <br> Distance fromPune airport : ${distancefromPuneairport.map(d => d.toFixed(3))} Meters.`);
                         layer.openPopup();
@@ -2209,7 +2209,7 @@ function IntersectwithASLM(drawnPolygon, layers, url, propertyName, bounds, outp
                     });
                     // resolve(summaryByVillage); 
                 } else {
-                    //console.log('No valid features found in the response.');
+                    ////console.log('No valid features found in the response.');
                     resolve([]);
                 }
             }).fail(function () {
@@ -2257,7 +2257,7 @@ async function Intersection(drawnPolygon, layers, url, propertyName, bounds, out
                         var area = turf.area(geometry); // Calculate area using Turf.js
                         properties['area'] = area; // Add area to the properties
                     }
-                    // //console.log(properties, "HHHHHHHH");
+                    // ////console.log(properties, "HHHHHHHH");
                     let keay = Object.keys(attributes);
                     for (let ind in keay) {
                         let key = keay[ind];
@@ -2271,11 +2271,11 @@ async function Intersection(drawnPolygon, layers, url, propertyName, bounds, out
 
                             let combinedValue = [value, percent]; // Create an array with the current value and 'area' value
                             intersectvalues[attributes_value].push(combinedValue); // Push the combined array into the array
-                            // //console.log(attributes_value, combinedValue, "workingsss");
+                            // ////console.log(attributes_value, combinedValue, "workingsss");
                         }
                     }
 
-                    // //console.log(properties, "HHHHHHHH");
+                    // ////console.log(properties, "HHHHHHHH");
                     // let keay = Object.keys(attributes);
                     // for (let ind in keay) {
                     //     let key = keay[ind];
@@ -2287,7 +2287,7 @@ async function Intersection(drawnPolygon, layers, url, propertyName, bounds, out
                     //             intersectvalues[attributes_value] = []; // Create an array for each key if it doesn't exist
                     //         }
                     //         intersectvalues[attributes_value].push(value); // Push value into the array
-                    //         //console.log(attributes_value, value, "workingsss");
+                    //         ////console.log(attributes_value, value, "workingsss");
                     //     //     let pp = value+"area"
                     //     // intersectvalues[pp] = properties['area'];
 
@@ -2307,12 +2307,12 @@ async function Intersection(drawnPolygon, layers, url, propertyName, bounds, out
                 //                 intersectvalues[key] = []; // Create an array for each key if it doesn't exist
                 //             }
                 //             intersectvalues[key].push(value); // Push value into the array
-                //             //console.log(value, "workingsss");
+                //             ////console.log(value, "workingsss");
                 //         }
                 //     }
                 // });
             } else {
-                //console.log('No valid features found in the response.');
+                ////console.log('No valid features found in the response.');
             }
         }
         return intersectvalues;
@@ -2379,7 +2379,7 @@ $('#saveToAutoDCRButton').click(function () {
 //     data.forEach(function (item) {
 //         var attribute = item[0];
 //         var result = item[1];
-//         //console.log(item,"item")
+//         ////console.log(item,"item")
 
 //         if (attribute === 'Coordinates') {
 //             // Generate nested table HTML for coordinates
@@ -2392,7 +2392,7 @@ $('#saveToAutoDCRButton').click(function () {
 //                     <td>${coordinatesTableHtml}</td>
 //                 </tr>
 //             `);
-//             //console.log(coordinatesTableHtml,"coordinatesTableHtml")
+//             ////console.log(coordinatesTableHtml,"coordinatesTableHtml")
 //         } else {
 //             // For other attributes, just append them normally
 //             table.append(`

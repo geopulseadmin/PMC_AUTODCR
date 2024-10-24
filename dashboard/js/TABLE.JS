@@ -200,9 +200,9 @@ $(document).ready(function () {
     // FilterAndZoom(filterString1)
 
   getCheckedValues(function (filterString) {
-    console.log("Filter Stringinside: ", filterString1); 
+    //console.log("Filter Stringinside: ", filterString1); 
     const mainfilter = combineFilters(filterString1, filterString);
-    console.log("Filter Stringinside: ", mainfilter); 
+    //console.log("Filter Stringinside: ", mainfilter); 
     FilterAndZoom(mainfilter);
     DataTableFilter(mainfilter)
    
@@ -323,7 +323,7 @@ function populateDropdown(dropdownId, data) {
   var ul = $("#" + dropdownId);
   ul.empty();
   data.forEach(function (item) {
-    // console.log(item, "items")
+    // //console.log(item, "items")
     var listItem = $('<li><label><input type="checkbox" class="select2-option-checkbox" value="' + item + '"> ' + item + '</label></li>');
     ul.append(listItem);
   });
@@ -342,7 +342,7 @@ function getCheckedValues(callback) {
       var values = [];
       $('#' + filtername + ' input[type="checkbox"]:checked').each(function () {
         var single_val = $(this).val();
-        // console.log(single_val, "single_val")
+        // //console.log(single_val, "single_val")
         if (single_val) {
           // Remove the count from the value
           var actualValue = single_val.split(' (')[0];
@@ -647,7 +647,7 @@ function showtable(typeName, geoServerURL, cqlFilter, headers) {
 
       
       row.addEventListener('click', function () {
-        // console.log(item);
+        // //console.log(item);
         var boundsLayer = L.geoJSON(item.geometry, {
           style: {
             fillColor: "blue", // Fill color
@@ -772,7 +772,7 @@ function showtable(typeName, geoServerURL, cqlFilter, headers) {
           return sum + feature.properties.label;
         }, 0);
         let uniqueCount = new Set(work_id).size;
-        console.log(work_id.label, "lllllllllllll",work_id,uniqueCount)
+        //console.log(work_id.label, "lllllllllllll",work_id,uniqueCount)
         document.getElementById('tablestats').innerHTML = `
         
         <div class="stat-button">
@@ -820,7 +820,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     var workspace = 'PMC_test'
     function getValues(callback) {
       var geoServerURL = `${main_url}${workspace}/wms?service=WFS&version=1.1.0&request=GetFeature&typeName=${layerName}&propertyName=${selectedValue}&outputFormat=application/json`;
-      // console.log(geoServerURL, "geoServerURLsearch");
+      // //console.log(geoServerURL, "geoServerURLsearch");
 
       $.getJSON(geoServerURL, function (data) {
         var workTypeSet = new Set();
@@ -993,7 +993,7 @@ function getCheckedValuesforpopuups() {
         if (single_val) {
           var actualValue = single_val.split(' (')[0];
           selectedValues[filtername].push(actualValue);
-          console.log(selectedValues,"lllllllllll99999999999999")
+          //console.log(selectedValues,"lllllllllll99999999999999")
         }
       });
     });
@@ -1024,7 +1024,7 @@ function combineFilters(cql_filter123, filterString) {
   }
 }
 
-// console.log("hehehe")
+// //console.log("hehehe")
 map.on("click", async (e) => {
   let bbox = map.getBounds().toBBoxString();
   let size = map.getSize();
@@ -1072,7 +1072,7 @@ map.on("click", async (e) => {
     }
   }
 
-  console.log(cqlFilter123, "cqlFilter123");
+  //console.log(cqlFilter123, "cqlFilter123");
 
   for (let layer in layerDetails) {
     let selectedKeys = layerDetails[layer];
@@ -1106,7 +1106,7 @@ map.on("click", async (e) => {
 
         L.popup().setLatLng(e.latlng).setContent(detaildata).openOn(map);
       } else {
-        console.log("No features found at this location.");
+        //console.log("No features found at this location.");
       }
 
     } catch (error) {

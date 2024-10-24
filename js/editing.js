@@ -3,7 +3,7 @@ $(document).ready(async function () {
     var id = urlParams.get('id');
     var cql_filter = `id IN ('${id}')`;
     let lastDigits = id.split('.').pop();
-    console.log(id, lastDigits);
+    //console.log(id, lastDigits);
 
     // Fetch data
     const geojsonData = await getData(cql_filter);
@@ -15,7 +15,7 @@ $(document).ready(async function () {
         "geometry": jsonh.geometry
     };
 
-    console.log(geojsonFeature);
+    //console.log(geojsonFeature);
 
     // Display the data in the table
     displayTable(jsonh);
@@ -58,7 +58,7 @@ $(document).ready(async function () {
     map.on(L.Draw.Event.CREATED, function (event) {
         var layer = event.layer;
         geojsonLayer.addLayer(layer);  // Add the new drawn layer to the existing GeoJSON layer
-        console.log("New layer created:", layer.toGeoJSON());
+        //console.log("New layer created:", layer.toGeoJSON());
 
         // Calculate the area of the newly created polygon
         var area = turf.area(layer.toGeoJSON());
@@ -96,7 +96,7 @@ $(document).ready(async function () {
     map.on('draw:deleted', function (event) {
         var layers = event.layers;
         layers.eachLayer(function (layer) {
-            console.log("Deleted layer: ", layer.toGeoJSON());
+            //console.log("Deleted layer: ", layer.toGeoJSON());
         });
 
         // Zoom to fit remaining layers after deletion
@@ -107,7 +107,7 @@ $(document).ready(async function () {
 
     // Save button click handler
     $('#saveButton').click(function () {
-        // console.log(geojsonLayer, "geojsonLayer");
+        // //console.log(geojsonLayer, "geojsonLayer");
 
 
         let allLayersValid = true;
@@ -141,13 +141,13 @@ $(document).ready(async function () {
 
 // Function to fetch data
 async function getData(filter) {
-    console.log("Fetching data with filter:", filter);
+    //console.log("Fetching data with filter:", filter);
     const layers = ["PMC_test:plot1_layouts_test"];
     const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp"];
 
     const promises = layers.map(layerName => {
         const url = `https://iwmsgis.pmc.gov.in/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${encodeURIComponent(layerName)}&CQL_FILTER=${encodeURIComponent(filter)}&outputFormat=application/json`;
-        console.log("WFS URL:", url);
+        //console.log("WFS URL:", url);
 
         return $.getJSON(url).then(data => {
             return data.features.map(feature => {
@@ -226,7 +226,7 @@ function validateArea(drawnArea, grossplotArea) {
         showAlertPopup(`The drawn area does not fall within the ±10% range of the provided gross plot area.`);   
              return false;
     } else {
-        console.log("Validation passed: Drawn area is within 10% of the gross plot area.");
+        //console.log("Validation passed: Drawn area is within 10% of the gross plot area.");
         return true;
     }
 }

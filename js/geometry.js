@@ -89,7 +89,7 @@ function initializeMap() {
     // Loop through all layers on the map and find the GeoJSON layers
     map.eachLayer(function(layer) {
         if (layer instanceof L.GeoJSON) {
-            console.log("Found GeoJSON layer:", layer);
+            //console.log("Found GeoJSON layer:", layer);
     
             // Iterate through each feature in the GeoJSON and add it to the drawnItems feature group
             layer.eachLayer(function(subLayer) {
@@ -164,7 +164,7 @@ function initializeMap() {
 function handleURLParameters() {
     var urlParams = new URLSearchParams(window.location.search);
     var villageName = urlParams.get('token');
-    console.log("villageName:", villageName);
+    //console.log("villageName:", villageName);
 
     if (!villageName) {
         alert("No token provided in the URL.");
@@ -172,7 +172,7 @@ function handleURLParameters() {
     }
 
     var filter = "token = '" + villageName + "'";
-    console.log("CQL_FILTER:", filter);
+    //console.log("CQL_FILTER:", filter);
 
     // Set WMS parameters with the filter
     window.plot1_layouts_test.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "plot1_layouts_test" }).addTo(window.map);
@@ -184,17 +184,17 @@ function handleURLParameters() {
 
 
 function getData(filter) {
-    console.log("Fetching data with filter:", filter);
+    //console.log("Fetching data with filter:", filter);
     const layers = ["PMC_test:plot1_layouts_test"];
     const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp","id"];
 
     const promises = layers.map(layerName => {
         const url = `https://iwmsgis.pmc.gov.in/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${encodeURIComponent(layerName)}&CQL_FILTER=${encodeURIComponent(filter)}&outputFormat=application/json`;
-        console.log("WFS URL:", url);
+        //console.log("WFS URL:", url);
         $('#table-container').show();
 
         return $.getJSON(url).then(data => {
-            console.log(data)
+            //console.log(data)
             return data.features.map(feature => {
                 const properties = feature.properties;
                 let filteredData = {};
@@ -217,7 +217,7 @@ function getData(filter) {
 
     Promise.all(promises).then(results => {
         const flattenedResults = results.flat();
-        console.log("Fetched Data:", flattenedResults);
+        //console.log("Fetched Data:", flattenedResults);
         paginateResults(flattenedResults);
     }).catch(error => {
         console.error("An error occurred:", error);
@@ -232,7 +232,7 @@ function paginateResults(data) {
     let currentPage = 1;
 
     function displayPage(page) {
-        console.log("Displaying page:", page);
+        //console.log("Displaying page:", page);
         const tableBody = $('#workTableData');
         tableBody.empty();
 
@@ -303,7 +303,7 @@ function paginateResults(data) {
 
         editButton.on('click', function () {
             // alert("fffffffff")
-            // console.log(item.id,"item.geometry",data)
+            // //console.log(item.id,"item.geometry",data)
             window.location.href = `editing.html?id=${item.id}`;
             // if (area !== grossPlotArea) {
             if (percentageDifference > 10) {
@@ -490,7 +490,7 @@ $(document).ready(function () {
 
 
 function saveFeature(data) {
-    console.log("Saving edited feature:", data);
+    //console.log("Saving edited feature:", data);
     // alert(data)
     fetch('APIS/save-feature.php', {
         method: 'POST',

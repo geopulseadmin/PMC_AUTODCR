@@ -98,7 +98,7 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       headers.forEach(header => {
         // Convert header to camelCase or other naming convention if necessary
         let propertyName = header.replace(/ /g, '');
-        console.log(propertyName,"propertyName")
+        //console.log(propertyName,"propertyName")
         if (header === 'token') {
           mappedData[propertyName] = (feature.properties[header]).toFixed(2); // Format to two decimal places
       } else {
@@ -117,7 +117,7 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       return sum + feature.properties.token;
     }, 0);
     let uniqueCount = new Set(work_id).size;
-    console.log(work_id.token, "lllllllllllll",work_id,uniqueCount)
+    //console.log(work_id.token, "lllllllllllll",work_id,uniqueCount)
     document.getElementById('tablestats').innerHTML = `
      <div class="stat-button">
           <div class="stat-label">Total Count:</div>
@@ -156,7 +156,7 @@ const cluster_url = "https://iwmsgis.pmc.gov.in/geoserver/";
   loadAndProcessGeoJSON(cluster_url, cluster_layerName, filterString1);
   getCheckedValues(function (filterString) {
     const mainfilter = combineFilters(filterString1, filterString);
-    // console.log("Filter Stringinsidedfgnjfhfufh: ", mainfilter);
+    // //console.log("Filter Stringinsidedfgnjfhfufh: ", mainfilter);
     loadAndProcessGeoJSON(cluster_url, cluster_layerName, mainfilter);
     // loadAndProcessGeoJSON(main_url, layername, mainfilter);
     FilterAndZoom(mainfilter);
@@ -232,7 +232,7 @@ function populateDropdown(dropdownId, data) {
   var ul = $("#" + dropdownId);
   ul.empty();
   data.forEach(function (item) {
-    // //console.log(item, "items")
+    // ////console.log(item, "items")
     var listItem = $('<li><label><input type="checkbox" class="select2-option-checkbox" value="' + item + '"> ' + item + '</label></li>');
     ul.append(listItem);
   });
@@ -271,11 +271,11 @@ function getCheckedValues(callback) {
             var ff= `village_name IN ('${ffofof}')`
             // alert(ff)
 
-            console.log(ff,"ffffffffffffffffffffffffffffffff")
+            //console.log(ff,"ffffffffffffffffffffffffffffffff")
             FilterAndZoomforvillage(ff)
           }
           filters.push(`${key} IN ('${selectedValues[key].join("','")}')`);
-          // console.log(key,"forororroro")
+          // //console.log(key,"forororroro")
         }
       }
 
@@ -304,18 +304,18 @@ function FilterAndZoom(filter) {
 };
 
 function FilterAndZoomforvillage(filter) {
-alert(filter)
+// alert(filter)
   var urlm =main_url + "ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Revenue_1&outputFormat=application/json";
   if (filter) {
     urlm += "&CQL_FILTER=" + encodeURIComponent(filter);
 }
 $.getJSON(urlm, function (data) {
   const uniqueVillage1Values = new Set(data.features.map(feature => feature.properties.village1));
-console.log(uniqueVillage1Values,"kkkkkkkkkkkkkkkkk")
+//console.log(uniqueVillage1Values,"kkkkkkkkkkkkkkkkk")
   const uniqueVillage1Array = [...uniqueVillage1Values];
-  console.log(uniqueVillage1Array,"uniqueVillage1ArrayuniqueVillage1ArrayuniqueVillage1Array")
+  //console.log(uniqueVillage1Array,"uniqueVillage1ArrayuniqueVillage1ArrayuniqueVillage1Array")
   const filterss = `village_na IN('${uniqueVillage1Array}')`
-  console.log(filterss,"filterssfilterssfilterssfilterssfilterss")
+  //console.log(filterss,"filterssfilterssfilterssfilterssfilterss")
   Village_Boundary.setParams({
     CQL_FILTER: filterss,
     // maxZoom: 12.5,
@@ -325,9 +325,9 @@ console.log(uniqueVillage1Values,"kkkkkkkkkkkkkkkkk")
 
   // uniqueVillage1Array
 })
-console.log(urlm,"ppppppppppppp")
+//console.log(urlm,"ppppppppppppp")
   
-  // alert("jjjjjjjjjj")
+  // // // alert("jjjjjjjjjj")
  
 };
 function fitbous(filter) {
@@ -717,7 +717,7 @@ document.getElementById('openTableBtn').addEventListener('click', function (even
 
         return dateB - dateA; // Sort in descending order
       });
-      // console.log(exampleData,"after")
+      // //console.log(exampleData,"after")
 
       // Create the table with the sorted data
       createTable(exampleData, headers);
@@ -738,7 +738,7 @@ $(document).ready(function () {
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
-  // alert("heheeheh")
+  // // // alert("heheeheh")
   // var columns = {"Work_ID":"Work ID", "Budget_Code":"Budget Code", "Name_of_Work":"Name of Work", "Scope_of_Work":"Scope of Work", "Name_of_JE":"Name of JE", "Agency":"Agency"};
   var columns =  {"token": "Token No", "village_name": "Village Name", "gut_no": "Survey No", "ownerinformation_firstname": "Owner Name"  };
 
@@ -791,7 +791,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function getValues(callback) {
       var geoServerURL = `${main_url}AutoDCR/wms?service=WFS&version=1.1.0&request=GetFeature&typeName=Plot_Layout&propertyName=${selectedValue}&outputFormat=application/json`;
-      // console.log(geoServerURL, "geoServerURLsearch");
+      // //console.log(geoServerURL, "geoServerURLsearch");
 
       $.getJSON(geoServerURL, function (data) {
         var workTypeSet = new Set();
@@ -811,7 +811,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Convert the Set to an array
         var uniqueWorkTypes = Array.from(workTypeSet);
-        // console.log(uniqueWorkTypes, "uniqueWorkTypes");
+        // //console.log(uniqueWorkTypes, "uniqueWorkTypes");
 
         // Call the callback function with the uniqueWorkTypes array
         callback(uniqueWorkTypes);
@@ -820,8 +820,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Call getValues function and initialize autocomplete
     getValues(function (data) {
-      // console.log("heheheh", data);
-      // console.log(selectedValue, "LLLLLLLLLLLLLLLLLLLLLL")
+      // //console.log("heheheh", data);
+      // //console.log(selectedValue, "LLLLLLLLLLLLLLLLLLLLLL")
       // Initialize autocomplete with fetched data
       autocomplete(document.getElementById("searchInputDashboard"), data);
     });
@@ -846,16 +846,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
           item.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
           item.addEventListener("click", function () {
             selectedValue = this.getElementsByTagName("input")[0].value; // Store the selected value
-            // console.log(selectedValue, "ppppppppppppppppp")
+            // //console.log(selectedValue, "ppppppppppppppppp")
 
 
             var searchtypefield = $("#search_type").val();
-            // console.log(searchtypefield, "ppppppppppppppppp99999999")
+            // //console.log(searchtypefield, "ppppppppppppppppp99999999")
             let cqlFilter;
 
             cqlFilter = `${searchtypefield} IN ('${selectedValue}')`;
 
-            // console.log(cqlFilter, "cqlFilter")
+            // //console.log(cqlFilter, "cqlFilter")
 
 
 
@@ -875,7 +875,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             
 
 
-            // console.log("Adding layers with filter:", cqlFilter);
+            // //console.log("Adding layers with filter:", cqlFilter);
             // Plot_Layout.addTo(map).bringToFront();
           //  Village_Boundary1.addTo(map).bringToFront();
             fitbous(cqlFilter);
@@ -1006,7 +1006,7 @@ let isModalOpen = false; // Flag to track modal visibility
 
 // Function to handle right-click on the map
 async function handleMapRightClick(e) {
-  // console.log("Right-click event:", e);
+  // //console.log("Right-click event:", e);
 
   let bbox = map.getBounds().toBBoxString();
   let size = map.getSize();
@@ -1018,7 +1018,7 @@ async function handleMapRightClick(e) {
     let selectedKeys = layerDetails[layer];
     let workspace = "AutoDCR";
     let urrr = `https://iwmsgis.pmc.gov.in/geoserver/${workspace}/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=${layer}&STYLES&LAYERS=${layer}&exceptions=application%2Fvnd.ogc.se_inimage&INFO_FORMAT=application/json&FEATURE_COUNT=50&X=${Math.round(e.containerPoint.x)}&Y=${Math.round(e.containerPoint.y)}&SRS=EPSG%3A4326&WIDTH=${size.x}&HEIGHT=${size.y}&BBOX=${bbox}`;
-    // console.log("WMS Request URL:", urrr);
+    // //console.log("WMS Request URL:", urrr);
 
     try {
       let response = await fetch(urrr);
@@ -1037,7 +1037,7 @@ async function handleMapRightClick(e) {
           }
         }
         let detaildata1 = `<table style='width:100%;' class='popup-table'>${txtk1}<tr><td>Coordinates</td><td>${e.latlng}</td></tr></table>`;
-        // console.log("Modal Content:", detaildata1);
+        // //console.log("Modal Content:", detaildata1);
 
         // Update the modal content
         document.getElementById("modalContent").innerHTML = detaildata1;
@@ -1045,7 +1045,7 @@ async function handleMapRightClick(e) {
         updatePopupPosition(e);
         isModalOpen = true; // Mark the modal as open
       } else {
-        console.log("No features found for this location.");
+        //console.log("No features found for this location.");
         closeModal(); // Close the modal if no features are found
       }
     } catch (error) {
@@ -1063,8 +1063,8 @@ function updatePopupPosition(e) {
   const modalWidth = modal.offsetWidth;
   const modalHeight = modal.offsetHeight;
 
-  console.log(`Popup position: x=${e.containerPoint.x}, y=${e.containerPoint.y}`);
-  console.log(`Modal size: width=${modalWidth}, height=${modalHeight}`);
+  //console.log(`Popup position: x=${e.containerPoint.x}, y=${e.containerPoint.y}`);
+  //console.log(`Modal size: width=${modalWidth}, height=${modalHeight}`);
 
   modal.style.left = `${e.containerPoint.x - modalWidth / 2}px`; // Center horizontally
   modal.style.top = `${e.containerPoint.y - modalHeight}px`; // Position above the click point
@@ -1404,11 +1404,11 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 //   var formattedEndDate = end.format('YYYY-MM-DDTHH:mm:ssZ');;
 //   cql_filter1 = `entry_timestamp >= '${formattedStartDate}' AND entry_timestamp < '${formattedEndDate}'`;
 
-//   console.log(cql_filter1, "lll")
+//   //console.log(cql_filter1, "lll")
 
-// // alert(cql_filter1)
+// // // // alert(cql_filter1)
 
-//   console.log(cql_filter1, "lllokkkkk")
+//   //console.log(cql_filter1, "lllokkkkk")
 
 
 //   // loadAndProcessGeoJSON(main_url, layername,cql_filter1);
@@ -1416,12 +1416,12 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 
 //   loadinitialData(cql_filter1);
 //   highlightVillages(); // Call to highlight villages
-// // alert(cql_filter1)
-//   // console.log(cql_filter1,"cql_filter1")
+// // // // alert(cql_filter1)
+//   // //console.log(cql_filter1,"cql_filter1")
 //   getCheckedValues(function (filterString) {
-//     // alert(filterString)
+//     // // alert(filterString)
 //     const mainfilter = combineFilters(cql_filter1, filterString);
-//     console.log("Main Filterfor checking:", mainfilter);
+//     //console.log("Main Filterfor checking:", mainfilter);
 //     FilterAndZoom(mainfilter);
 //     DataTableFilter(mainfilter);
 //     highlightVillages();
@@ -1451,7 +1451,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 
 //   // Load data from the specified layer
 //   const url = `${main_url}AutoDCR/wms?service=WFS&version=1.1.0&request=GetFeature&typeName=${layername}&outputFormat=application/json&cql_filter=${encodeURIComponent(cql_filter)}`;
-//   console.log(url, "mainurl");
+//   //console.log(url, "mainurl");
 
 //   return $.getJSON(url).then(function (data) {
 //       // Assuming villageLayer is created here
@@ -1476,16 +1476,16 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 //       }
 //   });
 
-//   console.log("Selected Villages:", selectedVillages); // Debugging
+//   //console.log("Selected Villages:", selectedVillages); // Debugging
 
 //   if (villageLayer) {
 //       villageLayer.eachLayer(function (layer) {
 //           const villageName = layer.feature.properties['village_name'];
-//           console.log("Checking village:", villageName); // Debugging
+//           //console.log("Checking village:", villageName); // Debugging
 //           if (selectedVillages.includes(villageName)) {
 //               // Highlight the village
 //               layer.setStyle({ color: 'yellow', weight: 3 }); // Change the style as needed
-//               console.log("Highlighting village:", villageName); // Debugging
+//               //console.log("Highlighting village:", villageName); // Debugging
 //           } else {
 //               // Reset the style for unselected villages
 //               layer.setStyle({ color: 'blue', weight: 1 }); // Original style
@@ -1529,7 +1529,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 
 
 //       const mainfilter = combineFilters(cql_filter1, filterString);
-//       console.log("Main Filterfor checking:", mainfilter);
+//       //console.log("Main Filterfor checking:", mainfilter);
 
 //       FilterAndZoom(mainfilter);
 
@@ -1594,7 +1594,7 @@ $(document).ready(function () {
       var formattedEndDate = end.format('YYYY-MM-DDTHH:mm:ssZ');
       cql_filter1 = `entry_timestamp >= '${formattedStartDate}' AND entry_timestamp < '${formattedEndDate}'`;
 
-      console.log(cql_filter1, "lll");
+      //console.log(cql_filter1, "lll");
 
       DataTableFilter(cql_filter1);
       loadinitialData(cql_filter1); // Load the initial data
@@ -1607,7 +1607,7 @@ $(document).ready(function () {
   // Function to load initial data
   function loadinitialData(cql_filter) {
       const url = `${main_url}AutoDCR/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=${layername}&outputFormat=application/json&cql_filter=${encodeURIComponent(cql_filter)}`;
-      // console.log(url, "Main URL");
+      // //console.log(url, "Main URL");
 
       return $.getJSON(url).then(function (data) {
           // Create villageLayer from GeoJSON data
@@ -1635,16 +1635,16 @@ $(document).ready(function () {
           }
       });
 
-      console.log("Selected Villages:", selectedVillages); // Debugging
+      //console.log("Selected Villages:", selectedVillages); // Debugging
 
       if (villageLayer) {
           villageLayer.eachLayer(function (layer) {
               const villageName = layer.feature.properties['caseinformation_area']; // Using 'caseinformation_area' for village name
-              // console.log("Checking village:", villageName); // Debugging
+              // //console.log("Checking village:", villageName); // Debugging
               if (selectedVillages.includes(villageName)) {
                   // Highlight the village
                   layer.setStyle({ color: 'yellow', weight: 3 }); // Change the style as needed
-                  console.log("Highlighting village:", villageName); // Debugging
+                  //console.log("Highlighting village:", villageName); // Debugging
               } else {
                   // Reset the style for unselected villages
                   layer.setStyle({ color: 'blue', weight: 1 }); // Original style
@@ -1679,8 +1679,8 @@ $(document).ready(function () {
           const cql_filter = getCqlFilter();
           getCheckedValues(function (filterString) {
               const mainfilter = combineFilters(cql_filter1, filterString);
-              // alert("egrhubybv")
-              console.log("Main Filter for checking:", mainfilter);
+              // // alert("egrhubybv")
+              //console.log("Main Filter for checking:", mainfilter);
 
               FilterAndZoom(mainfilter);
               DataTableFilter(mainfilter);
@@ -1901,7 +1901,7 @@ document.addEventListener('DOMContentLoaded', function () {
 //   box.style.display = 'block'; // Ensure the box is open by default
 
 //   function closeFilterAndLegend() {
-//     console.log('Closing filter and legend'); 
+//     //console.log('Closing filter and legend'); 
 
 //     filters.style.display = 'none';
 //     legendsDiv.classList.add('hidden');

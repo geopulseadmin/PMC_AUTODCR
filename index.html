@@ -860,7 +860,7 @@
 
         function performTaskBasedOnVillage(villageName) {
 
-            console.log("Village Name:", villageName);
+            //console.log("Village Name:", villageName);
 
             if (villageName === "ADCR020") {
                 window.location.href = "http://localhost/autodcr/index.html";
@@ -895,13 +895,13 @@
             var items = stateList.getElementsByTagName("li");
 
             var found = false;
-            console.log("Input value:", inputValue); // Log the input value for debugging
+            //console.log("Input value:", inputValue); // Log the input value for debugging
 
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
                 if (item) {  // Check if the item exists
                     var itemValue = item.textContent.trim(); // Get the text content of the item
-                    console.log("Checking against:", itemValue); // Log each item value for debugging
+                    //console.log("Checking against:", itemValue); // Log each item value for debugging
 
                     // Compare the item text with the input value
                     if (itemValue === inputValue) {

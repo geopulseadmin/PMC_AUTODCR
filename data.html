@@ -52,7 +52,7 @@
                 data: { id: lastInsertedId },
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
                     table.append('<tr><td>Draw Village Name</td><td>' + response?.data?.village_name + '</td></tr>');
                     table.append('<tr><td>Selected Village From Dropdown</td><td>' + response?.data?.selectedvillage + '</td></tr>');
                     table.append('<tr><td>Selected Survey Number From Dropdown</td><td>' + response?.data?.selectedguts + '</td></tr>');

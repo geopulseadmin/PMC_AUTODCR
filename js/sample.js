@@ -161,17 +161,17 @@ map.on('draw:created', function (e) {
 
     // var bounds = layer.getBounds().toBBoxString();
     var drawnPolygon = layer.toGeoJSON();
-    console.log(drawnPolygon.geometry.type)
+    //console.log(drawnPolygon.geometry.type)
 
     // Ensure the drawn polygon is a valid Polygon
     if (drawnPolygon.geometry.type === 'Polygon') {
         var polygonId = 'polygon_draw'
 
         drawnPolygons[polygonId] = layer.toGeoJSON().geometry.coordinates;
-        console.log(drawnPolygons, "drawnPolygons", "polygonCounter")
+        //console.log(drawnPolygons, "drawnPolygons", "polygonCounter")
         // IntersectAreaWithPolygon(drawnPolygon, layers, url, propertyName, bounds, outputFormat);
     } else {
-        console.log('Drawn geometry is not a valid Polygon.');
+        //console.log('Drawn geometry is not a valid Polygon.');
     }
 });
 
@@ -200,7 +200,7 @@ $(document).ready(function () {
             })
             .fail(function (jqxhr, textStatus, error) {
                 var err = textStatus + ", " + error;
-                console.log("Request Failed: " + err);
+                //console.log("Request Failed: " + err);
             });
     }
 });
@@ -239,7 +239,7 @@ $("#search_type").change(function () {
 
             // Convert the Set to an array
             var Uniqueguts = Array.from(gutvalues);
-            console.log(Uniqueguts, "Uniqueguts");
+            //console.log(Uniqueguts, "Uniqueguts");
 
             // Call the callback function if it's provided
             if (callback && typeof callback === "function") {
@@ -250,11 +250,11 @@ $("#search_type").change(function () {
 
     // Call getvalues function and pass a callback function to handle Uniqueguts
     getvalues(function (Uniqueguts) {
-        console.log(Uniqueguts, "Uniqueguts");
+        //console.log(Uniqueguts, "Uniqueguts");
 
         var stateList = $('#stateList');
         stateList.empty();
-        // console.log(stateList,"stateList")
+        // //console.log(stateList,"stateList")
         _.each(Uniqueguts, function (state) {
             var listItem = $('<li><input name="' + state + '" type="checkbox"><label for="' + state + '">' + state + '</label></li>');
             stateList.append(listItem);
@@ -293,7 +293,7 @@ $("#search_type").change(function () {
 
     $(document).on('change', '#stateList input[type="checkbox"]', function () {
         var cqlFilter = getSelectedValues();
-        console.log(cqlFilter, "Selected filters");
+        //console.log(cqlFilter, "Selected filters");
 
         // Update the map with the new filter
         FitbouCustomiseRevenue(cqlFilter);
@@ -320,7 +320,7 @@ $("#search_type").change(function () {
         } else {
             cqlFilterGut = ""
         }
-        console.log(cqlFilterGut, "cqlFilterGut")
+        //console.log(cqlFilterGut, "cqlFilterGut")
 
         var cqlFilter = "";
         if (cqlFilterGut && filters) {
@@ -413,11 +413,11 @@ function processKML(kmlString) {
     var layer = omnivore.kml.parse(kmlString);
     if (layer.getBounds().isValid()) {
         layer.addTo(map);
-        console.log(layer.toGeoJSON())
+        //console.log(layer.toGeoJSON())
         // for saving coordinates
         var polygonId = 'polygon_kml'
         drawnPolygons[polygonId] = layer.toGeoJSON().features[0].geometry.coordinates;
-        console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
+        //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
 
         map.fitBounds(layer.getBounds());
     } else {
@@ -434,7 +434,7 @@ function processCSV(kmlContent) {
         // for saving coordinates
         var polygonId = 'polygon_csv'
         drawnPolygons[polygonId] = polygon.toGeoJSON().geometry.coordinates;
-        console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
+        //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
 
 
         map.fitBounds(polygon.getBounds());
@@ -549,7 +549,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         coordinates.push([decimalLatitude, decimalLongitude]);
     });
 
-    console.log(coordinates, ",coordinates");
+    //console.log(coordinates, ",coordinates");
     // Add your remaining code for handling coordinates here
 });
 
@@ -580,7 +580,7 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         coordinates.push([parseFloat(latitude), parseFloat(longitude)]);
     });
 
-    console.log(coordinates, ",coordinates");
+    //console.log(coordinates, ",coordinates");
     markershow = [];
     // Add markers to the map
     if (coordinates.length < 4) {
@@ -594,23 +594,23 @@ document.getElementById('coordinateForm').addEventListener('submit', function (e
         // polygonCounter++;
         drawnPolygons[polygonId] = coordinates;
 
-        console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
+        //console.log(drawnPolygons, "drawnPolygons", "polygonCounter");
     }
 
 
 });
 
 function savevalues() {
-    console.log(drawnPolygons, "drawnPolygons")
+    //console.log(drawnPolygons, "drawnPolygons")
     Object.keys(drawnPolygons).forEach(function (polygonId) {
         // checkBoxGutVillage();
         var coordinates = drawnPolygons[polygonId];
-        console.log(coordinates, "cordinates")
+        //console.log(coordinates, "cordinates")
         var pp = turf.polygon(coordinates);
         L.geoJSON(pp).addTo(map)
         var bounds = L.geoJSON(pp).getBounds();
         map.fitBounds(bounds);
-        console.log(bounds)
+        //console.log(bounds)
 
         var layers = ["AutoDCR:Revenue_1"];
         var url = "https://iwmsgis.pmc.gov.in//geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=";
@@ -637,7 +637,7 @@ function IntersectAreaWithPolygon(drawnPolygon, layers, url, propertyName, bound
             "&outputFormat=" + outputFormat;
 
         $.getJSON(urlm, function (data) {
-            console.log(data);
+            //console.log(data);
 
             if (data && data.features && data.features.length > 0) {
                 var intersectedFeatures = [];
@@ -665,11 +665,11 @@ function IntersectAreaWithPolygon(drawnPolygon, layers, url, propertyName, bound
                 // Log the properties of each intersected feature
                 intersectedFeatures.forEach(function (feature) {
                     var properties = feature.properties;
-                    // console.log('Intersected feature properties:', properties);
+                    // //console.log('Intersected feature properties:', properties);
                     localStorage.setItem('properties', JSON.stringify(properties))
                 });
             } else {
-                console.log('No valid features found in the response.');
+                //console.log('No valid features found in the response.');
             }
         });
     });

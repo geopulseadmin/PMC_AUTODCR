@@ -1506,100 +1506,151 @@ function getFilters() {
     return filters;
 }
 
+
+
+
+
+
+async function checkLinePolygonIntersection(geom, layer, cql_filterm = "", callback) {
+    // Add the geometry to the map (for visual feedback)
+    var aald = L.geoJSON(geom).addTo(map);
+
+    var urlm = "https://iwmsgis.pmc.gov.in/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" + layer + "&outputFormat=application/json";
+
+    // Conditionally add the CQL_FILTER to the URL if cql_filterm is provided
+    if (cql_filterm) {
+        urlm += "&CQL_FILTER=" + encodeURIComponent(cql_filterm);
+    }
+
+
+    // Fetch the data using the generated URL
+    $.getJSON(urlm, function (data) {
+        var geojsonLayer = L.geoJson(data);
+        var polygonGeoJSON = aald.toGeoJSON();
+        var anotherPolygonGeoJSON = geojsonLayer.toGeoJSON();
+
+        // Use Turf.js to check for intersection between the polygons
+        var intersects = turf.booleanIntersects(polygonGeoJSON, anotherPolygonGeoJSON);
+        console.log(intersects, "Intersection result");
+
+        // Pass the intersection result to the callback
+        callback(intersects);
+    });
+}
+
+
+
 async function savevalues() {
-    // //console.log("Drawn polygons:", drawnPolygons);
+
+    const forcoords = [];
+
+    Object.keys(drawnPolygons).forEach(function (polygonId) {
+
+        const polygonCoordinates = drawnPolygons[polygonId];
+
+        forcoords.push(turf.polygon(polygonCoordinates).geometry);
+    });
+
+
+    // Check for intersection with the new geometry and GeoServer layer
+    checkLinePolygonIntersection(forcoords, "PMC_test:plot1_layouts_test", "", function (result) {
+
+        intersects = result;
+
+        if (intersects) {
+            alert("Current Drawn Polygon overlapping withexisting polygon. please check");
+        } else {
+
+            if (Object.keys(drawnPolygons).length === 0) {
+                alert("Please draw a polygon / upload KML , KMZ , CSV / Add Coordinates before proceeding.");
+            } else {
+                Object.keys(drawnPolygons).forEach(async function (polygonId) {
+                    // //console.log(polygonId, "polygonIdpolygonIdpolygonIdpolygonIdpolygonIdpolygonId")
+                    var coordinates = drawnPolygons[polygonId]
+
+
+                    var pp = turf.polygon(coordinates);
+
+                    var bbox = turf.bbox(pp); // bbox is [minX, minY, maxX, maxY]
+                    var bounds = L.latLngBounds([
+                        [bbox[1], bbox[0]], // Southwest coordinate (minY, minX)
+                        [bbox[3], bbox[2]]  // Northeast coordinate (maxY, maxX)
+                    ]);
+                    // //console.log('pp',pp);
+                    map.fitBounds(bounds);
+                    var layers = ["AutoDCR:Revenue_1"];
+
+                    var url = "https://iwmsgis.pmc.gov.in//geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=";
+                    var propertyName = "village_name,TPS_Name,Gut_No,geom";
+                    var outputFormat = "application/json";
+                    var values = await IntersectAreaWithPolygon(pp, layers, url, propertyName, bounds.toBBoxString(), outputFormat);
+                    var cqlFilterget = getSelectedValues();
+                    const selected_dropdown = JSON.stringify(cqlFilterget);
+                    const villageName = JSON.stringify(values);
+                    var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
+
+                    const selected_guts = JSON.stringify(getSelectedValues1());
+                    const selected_village = JSON.stringify(getFilters());
+
+
+                    // new added___________________________________________
+
+                    var layers2 = ["AutoDCR:TOD_Zones", "AutoDCR:TDR_Zones", "AutoDCR:JE_Names", "AutoDCR:DevelopmentRestriction", "AutoDCR:Garden",
+                        "AutoDCR:PMC_Reservation", "AutoDCR:Red_Blue", "AutoDCR:Yerwada_Jail", "AutoDCR:Railway_Buffer", "AutoDCR:Lake", "AutoDCR:Monuments", "AutoDCR:Aviation_data"];
+                    var restriction_details = await Intersection(pp, layers2, url, propertyName, bounds.toBBoxString(), outputFormat)
+                    //console.log(restriction_details, "restriction_details")
 
 
 
-    if (Object.keys(drawnPolygons).length === 0) {
-        alert("Please draw a polygon / upload KML , KMZ , CSV / Add Coordinates before proceeding.");
-    } else {
-        Object.keys(drawnPolygons).forEach(async function (polygonId) {
-            // //console.log(polygonId, "polygonIdpolygonIdpolygonIdpolygonIdpolygonIdpolygonId")
-            var coordinates = drawnPolygons[polygonId]
+                    // Start building the HTML table
+                    let htmlTable = "<table class='thin-lines'>";
 
-            var pp = turf.polygon(coordinates);
+                    htmlTable += "<tr>";
+                    htmlTable += "<th>Layer Name</th>";
+                    htmlTable += "<th>Attribute</th>";
+                    htmlTable += "<th>% of Area Affected</th>";
+                    htmlTable += "</tr>";
 
-            var bbox = turf.bbox(pp); // bbox is [minX, minY, maxX, maxY]
-            var bounds = L.latLngBounds([
-                [bbox[1], bbox[0]], // Southwest coordinate (minY, minX)
-                [bbox[3], bbox[2]]  // Northeast coordinate (maxY, maxX)
-            ]);
-            // //console.log('pp',pp);
-            map.fitBounds(bounds);
-            var layers = ["AutoDCR:Revenue_1"];
+                    // Loop through each key in the data
+                    for (let key in restriction_details) {
+                        // Start a new row for each key
+                        htmlTable += "<tr>";
 
-            var url = "https://iwmsgis.pmc.gov.in//geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=";
-            var propertyName = "village_name,TPS_Name,Gut_No,geom";
-            var outputFormat = "application/json";
-            var values = await IntersectAreaWithPolygon(pp, layers, url, propertyName, bounds.toBBoxString(), outputFormat);
-            var cqlFilterget = getSelectedValues();
-            const selected_dropdown = JSON.stringify(cqlFilterget);
-            const villageName = JSON.stringify(values);
-            var DrawnPolygonDetails = `Village Name: ${values[0].village_name}, Gut No: ${values[0].Gut_No}, Polygon Area: ${values[0].area.toFixed(2)} sq m`
+                        // Add the key to the first column
+                        htmlTable += "<td>" + key + "</td>";
 
-            const selected_guts = JSON.stringify(getSelectedValues1());
-            const selected_village = JSON.stringify(getFilters());
+                        // Add the first value of the key to the second column
+                        htmlTable += "<td>" + restriction_details[key][0][0] + "</td>";
 
+                        // Add the second value of the key to the third column
+                        htmlTable += "<td>" + restriction_details[key][0][1] + "</td>";
 
-            // new added___________________________________________
-
-            var layers2 = ["AutoDCR:TOD_Zones", "AutoDCR:TDR_Zones", "AutoDCR:JE_Names", "AutoDCR:DevelopmentRestriction", "AutoDCR:Garden",
-                "AutoDCR:PMC_Reservation", "AutoDCR:Red_Blue", "AutoDCR:Yerwada_Jail", "AutoDCR:Railway_Buffer", "AutoDCR:Lake", "AutoDCR:Monuments", "AutoDCR:Aviation_data"];
-            var restriction_details = await Intersection(pp, layers2, url, propertyName, bounds.toBBoxString(), outputFormat)
-            //console.log(restriction_details, "restriction_details")
-
-
-
-            // Start building the HTML table
-            let htmlTable = "<table class='thin-lines'>";
-
-            htmlTable += "<tr>";
-            htmlTable += "<th>Layer Name</th>";
-            htmlTable += "<th>Attribute</th>";
-            htmlTable += "<th>% of Area Affected</th>";
-            htmlTable += "</tr>";
-
-            // Loop through each key in the data
-            for (let key in restriction_details) {
-                // Start a new row for each key
-                htmlTable += "<tr>";
-
-                // Add the key to the first column
-                htmlTable += "<td>" + key + "</td>";
-
-                // Add the first value of the key to the second column
-                htmlTable += "<td>" + restriction_details[key][0][0] + "</td>";
-
-                // Add the second value of the key to the third column
-                htmlTable += "<td>" + restriction_details[key][0][1] + "</td>";
-
-                // Close the row
-                htmlTable += "</tr>";
-            }
-
-            // Close the table
-            htmlTable += "</table>";
-
-            //console.log(htmlTable);
-
-            var restriction_detail = JSON.stringify(restriction_details)
-
-            // code for lat and lag show in table 
-            function generateCoordinatesTable(dmsCoordinates) {
-
-                let uniqueCoordinates = [];
-                let seenCoordinates = new Set();
-
-                dmsCoordinates.forEach((coord) => {
-                    let coordString = `${coord[0]}_${coord[1]}`;
-                    if (!seenCoordinates.has(coordString)) {
-                        uniqueCoordinates.push(coord);
-                        seenCoordinates.add(coordString);
+                        // Close the row
+                        htmlTable += "</tr>";
                     }
-                });
 
-                let tableHtml = `
+                    // Close the table
+                    htmlTable += "</table>";
+
+                    //console.log(htmlTable);
+
+                    var restriction_detail = JSON.stringify(restriction_details)
+
+                    // code for lat and lag show in table 
+                    function generateCoordinatesTable(dmsCoordinates) {
+
+                        let uniqueCoordinates = [];
+                        let seenCoordinates = new Set();
+
+                        dmsCoordinates.forEach((coord) => {
+                            let coordString = `${coord[0]}_${coord[1]}`;
+                            if (!seenCoordinates.has(coordString)) {
+                                uniqueCoordinates.push(coord);
+                                seenCoordinates.add(coordString);
+                            }
+                        });
+
+                        let tableHtml = `
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -1611,157 +1662,161 @@ async function savevalues() {
                 <tbody>
         `;
 
-                uniqueCoordinates.forEach((coord, index) => {
-                    tableHtml += `
+                        uniqueCoordinates.forEach((coord, index) => {
+                            tableHtml += `
                 <tr>
                     <td>${index + 1}</td>
                     <td>${coord[0]}</td>
                     <td>${coord[1]}</td>
                 </tr>
             `;
-                });
+                        });
 
-                tableHtml += `
+                        tableHtml += `
             </tbody>
         </table>
         `;
 
-                return tableHtml;
-            }
+                        return tableHtml;
+                    }
 
-            function showTableModal(data) {
-                var modal = $('#dataPageModal');
-                var table = modal.find('#popup-table tbody');
+                    function showTableModal(data) {
+                        var modal = $('#dataPageModal');
+                        var table = modal.find('#popup-table tbody');
 
-                // Clear existing rows
-                table.empty();
+                        // Clear existing rows
+                        table.empty();
 
-                data.forEach(function (item) {
-                    var attribute = item[0];
-                    var result = item[1];
-                    //console.log(item, "item")
+                        data.forEach(function (item) {
+                            var attribute = item[0];
+                            var result = item[1];
+                            //console.log(item, "item")
 
-                    if (attribute === 'Coordinates') {
-                        // Generate nested table HTML for coordinates
-                        var coordinatesTableHtml = generateCoordinatesTable(result);
+                            if (attribute === 'Coordinates') {
+                                // Generate nested table HTML for coordinates
+                                var coordinatesTableHtml = generateCoordinatesTable(result);
 
-                        // Append a row with nested table HTML
-                        table.append(`
+                                // Append a row with nested table HTML
+                                table.append(`
                     <tr>
                         <td>${attribute}</td>
                         <td>${coordinatesTableHtml}</td>
                     </tr>
                 `);
 
-                        //console.log(coordinatesTableHtml, "coordinatesTableHtml")
-                    }
-                    // else if{}
-                    else {
-                        // For other attributes, just append them normally
-                        table.append(`
+                                //console.log(coordinatesTableHtml, "coordinatesTableHtml")
+                            }
+                            // else if{}
+                            else {
+                                // For other attributes, just append them normally
+                                table.append(`
                     <tr>
                         <td>${attribute}</td>
                         <td>${result}</td>
                     </tr>
                 `);
+                            }
+
+                        });
+
+                        // Show the modal
+                        modal.modal('show');
                     }
 
-                });
 
-                // Show the modal
-                modal.modal('show');
-            }
+                    const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
+                    const correctedCoordinates = coordinates1.map(coord => [coord[1], coord[0]]);
+                    const mapBounds = L.latLngBounds(correctedCoordinates);
+                    const dmsCoordinates = coordinates1.map(coord => [convertToDMS(coord[0]), convertToDMS(coord[1])]);
 
-
-            const coordinates1 = coordinates[0].map(coord => [coord[0], coord[1]]);
-            const correctedCoordinates = coordinates1.map(coord => [coord[1], coord[0]]);
-            const mapBounds = L.latLngBounds(correctedCoordinates);
-            const dmsCoordinates = coordinates1.map(coord => [convertToDMS(coord[0]), convertToDMS(coord[1])]);
-
-            // Create a div for the map dynamically
-            var mspd = `<div id="newMap" style="height: 250px; width: 100%; margin-top: 20px; .leaflet-touch .leaflet-bar a {
+                    // Create a div for the map dynamically
+                    var mspd = `<div id="newMap" style="height: 250px; width: 100%; margin-top: 20px; .leaflet-touch .leaflet-bar a {
                     width: 20px;
                     height: 21px;
                     line-height: 30px;
                     }"></div>`;
 
-            // Example data for the table
-            var exampleData = [
-                ['\Preview map', mspd],
-                ['Plot Details GIS', DrawnPolygonDetails],
-                // ['Selected Village From Dropdown', selected_village],
-                // ['Selected Survey Number From Dropdown', selected_guts],
-                ['Coordinates', dmsCoordinates],
-                ['Restrictions', htmlTable]
-            ];
+                    // Example data for the table
+                    var exampleData = [
+                        ['\Preview map', mspd],
+                        ['Plot Details GIS', DrawnPolygonDetails],
+                        // ['Selected Village From Dropdown', selected_village],
+                        // ['Selected Survey Number From Dropdown', selected_guts],
+                        ['Coordinates', dmsCoordinates],
+                        ['Restrictions', htmlTable]
+                    ];
 
-            // showTableModal(exampleData);
+                    // showTableModal(exampleData);
 
-            // Initialize the map only after the modal is shown
-            $('#dataPageModal').on('shown.bs.modal', function () {
-                if (document.getElementById("newMap")) {
-                    // Initialize the new map
-                    newMap = L.map("newMap", {
-                        center: [18.52, 73.89], // Default center
-                        zoom: 11,
-                        minZoom: 12,
-                        maxZoom: 18,
-                        boxZoom: true,
-                        trackResize: true,
-                        wheelPxPerZoomLevel: 40,
-                        zoomAnimation: true,
+                    // Initialize the map only after the modal is shown
+                    $('#dataPageModal').on('shown.bs.modal', function () {
+                        if (document.getElementById("newMap")) {
+                            // Initialize the new map
+                            newMap = L.map("newMap", {
+                                center: [18.52, 73.89], // Default center
+                                zoom: 11,
+                                minZoom: 12,
+                                maxZoom: 18,
+                                boxZoom: true,
+                                trackResize: true,
+                                wheelPxPerZoomLevel: 40,
+                                zoomAnimation: true,
+                            });
+
+                            var Esri_WorldImagery = L.tileLayer(
+                                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                                {
+                                    maxZoom: 18,
+                                }
+                            ).addTo(newMap);
+
+                            let polygon;
+
+                            // Function to update the polygon
+                            function updatePolygon(newCoordinates) {
+
+                                if (polygon) {
+                                    // Remove the old polygon
+                                    newMap.removeLayer(polygon);
+                                }
+
+                                // Create a new polygon
+                                polygon = L.polygon(newCoordinates, {
+                                    color: 'blue',
+                                    weight: 3,
+                                    fillOpacity: 0.2
+                                }).addTo(newMap);
+                            }
+
+                            // Example usage with correctedCoordinates
+                            updatePolygon(correctedCoordinates);
+                            console.log(correctedCoordinates, "newCoordinates1")
+                            // Ensure the map has loaded fully before fitting to bounds
+                            setTimeout(function () {
+                                newMap.invalidateSize();
+                                newMap.fitBounds(mapBounds);
+                            }, 500); // Increased timeout for map loading
+                        }
                     });
 
-                    var Esri_WorldImagery = L.tileLayer(
-                        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                        {
-                            maxZoom: 18,
-                        }
-                    ).addTo(newMap);
+                    // this is for area check popup
 
-                    let polygon;
+                    const token = getQueryParam('TOKEN');
+                    var grossplotarea = await fetchGrossPlotArea(token)
+                    var polygonArea = turf.area(pp);
+                    var tenPercemax = (grossplotarea * 1.1); // 10% of gross plot area
+                    var tenPercemin = (grossplotarea * 0.9);
 
-                    // Function to update the polygon
-                    function updatePolygon(newCoordinates) {
 
-                        if (polygon) {
-                            // Remove the old polygon
-                            newMap.removeLayer(polygon);
-                        }
+                    showTableModal(exampleData);
 
-                        // Create a new polygon
-                        polygon = L.polygon(newCoordinates, {
-                            color: 'blue',
-                            weight: 3,
-                            fillOpacity: 0.2
-                        }).addTo(newMap);
-                    }
-
-                    // Example usage with correctedCoordinates
-                    updatePolygon(correctedCoordinates);
-                    console.log(correctedCoordinates, "newCoordinates1")
-                    // Ensure the map has loaded fully before fitting to bounds
-                    setTimeout(function () {
-                        newMap.invalidateSize();
-                        newMap.fitBounds(mapBounds);
-                    }, 500); // Increased timeout for map loading
                 }
-            });
-
-            // this is for area check popup
-
-            const token = getQueryParam('TOKEN');
-            var grossplotarea = await fetchGrossPlotArea(token)
-            var polygonArea = turf.area(pp);
-            var tenPercemax = (grossplotarea * 1.1); // 10% of gross plot area
-            var tenPercemin = (grossplotarea * 0.9);
-
-
-            showTableModal(exampleData);
+                )
+            }
+            // }else{
 
         }
-        )
-    }
+    });
 }
 
 
@@ -1819,7 +1874,7 @@ async function submitForm() {
             type: "GET",
             url: "APIS/proxyGetPreApprovalData.php?TokenNo=" + encodeURIComponent(token),
             success: function (data) {
-  
+
                 let payload = {
                     token: data.Token,  // From the root
                     village_name: data.SiteAddress[0]?.Area || '',  // From SiteAddress array

@@ -1553,7 +1553,9 @@ async function savevalues() {
 
 
     // Check for intersection with the new geometry and GeoServer layer
-    checkLinePolygonIntersection(forcoords, "PMC_test:plot1_layouts_test", "", function (result) {
+    checkLinePolygonIntersection(forcoords, "AutoDCR:Plot_Layout", "", function (result) {
+
+    // checkLinePolygonIntersection(forcoords, "PMC_test:plot1_layouts_test", "", function (result) {
 
         intersects = result;
 

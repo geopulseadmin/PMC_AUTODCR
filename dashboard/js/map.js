@@ -100,23 +100,10 @@ var Village_Boundary1 = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/Au
   version: "1.1.0",
   opacity: 1
 });
-var Plot_Layout = L.tileLayer.wms(
-"https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms",
-{
-  layers: "plot1_layouts_test",
-  format: "image/png",
-  transparent: true,
-  tiled: true,
-  version: "1.1.0",
-  maxZoom: 21,
-  opacity: 1,
-}
-).addTo(map);
-
 // var Plot_Layout = L.tileLayer.wms(
-// "https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms",
+// "https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms",
 // {
-//   layers: "Plot_Layout",
+//   layers: "plot1_layouts_test",
 //   format: "image/png",
 //   transparent: true,
 //   tiled: true,
@@ -125,6 +112,19 @@ var Plot_Layout = L.tileLayer.wms(
 //   opacity: 1,
 // }
 // ).addTo(map);
+
+var Plot_Layout = L.tileLayer.wms(
+"https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms",
+{
+  layers: "Plot_Layout",
+  format: "image/png",
+  transparent: true,
+  tiled: true,
+  version: "1.1.0",
+  maxZoom: 21,
+  opacity: 1,
+}
+).addTo(map);
 
 var Zone_layer = L.tileLayer.wms(
 "https://iwmsgis.pmc.gov.in/geoserver/wms",

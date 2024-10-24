@@ -142,7 +142,9 @@ $(document).ready(async function () {
 // Function to fetch data
 async function getData(filter) {
     //console.log("Fetching data with filter:", filter);
-    const layers = ["PMC_test:plot1_layouts_test"];
+    // const layers = ["PMC_test:plot1_layouts_test"];
+    const layers = ["AutoDCR:Plot_Layout"];
+
     const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp"];
 
     const promises = layers.map(layerName => {

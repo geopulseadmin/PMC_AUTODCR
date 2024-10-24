@@ -36,10 +36,10 @@ function initializeMap() {
     }).addTo(map);
 
     // Define WMS layers
-    var baseURL = "https://iwmsgis.pmc.gov.in/geoserver/PMC_test/wms";
+    var baseURL = "https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms";
 
-    var plot1_layouts_test = L.tileLayer.wms(baseURL, {
-        layers: "plot1_layouts_test",
+    var Plot_Layout = L.tileLayer.wms(baseURL, {
+        layers: "Plot_Layout",
         format: "image/png",
         transparent: true,
         tiled: true,
@@ -148,12 +148,12 @@ function initializeMap() {
     };
 
     L.control.layers(WMSlayers, {
-        "Plot Layouts": plot1_layouts_test
+        "Plot Layouts": Plot_Layout
     }).addTo(map);
 
     // Store map in window for global access
     window.map = map;
-    window.plot1_layouts_test = plot1_layouts_test;
+    window.Plot_Layout = Plot_Layout;
     window.highlightLayer = null;
     window.currentHighlightLayer = null;
 }
@@ -175,7 +175,7 @@ function handleURLParameters() {
     //console.log("CQL_FILTER:", filter);
 
     // Set WMS parameters with the filter
-    window.plot1_layouts_test.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "plot1_layouts_test" }).addTo(window.map);
+    window.Plot_Layout.setParams({ CQL_FILTER: filter, maxZoom: 19.5, styles: "Plot_Layout" }).addTo(window.map);
 
     // Fetch data based on the filter
     getData(filter);
@@ -185,7 +185,7 @@ function handleURLParameters() {
 
 function getData(filter) {
     //console.log("Fetching data with filter:", filter);
-    const layers = ["PMC_test:plot1_layouts_test"];
+    const layers = ["AutoDCR:Plot_Layout"];
     const layerDetails = ["token", "ownerinformation_firstname", "ownerinformation_address", "ownerinformation_contactdetails", "caseinformation_applyfor", "caseinformation_proposaltype", "caseinformation_tdrzone", "area", "caseinformation_area", "caseinformation_grossplotarea", "entry_timestamp","id"];
 
     const promises = layers.map(layerName => {

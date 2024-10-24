@@ -166,7 +166,7 @@ const cluster_url = "https://iwmsgis.pmc.gov.in/geoserver/";
 
 
   function loadinitialData(cql_filter) {
-    const filternames = ["siteaddress_area", "caseinformation_applyfor","gut_no", "caseinformation_casetype", "caseinformation_proposaltype", "token", "caseinformation_grossplotarea","plotdetails_developmentzonedp", "ownerinformation_firstname"];//accordn column names , if want add one more  criteria add here
+    const filternames = ["village_name", "caseinformation_applyfor","gut_no", "caseinformation_casetype", "caseinformation_proposaltype", "token", "caseinformation_grossplotarea","plotdetails_developmentzonedp", "ownerinformation_firstname"];//accordn column names , if want add one more  criteria add here
     var workspace = 'AutoDCR';
     var layerName = 'Plot_Layout';
     filternames.forEach(function (filtername) {
@@ -214,7 +214,7 @@ function DataTableFilter(cql_filter1) {
   var headerMapping = {
     "token": "TOKEN",
     "gut_no": "SURVEY No",
-    "siteaddress_area": "VILLAGE NAME",
+    "village_name": "VILLAGE NAME",
     "ownerinformation_firstname": "OWNER NAME",
     "caseinformation_grossplotarea": "PLOT AREA",
     "caseinformation_applyfor": "APPLY FOR",
@@ -239,7 +239,7 @@ function populateDropdown(dropdownId, data) {
 }
 function getCheckedValues(callback) {
   var selectedValues = {};
-  const filternames = ["siteaddress_area", "caseinformation_applyfor", "caseinformation_casetype", "caseinformation_proposaltype","gut_no", "token", "caseinformation_grossplotarea","plotdetails_developmentzonedp", "ownerinformation_firstname"];
+  const filternames = ["village_name", "caseinformation_applyfor", "caseinformation_casetype", "caseinformation_proposaltype","gut_no", "token", "caseinformation_grossplotarea","plotdetails_developmentzonedp", "ownerinformation_firstname"];
 
   filternames.forEach(function (filtername) {
     selectedValues[filtername] = []; 
@@ -264,11 +264,14 @@ function getCheckedValues(callback) {
       for (var key in selectedValues) {
         
         if (selectedValues[key].length > 0) {
-          if (key == 'siteaddress_area'){
+          if (key == 'village_name'){
             // alert(key)
             fovillagefilter.push(`${key} IN ('${selectedValues[key].join("','")}')`);
-            var ff= `village_na IN ('${selectedValues[key].join("','")}')`
-            // console.log(ff,"ffffffffffffffffffffffffffffffff")
+            const ffofof = (selectedValues[key].join("','")).toUpperCase()
+            var ff= `village_name IN ('${ffofof}')`
+            // alert(ff)
+
+            console.log(ff,"ffffffffffffffffffffffffffffffff")
             FilterAndZoomforvillage(ff)
           }
           filters.push(`${key} IN ('${selectedValues[key].join("','")}')`);
@@ -301,11 +304,31 @@ function FilterAndZoom(filter) {
 };
 
 function FilterAndZoomforvillage(filter) {
+alert(filter)
+  var urlm =main_url + "ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Revenue_1&outputFormat=application/json";
+  if (filter) {
+    urlm += "&CQL_FILTER=" + encodeURIComponent(filter);
+}
+$.getJSON(urlm, function (data) {
+  const uniqueVillage1Values = new Set(data.features.map(feature => feature.properties.village1));
+console.log(uniqueVillage1Values,"kkkkkkkkkkkkkkkkk")
+  const uniqueVillage1Array = [...uniqueVillage1Values];
+  console.log(uniqueVillage1Array,"uniqueVillage1ArrayuniqueVillage1ArrayuniqueVillage1Array")
+  const filterss = `village_na IN('${uniqueVillage1Array}')`
+  console.log(filterss,"filterssfilterssfilterssfilterssfilterss")
   Village_Boundary.setParams({
-    CQL_FILTER: filter,
-    maxZoom: 19.5,
+    CQL_FILTER: filterss,
+    // maxZoom: 12.5,
     styles: 'Village_Highlight'
-  }).addTo(map);
+  }).addTo(map).bringToFront();
+
+
+  // uniqueVillage1Array
+})
+console.log(urlm,"ppppppppppppp")
+  
+  // alert("jjjjjjjjjj")
+ 
 };
 function fitbous(filter) {
   var layers = ["AutoDCR:Plot_Layout"];
@@ -717,7 +740,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
   // alert("heheeheh")
   // var columns = {"Work_ID":"Work ID", "Budget_Code":"Budget Code", "Name_of_Work":"Name of Work", "Scope_of_Work":"Scope of Work", "Name_of_JE":"Name of JE", "Agency":"Agency"};
-  var columns =  {"token": "Token No", "siteaddress_area": "Village Name", "gut_no": "Survey No", "ownerinformation_firstname": "Owner Name"  };
+  var columns =  {"token": "Token No", "village_name": "Village Name", "gut_no": "Survey No", "ownerinformation_firstname": "Owner Name"  };
 
   var select = document.getElementById("search_type");
 
@@ -854,7 +877,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // console.log("Adding layers with filter:", cqlFilter);
             // Plot_Layout.addTo(map).bringToFront();
-           Village_Boundary1.addTo(map).bringToFront();
+          //  Village_Boundary1.addTo(map).bringToFront();
             fitbous(cqlFilter);
 
             DataTableFilter(cqlFilter)
@@ -921,13 +944,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
  
 const layerDetails = {
-  "AutoDCR:Plot_Layout": ["token","siteaddress_area", "gut_no", "ownerinformation_firstname","caseinformation_applyfor", "caseinformation_casetype", "caseinformation_proposaltype", "caseinformation_tdrzone", "caseinformation_grossplotarea", "plotdetails_developmentzonedp", ],
+  "AutoDCR:Plot_Layout": ["token","village_name", "gut_no", "ownerinformation_firstname","caseinformation_applyfor", "caseinformation_casetype", "caseinformation_proposaltype", "caseinformation_tdrzone", "caseinformation_grossplotarea", "plotdetails_developmentzonedp", ],
 };
 
 // Mapping of field names to display names
 const fieldDisplayNames = {
   "token": "Token No",
-  "siteaddress_area": "Village Name",
+  "village_name": "Village Name",
   "gut_no": "Survey No",
   "ownerinformation_firstname": "Owner Name",
   "caseinformation_applyfor": "Apply For",
@@ -942,7 +965,7 @@ const fieldDisplayNames = {
 function getCheckedValuesforpopuups() {
   return new Promise((resolve, reject) => {
     var selectedValues = {};
-    const filternames = ["siteaddress_area", "caseinformation_applyfor", "caseinformation_casetype", "gut_no", "caseinformation_proposaltype", "caseinformation_tdrzone", "caseinformation_grossplotarea", "plotdetails_developmentzonedp", "ownerinformation_firstname"];
+    const filternames = ["village_name", "caseinformation_applyfor", "caseinformation_casetype", "gut_no", "caseinformation_proposaltype", "caseinformation_tdrzone", "caseinformation_grossplotarea", "plotdetails_developmentzonedp", "ownerinformation_firstname"];
 
     filternames.forEach(function (filtername) {
       selectedValues[filtername] = []; 
@@ -1421,7 +1444,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 
 //   const layername = "AutoDCR:plot1_layout_test";
 // const main_url = "https://iwmsgis.pmc.gov.in/geoserver/";
-//   const filternames = ["siteaddress_area", "caseinformation_applyfor", "gut_no", 
+//   const filternames = ["village_name", "caseinformation_applyfor", "gut_no", 
 //                        "caseinformation_casetype", "caseinformation_proposaltype", 
 //                        "token", "caseinformation_grossplotarea", 
 //                        "plotdetails_developmentzonedp", "ownerinformation_firstname"];
@@ -1435,7 +1458,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 //       villageLayer = L.geoJSON(data, {
 //           onEachFeature: function (feature, layer) {
 //               // Add any popups or bindings here
-//               layer.bindPopup(feature.properties['siteaddress_area']);
+//               layer.bindPopup(feature.properties['village_name']);
 //           }
 //       }).addTo(map); // Assuming you have a map variable defined
 //       highlightVillages(); // Highlight villages after loading the data
@@ -1446,7 +1469,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 // function highlightVillages() {
 //   const selectedVillages = [];
   
-//   $('#siteaddress_area input[type="checkbox"]:checked').each(function () {
+//   $('#village_name input[type="checkbox"]:checked').each(function () {
 //       const villageName = $(this).val();
 //       if (villageName) {
 //           selectedVillages.push(villageName); // Add to array if valid
@@ -1457,7 +1480,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 
 //   if (villageLayer) {
 //       villageLayer.eachLayer(function (layer) {
-//           const villageName = layer.feature.properties['siteaddress_area'];
+//           const villageName = layer.feature.properties['village_name'];
 //           console.log("Checking village:", villageName); // Debugging
 //           if (selectedVillages.includes(villageName)) {
 //               // Highlight the village
@@ -1474,7 +1497,7 @@ toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1))
 // }
 
 // // Event listener for checkboxes
-// $('#siteaddress_area input[type="checkbox"]').on('change', function () {
+// $('#village_name input[type="checkbox"]').on('change', function () {
 //   highlightVillages(); // Call the highlighting function whenever a checkbox is changed
 // });
 
@@ -1605,7 +1628,7 @@ $(document).ready(function () {
   function highlightVillages() {
       const selectedVillages = [];
 
-      $('#siteaddress_area input[type="checkbox"]:checked').each(function () {
+      $('#village_name input[type="checkbox"]:checked').each(function () {
           const villageName = $(this).val();
           if (villageName) {
               selectedVillages.push(villageName); // Add to array if valid
@@ -1633,7 +1656,7 @@ $(document).ready(function () {
   }
 
   // Event listener for checkboxes
-  $('#siteaddress_area input[type="checkbox"]').on('change', function () {
+  $('#village_name input[type="checkbox"]').on('change', function () {
       highlightVillages(); // Call the highlighting function whenever a checkbox is changed
   });
 

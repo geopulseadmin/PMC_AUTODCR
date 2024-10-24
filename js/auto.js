@@ -2447,3 +2447,10 @@ async function fetchGrossPlotArea(TokenNo) {
         return null; // Return null or handle error as needed
     }
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    var select = document.getElementById("search_type");
+    select.size = 3; // Set the size to show 3 options
+});
+

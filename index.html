@@ -147,7 +147,7 @@
     <header class="header justify-content-between bg-transparent" id="header">
         <img src="png/pmcjpeg.png" alt="" class="logopng">
 
-        <div>
+        <!-- <div>
             <select id="search_type" class="" aria-label="Select a village">
                 <option value="">Select Village</option>
             </select>
@@ -164,6 +164,24 @@
                     <ul id="stateList"></ul>
                 </div>
             </div>
+        </div> -->
+        
+        <div class="dropdown-wrapper">
+            
+            <div class="dropdown-container">
+                <select id="search_type" class="" aria-label="Select a village">
+                    <!-- <option value="">Select village</option> -->
+                </select>
+            
+
+                
+                    <!-- Optional elements or icons can be added here -->
+             
+                <div class="dropdown-list">
+                    <input type="search" placeholder="SurveyNo/CTC/Plot" class="dropdown-search ps-2" id="surveySearch" />
+                    <ul id="stateList"></ul>
+                </div>
+           
         </div>
 
         <div class="custom-button1">
@@ -244,7 +262,7 @@
 
                     <button class="subbtn" type="submit">Submit
                         <img src="png/formkit_submit.png" alt="Add"
-                            style="width: 16px;height: 16px;     margin-top: -4px; margin-left: 8px;">
+                            style="width: 16px;height: 16px; margin-top: -4px; margin-left: 8px;">
                     </button>
                 </form>
             </div>
@@ -872,7 +890,7 @@
 
         function closeDropdown() {
             var dropdownList = document.querySelector(".dropdown-list");
-            dropdownList.style.display = "none";
+            dropdownList.style.display = "";
         }
 
         document.addEventListener("click", function (event) {

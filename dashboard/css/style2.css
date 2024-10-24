@@ -4094,6 +4094,25 @@ border-radius: 5px 5px 5px 5px;
   width: 20px; /* Set desired width */
   height: auto; /* Maintain aspect ratio */
 }
+#search_type {
+  position: absolute;
+  top: -1px;
+  right: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  width: 190px;
+  outline: none !important;
+  padding: 5px;
+  font-size: 14px;
+  border-radius: 5px 0px 0px 0px;
+  border: none;
+  background-color: #fff;
+  /* Allow height to adjust based on the number of options */
+  height: auto; /* Ensures the height will adjust dynamically */
+  max-height: 200px; /* Optional: Set a max-height if you want to limit the height */
+  overflow-y: auto; /* Enables scrolling if the number of options exceeds the max-height */
+}
+
 
 /* Style the select element to add the down arrow icon */
 #search_type {
